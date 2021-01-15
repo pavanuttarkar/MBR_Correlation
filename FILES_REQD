@@ -14,3 +14,6 @@ setup_header_Fring.py
 setup_header_geometric.py
 setup_header_read.py
 temp_del_after_vGPS.py
+internal_standalone_working.f90
+internal_standalone_working_with_RFI.f90
+
