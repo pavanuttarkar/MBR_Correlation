@@ -21,7 +21,6 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
 
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -31,7 +30,7 @@ sys.path.insert(0, os.path.abspath('.'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinxcontrib.napoleon', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinxcontrib.napoleon', 'sphinx.ext.viewcode', 'sphinxfortran.fortran_domain', 'sphinxfortran.fortran_autodoc']
 
 # Napoleon settings
 napoleon_google_docstring = True
@@ -47,6 +46,11 @@ napoleon_use_param = True
 napoleon_use_rtype = True
 napoleon_use_keyword = True
 napoleon_custom_sections = None
+
+# fortran settings
+fortran_ext = ['f90', 'F90', 'f95', 'F95']
+fortran_src = ["./*.f90", os.path.abspath("./")]
+fortran_indent = 4
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

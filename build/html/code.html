@@ -90,7 +90,9 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Header Fringe Cython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#module-_header_read_cy">Header Read Cython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#module-_header_geometric_cy">Header Geometric Cython</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#temp-del-after-vgps">temp del after vGPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-temp_del_after_vGPS">temp del after vGPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#internal-lp-2">internal lp 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#internal-lp-rfi">internal lp RFI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="licence.html">LICENCE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="help.html">Help</a></li>
 </ul>
@@ -161,16 +163,6 @@
   <div class="section" id="module-_header_Fring_cy">
 <span id="header-fringe-cython"></span><h1>Header Fringe Cython<a class="headerlink" href="#module-_header_Fring_cy" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="_header_Fring_cy.call_to_read_donnot_use">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">call_to_read_donnot_use</code><span class="sig-paren">(</span><em>file_name</em>, <em>file_name1</em>, <em>avg</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.call_to_read_donnot_use" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.change_freq">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">change_freq</code><span class="sig-paren">(</span><em>comf_X</em>, <em>comf_Y</em>, <em>comf1_X</em>, <em>comf1_Y</em>, <em>df</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.change_freq" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="_header_Fring_cy.change_freq_builtin">
 <code class="descclassname">_header_Fring_cy.</code><code class="descname">change_freq_builtin</code><span class="sig-paren">(</span><em>data</em>, <em>data1</em>, <em>current_slope</em>, <em>required_slope</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.change_freq_builtin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses scipy interpolation technique, of interp1d</p>
@@ -201,36 +193,8 @@
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="_header_Fring_cy.change_freq_new_sinc_cortt">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">change_freq_new_sinc_cortt</code><span class="sig-paren">(</span><em>data</em>, <em>data1</em>, <em>current_slope</em>, <em>required_slope</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.change_freq_new_sinc_cortt" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.decrypy_file_new">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">decrypy_file_new</code><span class="sig-paren">(</span><em>comf</em>, <em>comf1</em>, <em>avg</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.decrypy_file_new" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
-<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="_header_Fring_cy.decrypy_file_new_SWAN">
 <code class="descclassname">_header_Fring_cy.</code><code class="descname">decrypy_file_new_SWAN</code><span class="sig-paren">(</span><em>comf</em>, <em>comf1</em>, <em>avg</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.decrypy_file_new_SWAN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
-<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.decrypy_file_new_SWAN_temp_use">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">decrypy_file_new_SWAN_temp_use</code><span class="sig-paren">(</span><em>comf</em>, <em>comf1</em>, <em>avg</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.decrypy_file_new_SWAN_temp_use" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
-<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
-<p>LOG Development:
-Check did not yied satifactory results, not sure where the bug is hiding yet..AUG 31 2020</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.decrypy_file_new_SWAN_temp_use1">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">decrypy_file_new_SWAN_temp_use1</code><span class="sig-paren">(</span><em>comf</em>, <em>comf1</em>, <em>avg</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.decrypy_file_new_SWAN_temp_use1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
 <p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
 </dd></dl>
@@ -246,28 +210,22 @@ comf_X, comf1_X, comf_Y, comf1_Y.</p>
 <dl class="function">
 <dt id="_header_Fring_cy.extract_time">
 <code class="descclassname">_header_Fring_cy.</code><code class="descname">extract_time</code><span class="sig-paren">(</span><em>fil</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.extract_time" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.geo_delay_satyapan">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">geo_delay_satyapan</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>h</em>, <em>m</em>, <em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.geo_delay_satyapan" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Function for extracting time parameter from file name</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a</strong> – </li>
-<li><strong>b</strong> – </li>
-<li><strong>h</strong> – </li>
-<li><strong>m</strong> – </li>
-<li><strong>s</strong> – </li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fil</strong> (<em>str</em>) – File Name</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>z</strong></li>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>series</strong> (str)</li>
+<li><strong>sec</strong> (str)</li>
+<li><strong>minu</strong> (str)</li>
+<li><strong>hour</strong> (str)</li>
+<li><strong>dat</strong> (str)</li>
+<li><strong>month</strong> (str)</li>
+<li><strong>year</strong> (str)</li>
 </ul>
-</p>
 </td>
 </tr>
 </tbody>
@@ -285,30 +243,8 @@ comf_X, comf1_X, comf_Y, comf1_Y.</p>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="_header_Fring_cy.gps_sync_onhold">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">gps_sync_onhold</code><span class="sig-paren">(</span><em>file_name</em>, <em>file_name1</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.gps_sync_onhold" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.initial_corr">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">initial_corr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.initial_corr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="_header_Fring_cy.internal_loop_exe">
 <code class="descclassname">_header_Fring_cy.</code><code class="descname">internal_loop_exe</code><span class="sig-paren">(</span><em>ndarray chunk_X_1</em>, <em>ndarray chunk_Y_1</em>, <em>ndarray chunk1_X_1</em>, <em>ndarray chunk1_Y_1</em>, <em>unsigned int avg</em>, <em>unsigned int fftsize</em>, <em>unsigned int wis_count</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.internal_loop_exe" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.internal_loop_exe_old">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">internal_loop_exe_old</code><span class="sig-paren">(</span><em>chunk_X_1</em>, <em>chunk_Y_1</em>, <em>chunk1_X_1</em>, <em>chunk1_Y_1</em>, <em>avg</em>, <em>fftsize</em>, <em>wis_count</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.internal_loop_exe_old" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using this function we were seeing square wave like output for time series, hence this is put as old function
-and modified internal_loop function is added..</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.internal_loop_exe_old_28JULY">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">internal_loop_exe_old_28JULY</code><span class="sig-paren">(</span><em>chunk_X_1</em>, <em>chunk_Y_1</em>, <em>chunk1_X_1</em>, <em>chunk1_Y_1</em>, <em>avg</em>, <em>fftsize</em>, <em>wis_count</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.internal_loop_exe_old_28JULY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -370,28 +306,8 @@ separately using multiple threads.</p>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="_header_Fring_cy.loop_external_cython">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">loop_external_cython</code><span class="sig-paren">(</span><em>ndarray comf_X</em>, <em>ndarray comf_Y</em>, <em>ndarray comf1_X</em>, <em>ndarray comf1_Y</em>, <em>unsigned int avg</em>, <em>unsigned int le</em>, <em>str file_name</em>, <em>str file_name1</em>, <em>unsigned int fftsize</em>, <em>int external_num</em>, <em>ndarray c9</em>, <em>str fil</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.loop_external_cython" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.loop_external_cython_ason_SEP_01">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">loop_external_cython_ason_SEP_01</code><span class="sig-paren">(</span><em>creal1</em>, <em>creal2</em>, <em>creal3</em>, <em>creal4</em>, <em>creal5</em>, <em>creal6</em>, <em>creal8</em>, <em>creal9</em>, <em>pollkg1</em>, <em>pollkg2</em>, <em>unsigned int avg</em>, <em>unsigned int le</em>, <em>str file_name</em>, <em>str file_name1</em>, <em>unsigned int fftsize</em>, <em>int external_num</em>, <em>ndarray c9</em>, <em>str fil</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.loop_external_cython_ason_SEP_01" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="_header_Fring_cy.loop_external_exe">
 <code class="descclassname">_header_Fring_cy.</code><code class="descname">loop_external_exe</code><span class="sig-paren">(</span><em>ndarray comf_X</em>, <em>ndarray comf_Y</em>, <em>ndarray comf1_X</em>, <em>ndarray comf1_Y</em>, <em>unsigned int avg</em>, <em>unsigned int le</em>, <em>str file_name</em>, <em>str file_name1</em>, <em>unsigned int fftsize</em>, <em>int external_num</em>, <em>ndarray c9</em>, <em>str fil</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.loop_external_exe" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.loop_external_exe_old">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">loop_external_exe_old</code><span class="sig-paren">(</span><em>comf_X</em>, <em>comf_Y</em>, <em>comf1_X</em>, <em>comf1_Y</em>, <em>avg</em>, <em>le</em>, <em>file_name</em>, <em>file_name1</em>, <em>fftsize</em>, <em>external_num</em>, <em>internal_num</em>, <em>c9</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.loop_external_exe_old" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.loop_external_exe_old_Aug_4th">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">loop_external_exe_old_Aug_4th</code><span class="sig-paren">(</span><em>comf_X</em>, <em>comf_Y</em>, <em>comf1_X</em>, <em>comf1_Y</em>, <em>avg</em>, <em>le</em>, <em>file_name</em>, <em>file_name1</em>, <em>fftsize</em>, <em>external_num</em>, <em>internal_num</em>, <em>c9</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.loop_external_exe_old_Aug_4th" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -400,116 +316,14 @@ separately using multiple threads.</p>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="_header_Fring_cy.read_files">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">read_files</code><span class="sig-paren">(</span><em>f1</em>, <em>f2</em>, <em>iden</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.read_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to read binary file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>f1</strong> (<em>str</em>) – File 1 Name</li>
-<li><strong>f2</strong> (<em>str</em>) – File 2 Name</li>
-<li><strong>iden</strong> (<em>str</em>) – Identifier SWAN/MBRDSP</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>comf</strong></li>
-<li><strong>comf1</strong></li>
-</ul>
-</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.resample">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">resample</code><span class="sig-paren">(</span><em>x</em>, <em>k</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.resample" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resample the signal to the given ratio using a sinc kernel</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – a vector or matrix with a signal in each row</li>
-<li><strong>k</strong> – ratio to resample to</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><dl class="first docutils">
-<dt><strong>y</strong> the up or downsampled signal</dt>
-<dd>when downsampling, the signal will be decimated using scipy.signal.decimate</dd>
-</dl>
-</li>
-</ul>
-</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.resample1">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">resample1</code><span class="sig-paren">(</span><em>dataX</em>, <em>dataY</em>, <em>samps_to_be_added</em>, <em>samps_to_be_deci</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_Fring_cy.resample1" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="_header_Fring_cy.set_max_runtime">
 <code class="descclassname">_header_Fring_cy.</code><code class="descname">set_max_runtime</code><span class="sig-paren">(</span><em>seconds</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.set_max_runtime" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="_header_Fring_cy.shift_samps">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">shift_samps</code><span class="sig-paren">(</span><em>ndarray comf_X1</em>, <em>ndarray comf_Y1</em>, <em>ndarray comf1_X1</em>, <em>ndarray comf1_Y1</em>, <em>int jjj</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.shift_samps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shifting samples for getting the 2D plot..</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.sinc_interp">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">sinc_interp</code><span class="sig-paren">(</span><em>x</em>, <em>s</em>, <em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.sinc_interp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interpolates x, sampled at “s” instants
-Output y is sampled at “u” instants (“u” for “upsampled”)</p>
-<p>from Matlab:
-<a class="reference external" href="http://phaseportrait.blogspot.com/2008/06/sinc-interpolation-in-matlab.html">http://phaseportrait.blogspot.com/2008/06/sinc-interpolation-in-matlab.html</a></p>
-</dd></dl>
-
-<dl class="function">
 <dt id="_header_Fring_cy.time_exceeded">
 <code class="descclassname">_header_Fring_cy.</code><code class="descname">time_exceeded</code><span class="sig-paren">(</span><em>signo</em>, <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.time_exceeded" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_Fring_cy.upsample">
-<code class="descclassname">_header_Fring_cy.</code><code class="descname">upsample</code><span class="sig-paren">(</span><em>x</em>, <em>k</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_Fring_cy.upsample" title="Permalink to this definition">¶</a></dt>
-<dd><p>Upsample the signal to the given ratio using a sinc kernel</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – a vector or matrix with a signal in each row</li>
-<li><strong>k</strong> – ratio to resample to</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><dl class="first docutils">
-<dt><strong>y</strong> the up or downsampled signal</dt>
-<dd>when downsampling the signal will be decimated using scipy.signal.decimate</dd>
-</dl>
-</li>
-</ul>
-</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
 
 <dl class="function">
 <dt id="_header_Fring_cy.upsample3">
@@ -626,7 +440,7 @@ comf_X, comf1_X, comf_Y, comf1_Y.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
 <li><strong>tempcomf_X</strong> array(float)</li>
 <li><strong>tempcomf_Y</strong> array(float)</li>
 <li><strong>tempcomf1_X</strong> array(float)</li>
@@ -636,34 +450,7 @@ comf_X, comf1_X, comf_Y, comf1_Y.</p>
 </p>
 </td>
 </tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="_header_read_cy.decrypy_file_new_SWAN_onhold_hold">
-<code class="descclassname">_header_read_cy.</code><code class="descname">decrypy_file_new_SWAN_onhold_hold</code><span class="sig-paren">(</span><em>file_name</em>, <em>file_name1</em>, <em>avg</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#_header_read_cy.decrypy_file_new_SWAN_onhold_hold" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes the read file and sorts the X and Y polarizartion in the file into
-comf_X, comf1_X, comf_Y, comf1_Y.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>file_name</strong> (<em>str</em>) – 1st File Name</li>
-<li><strong>file_name1</strong> (<em>str</em>) – 2nd File Name</li>
-<li><strong>avg</strong> (<em>int</em>) – # Packets to Average</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>tempcomf_X</strong> array(int)</li>
-<li><strong>tempcomf_Y</strong> array(int)</li>
-<li><strong>tempcomf1_X</strong> array(int)</li>
-<li><strong>tempcomf1_Y</strong> array(int)</li>
-<li><strong>LO1</strong> (int) LO</li>
-</ul>
-</p>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#_header_read_cy.LOMismatch" title="_header_read_cy.LOMismatch"><strong>LOMismatch</strong></a> – </p>
 </td>
 </tr>
 </tbody>
@@ -729,7 +516,7 @@ comf_X, comf1_X, comf_Y, comf1_Y.</p>
 <code class="descclassname">_header_read_cy.</code><code class="descname">gen_RFI_matrix</code><span class="sig-paren">(</span><em>str file_name</em>, <em>str file_name1</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_read_cy.gen_RFI_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Should be run only one, not for every file..time constraint :/</p>
+<p class="last">Should be run only one and not for every file, Time Constraint :/</p>
 </div>
 <p>Function to generate RFI Matrix</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -828,11 +615,6 @@ comf_X, comf1_X, comf_Y, comf1_Y.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_header_geometric_cy.ECEFto_ENU_file">
-<code class="descclassname">_header_geometric_cy.</code><code class="descname">ECEFto_ENU_file</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_geometric_cy.ECEFto_ENU_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="_header_geometric_cy.EcefToEnu">
 <code class="descclassname">_header_geometric_cy.</code><code class="descname">EcefToEnu</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_geometric_cy.EcefToEnu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert ECEF to ENU Coordinate System.</p>
@@ -877,10 +659,11 @@ comf_X, comf1_X, comf_Y, comf1_Y.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">comp (array), pha (array)</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">compensated spectrum, phase compensation spectrum</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>comp</strong> (array) - compensated spectrum</li>
+<li><strong>pha</strong> (array) - phase compensation spectrum</li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -890,22 +673,37 @@ comf_X, comf1_X, comf_Y, comf1_Y.</p>
 <dl class="function">
 <dt id="_header_geometric_cy.phase_compensation_toggle">
 <code class="descclassname">_header_geometric_cy.</code><code class="descname">phase_compensation_toggle</code><span class="sig-paren">(</span><em>sec1</em>, <em>min1</em>, <em>hour1</em>, <em>day1</em>, <em>month</em>, <em>year</em>, <em>RA</em>, <em>Dec</em>, <em>avg</em>, <em>del_t</em>, <em>time</em>, <em>T1</em>, <em>T2</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_geometric_cy.phase_compensation_toggle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="_header_geometric_cy.phasecomp">
-<code class="descclassname">_header_geometric_cy.</code><code class="descname">phasecomp</code><span class="sig-paren">(</span><em>creal9</em>, <em>delay</em>, <em>cenfreq</em>, <em>fftlen</em><span class="sig-paren">)</span><a class="headerlink" href="#_header_geometric_cy.phasecomp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used when the delay is less than one sample, i.e intra sample level compensation..</p>
+<dd><dl class="docutils">
+<dt>..warning::</dt>
+<dd>desc required!!</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>creal9</strong> – creal9 (Rename This!!)</li>
-<li><strong>delay</strong> – Delay</li>
-<li><strong>cenfreq</strong> – Central Frequency</li>
-<li><strong>fftlen</strong> – FFT Length</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sec1</strong> – </li>
+<li><strong>min1</strong> – </li>
+<li><strong>hour1</strong> – </li>
+<li><strong>day1</strong> – </li>
+<li><strong>month</strong> – </li>
+<li><strong>year</strong> – </li>
+<li><strong>RA</strong> – </li>
+<li><strong>Dec</strong> – </li>
+<li><strong>avg</strong> – </li>
+<li><strong>del_t</strong> – </li>
+<li><strong>time</strong> – </li>
+<li><strong>T1</strong> – </li>
+<li><strong>T2</strong> – </li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>delay</strong></li>
+<li><strong>fact</strong></li>
+<li><strong>delay1</strong></li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -941,8 +739,155 @@ comf_X, comf1_X, comf_Y, comf1_Y.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="temp-del-after-vgps">
-<h1>temp del after vGPS<a class="headerlink" href="#temp-del-after-vgps" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-temp_del_after_vGPS">
+<span id="temp-del-after-vgps"></span><h1>temp del after vGPS<a class="headerlink" href="#module-temp_del_after_vGPS" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="temp_del_after_vGPS.Correlation_FORT">
+<code class="descclassname">temp_del_after_vGPS.</code><code class="descname">Correlation_FORT</code><span class="sig-paren">(</span><em>comf_X_1</em>, <em>comf_Y_1</em>, <em>comf1_X_1</em>, <em>comf1_Y_1</em>, <em>avg</em>, <em>le</em>, <em>file_name</em>, <em>file_name1</em>, <em>fftsize</em>, <em>external_num</em>, <em>c9</em>, <em>fil</em>, <em>delay</em>, <em>RFI</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/temp_del_after_vGPS.html#Correlation_FORT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#temp_del_after_vGPS.Correlation_FORT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to compute Cross-Correlations</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>comf_X_1</strong> – </li>
+<li><strong>comf_Y_1</strong> – </li>
+<li><strong>comf1_X_1</strong> – </li>
+<li><strong>comf1_Y_1</strong> – </li>
+<li><strong>avg</strong> – </li>
+<li><strong>le</strong> – </li>
+<li><strong>file_name</strong> – </li>
+<li><strong>file_name1</strong> – </li>
+<li><strong>fftsize</strong> – </li>
+<li><strong>external_num</strong> – </li>
+<li><strong>c9</strong> – </li>
+<li><strong>fil</strong> – </li>
+<li><strong>delay</strong> – </li>
+<li><strong>array</strong> (<em>RFI</em>) – RFI Matrix</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">band
+time1
+c9
+creal8
+creal9
+creal5
+creal6</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="temp_del_after_vGPS.bcolors">
+<em class="property">class </em><code class="descclassname">temp_del_after_vGPS.</code><code class="descname">bcolors</code><a class="reference internal" href="_modules/temp_del_after_vGPS.html#bcolors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#temp_del_after_vGPS.bcolors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for colored cli Output</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="temp_del_after_vGPS.main_controller">
+<code class="descclassname">temp_del_after_vGPS.</code><code class="descname">main_controller</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/temp_del_after_vGPS.html#main_controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#temp_del_after_vGPS.main_controller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function responsible to control all fortran and cython instances.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="internal-lp-2">
+<h1>internal lp 2<a class="headerlink" href="#internal-lp-2" title="Permalink to this headline">¶</a></h1>
+<dl class="subroutine">
+<dt id="f/_/external_loop">
+<em class="property">subroutine  </em><code class="descname">external_loop</code><span class="sig-paren">(</span><em>comf_x</em>, <em>comf_y</em>, <em>comf1_x</em>, <em>comf1_y</em>, <em>avg</em>, <em>le</em>, <em>fftsize</em>, <em>len_1</em>, <em>len_2</em>, <em>creal1</em>, <em>creal2</em>, <em>creal3</em>, <em>creal4</em>, <em>creal5</em>, <em>creal6</em>, <em>creal8</em>, <em>creal9</em>, <em>pollkg1</em>, <em>pollkg2</em><span class="sig-paren">)</span><a class="headerlink" href="#f/_/external_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Correlations.</p>
+<dl class="docutils">
+<dt>Author:</dt>
+<dd>Pavan Uttarkar</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>comf_x</strong> (len_1 + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>comf_y</strong> (len_1 + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>comf1_x</strong> (len_2 + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>comf1_y</strong> (len_2 + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>avg</strong><em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>le</strong><em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>fftsize</strong><em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>creal1</strong> (fftsize + 1,le + 1)<em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+<li><strong>creal2</strong> (fftsize + 1,le + 1)<em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+<li><strong>creal3</strong> (fftsize + 1,le + 1)<em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+<li><strong>creal4</strong> (fftsize + 1,le + 1)<em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+<li><strong>complex</strong><em> [</em><em>double</em><em>]</em></li>
+<li><strong>complex</strong></li>
+<li><strong>complex</strong></li>
+<li><strong>complex</strong></li>
+<li><strong>complex</strong></li>
+<li><strong>complex</strong></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Options:</th><td class="field-body"><ul class="first last simple">
+<li><strong>len_1</strong><em> [</em><em>integer</em><em>,</em><em>in,optional/default=(len(comf_x)-1)</em><em>]</em></li>
+<li><strong>len_2</strong><em> [</em><em>integer</em><em>,</em><em>in,optional/default=(len(comf1_x)-1)</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="internal-lp-rfi">
+<h1>internal lp RFI<a class="headerlink" href="#internal-lp-rfi" title="Permalink to this headline">¶</a></h1>
+<dl class="subroutine">
+<dt id="f/_/external_loop_rfi">
+<em class="property">subroutine  </em><code class="descname">external_loop_rfi</code><span class="sig-paren">(</span><em>comf_x</em>, <em>comf_y</em>, <em>comf1_x</em>, <em>comf1_y</em>, <em>avg</em>, <em>le</em>, <em>fftsize</em>, <em>rfi_x1</em>, <em>rfi_y1</em>, <em>rfi_x2</em>, <em>rfi_y2</em>, <em>len_1</em>, <em>len_2</em>, <em>creal1</em>, <em>creal2</em>, <em>creal3</em>, <em>creal4</em>, <em>creal5</em>, <em>creal6</em>, <em>creal8</em>, <em>creal9</em>, <em>pollkg1</em>, <em>pollkg2</em><span class="sig-paren">)</span><a class="headerlink" href="#f/_/external_loop_rfi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Correlations.</p>
+<dl class="docutils">
+<dt>Author:</dt>
+<dd>Pavan Uttarkar</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>comf_x</strong> (len_1 + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>comf_y</strong> (len_1 + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>comf1_x</strong> (len_2 + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>comf1_y</strong> (len_2 + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>avg</strong><em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>le</strong><em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>rfi_x1</strong> (fftsize + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>rfi_y1</strong> (fftsize + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>rfi_x2</strong> (fftsize + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>rfi_y2</strong> (fftsize + 1)<em> [</em><em>integer</em><em>,</em><em>in</em><em>]</em></li>
+<li><strong>creal1</strong> (fftsize + 1,le + 1)<em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+<li><strong>creal2</strong> (fftsize + 1,le + 1)<em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+<li><strong>creal3</strong> (fftsize + 1,le + 1)<em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+<li><strong>creal4</strong> (fftsize + 1,le + 1)<em> [</em><em>real</em><em>,</em><em>out</em><em>]</em></li>
+<li><strong>complex</strong><em> [</em><em>double</em><em>]</em></li>
+<li><strong>complex</strong></li>
+<li><strong>complex</strong></li>
+<li><strong>complex</strong></li>
+<li><strong>complex</strong></li>
+<li><strong>complex</strong></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Options:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fftsize</strong><em> [</em><em>integer</em><em>,</em><em>in,optional/default=(len(rfi_x1)-1)</em><em>]</em></li>
+<li><strong>len_1</strong><em> [</em><em>integer</em><em>,</em><em>in,optional/default=(len(comf_x)-1)</em><em>]</em></li>
+<li><strong>len_2</strong><em> [</em><em>integer</em><em>,</em><em>in,optional/default=(len(comf1_x)-1)</em><em>]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
