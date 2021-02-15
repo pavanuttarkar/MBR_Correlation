@@ -1,8 +1,7 @@
 # MBR_Correlation
 Code base for the SWAN data, to generate visibilities from tile data. 
 
-
-- ![#1589F0](Synchronization and correlation peak finding.) `#1589F0`
-
-The initial code consists of correlation peak finding for optimal position search to start the correlation from.
-This will executed on a initial file, which can be a series 000 file or any file mentioned by the user.
+Before we start, let get introduced to the SWAN system, the SWAN setup consists of seven tiles (ason Feb 15 2021), each tile
+has a 4X4 bowtie antenna elements (MWA Tiles), the output is coherently added in the Analog beamformer and two Polarization
+output (Linear and Vertical) are given as output. This has a collecting area (labda^2*gain of antenna * number of elements) 
+16*0.5*1.5^2 = ~15 sq.m area at 150MHz.
