@@ -50,13 +50,13 @@
  
  -  Initally for any pair of files, the package calculates the synchronization factor, if the gps flag is high. The synchronization factor is calculated by using the gps transitions recorded in the individual packets. The two byte GPS field in the header records the GPS time from the nearest 12'O clock, the header also records the 1PPS active high input from the GPS-Rb Oscillator, in a single bit, along with the GPS counter values. Data from these timming files are used to derive a straight line equation by curve fitting and stored in the HDD. This straight line equation is then used to find the point of synchronization between two files, an example figure below shows this GPS counter vs Time plot, once the point of synchronization is calculated, essentially we have the point where the correlation can be started.
  
- ![ ](/home/pavanuttarkar/Downloads/SWAN_DEVELOPMENT/Figures/GPS.png  "GPS Counter vs Time")
+ ![ ](Figures/GPS.png  "GPS Counter vs Time")
  
 
  
  -  The curve fit method is used for the 000 series files, for non 000 series the inital calculation from the 000 series file is used, along with the compensation for the packet loss. The compensation for the packet loss is done on the fly, a figure describing this can be seen below,
  
-  ![This is the caption\label{mylabel} ](/home/pavanuttarkar/Downloads/SWAN_MARK_DOWN/Synchronization_Equation.png "Synchronization Equation Generation")
+  ![This is the caption\label{mylabel} ](Figures/Synchronization_Equation.png "Synchronization Equation Generation")
 ***
 <center>Figure 2: Packet loss compensation in the correlator</center>
 The packet loss is accounter for using the help of the packet counter, a 4 byte header in the packet. This accounting should be done to avoid any loss in coherence, as packet loss positions in both the files are uncorrelated and requires dropping of the chunk of the dataset in the corresponding file as well to avoid the drop in coherence.
@@ -98,27 +98,27 @@ The SWAN header contains the following parameters,
 7. GPS Count (from nearest 12 AM or 12 PM)
 8. Packet count (incremental packet counter)
 
-<img src="/home/pavanuttarkar/Downloads/SWAN_MARK_DOWN/swan_packet_structure.jpg" alt="drawing" width="700"/>
+<img src="Figures/swan_packet_structure.jpg" alt="drawing" width="700"/>
  <center>Figure 3: Modified SWAN Packet Structure, with modifications to the LO lock bit, Sweetspot bit in the FPGA Mon  field and the introduction of pointing fileld</center>
- <img src="/home/pavanuttarkar/Downloads/SWAN_MARK_DOWN/MBR_Packet_structure.png" alt="drawing" width="700"/>
+ <img src="Figures/MBR_Packet_structure.png" alt="drawing" width="700"/>
  <center>Figure 4: Legacy MBR (SWAN) Packet Structure</center>
  
  **Coherence Loss due to packet loss**
  
 Packet loss can cause loss in coherence as a result of time jump experienced by one of the files w.r.t other, this is best illustrated by the fig. 5, fig. 6 and fig.7 below. Hence the packet loss is an important constraint, this is taken care in the correlator software such that the user does not have to worry about the internal compensation of the packet loss. The initial decrypting of the binary file along with reading the document takes up most of the processing time, as it is IO intensive, especially with systems runngin on HDD, hence it is important to do these calculations and compensation as efficiently as possible with the available memory. 
 
- <img src="/home/pavanuttarkar/Downloads/SWAN_MARK_DOWN/Packet_loss_with_circle.png" alt="drawing" width="400"/>
+ <img src="Figures/Packet_loss_with_circle.png" alt="drawing" width="400"/>
  <center>Figure 5: Noticable jump in the packet number due to the packet loss in an acquisition.</center> 
  
  
-<img src="/home/pavanuttarkar/Downloads/SWAN_MARK_DOWN/Packet_loss_vs_GPS_blip.png" alt="drawing" width="600"/>
+<img src="Figures/Packet_loss_vs_GPS_blip.png" alt="drawing" width="600"/>
  <center>Figure 6: Packet loss indicator showing the magnitude of packet loss at different GPS blips, due which the width of the individual second, as percieved by the aqusition system is different, which can have downstream effect during correlation.</center>
 
-<img src="/home/pavanuttarkar/Downloads/SWAN_MARK_DOWN/Noise_Source_SkyLab_v_SkyLab_with_compensation.png" alt="drawing" width="800"/>
+<img src="Figures/Noise_Source_SkyLab_v_SkyLab_with_compensation.png" alt="drawing" width="800"/>
  <center>(a)</center>
  
  
-<img src="/home/pavanuttarkar/Downloads/SWAN_MARK_DOWN/Noise_Source_SkyLab_v_SkyLab_without_compensation.png" alt="drawing" width="800"/>
+<img src="Figures/Noise_Source_SkyLab_v_SkyLab_without_compensation.png" alt="drawing" width="800"/>
  <center>(b)</center>
  <center>Figure 6(a): Correlated spectrum, output of SWAN correlator corrected for the packet loss
 Figure 6(b): Correlated spectrum, output of SWAN correlator not corrected for the packet loss.</center>
