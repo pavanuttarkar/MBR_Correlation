@@ -105,7 +105,7 @@ The SWAN header contains the following parameters,
  <center>Figure 4: Legacy MBR (SWAN) Packet Structure</center>
  
  **Coherence Loss due to packet loss**
- 
+
 Packet loss can cause loss in coherence as a result of time jump experienced by one of the files w.r.t other, this is best illustrated by the fig. 5, fig. 6 and fig.7 below. Hence the packet loss is an important constraint, this is taken care in the correlator software such that the user does not have to worry about the internal compensation of the packet loss. The initial decrypting of the binary file along with reading the document takes up most of the processing time, as it is IO intensive, especially with systems runngin on HDD, hence it is important to do these calculations and compensation as efficiently as possible with the available memory. 
 
  <img src="Figures/Packet_loss_with_circle.png" alt="drawing" width="400"/>
