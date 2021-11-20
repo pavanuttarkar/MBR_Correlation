@@ -5,7 +5,7 @@
  
  The Correlator design for the Sky-Watch Network Array is a software based FX  Correlator.  Python being an interpreted language, though easy to use and with small turn around time, has inherent disadvantage of being relatively less efficient than it’s compiled peers. Hence for efficient memory management and faster turnaround time, Cython (a C compiled version of python) is used in the pipeline for data/computationally intensive processes. This  includes  IO  operations,  decoding  the  binary  data,  plotting  operations etc..  To  further  make  the  correlator  efficient,  the  Fourier  Transforms  operations are performed using  the  FFTW in FORTRAN, and is linked to this correlator using f2py (a Python wrapper generating module for FORTRAN programs). In this design Python is used as an glue language to link all these modules and to provide high level access to it’s functionality.
  
- **			Introduction to the Processing		**
+ ##			Introduction to the Processing		
  
  The processing steps for the correlator are as follows,
  
@@ -51,18 +51,19 @@
  
  -  Initally for any pair of files, the package calculates the synchronization factor, if the gps flag is high. The synchronization factor is calculated by using the gps transitions recorded in the individual packets. The two byte GPS field in the header records the GPS time from the nearest 12'O clock, the header also records the 1PPS active high input from the GPS-Rb Oscillator, in a single bit, along with the GPS counter values. Data from these timming files are used to derive a straight line equation by curve fitting and stored in the HDD. This straight line equation is then used to find the point of synchronization between two files, an example figure below shows this GPS counter vs Time plot, once the point of synchronization is calculated, essentially we have the point where the correlation can be started.
  
+<p align="center">
  ![ ](Figures/GPS.png  "GPS Counter vs Time")
- 
-
+	Figure 1: Scatter plot of GPS counter values vs time, as seen in recorded file.
+ </p>
  
  -  The curve fit method is used for the 000 series files, for non 000 series the inital calculation from the 000 series file is used, along with the compensation for the packet loss. The compensation for the packet loss is done on the fly, a figure describing this can be seen below,
  
-  ![This is the caption\label{mylabel} ](Figures/Synchronization_Equation.png "Synchronization Equation Generation")
-***
-<center>Figure 2: Packet loss compensation in the correlator</center>
-The packet loss is accounter for using the help of the packet counter, a 4 byte header in the packet. This accounting should be done to avoid any loss in coherence, as packet loss positions in both the files are uncorrelated and requires dropping of the chunk of the dataset in the corresponding file as well to avoid the drop in coherence.
-***
 
+<p align="center">
+  ![This is the caption\label{mylabel} ](Figures/Synchronization_Equation.png "Synchronization Equation Generation")
+Figure 2: Packet loss compensation in the correlator</center>
+The packet loss is accounter for using the help of the packet counter, a 4 byte header in the packet. This accounting should be done to avoid any loss in coherence, as packet loss positions in both the files are uncorrelated and requires dropping of the chunk of the dataset in the corresponding file as well to avoid the drop in coherence.
+</p>
  
  
  
@@ -78,7 +79,7 @@ The packet loss is accounter for using the help of the packet counter, a 4 byte 
  
   
 
-**			The SWAN datapacket:			**
+##			The SWAN datapacket:			
 
 The current data packet structure of the SWAN system is shown in the figure 3. The first 32 bytes of the data 
  
@@ -99,27 +100,48 @@ The SWAN header contains the following parameters,
 7. GPS Count (from nearest 12 AM or 12 PM)
 8. Packet count (incremental packet counter)
 
-<img src="Figures/swan_packet_structure.jpg" alt="drawing" width="700"/>
- <center>Figure 3: Modified SWAN Packet Structure, with modifications to the LO lock bit, Sweetspot bit in the FPGA Mon  field and the introduction of pointing fileld</center>
- <img src="Figures/MBR_Packet_structure.png" alt="drawing" width="700"/>
- <center>Figure 4: Legacy MBR (SWAN) Packet Structure</center>
+<p align="center">
+<img src="Figures/swan_packet_structure.jpg" alt="drawing" width="700"/> <br />
+Figure 3: Modified SWAN Packet Structure, with modifications to the LO lock bit, Sweetspot bit in the FPGA Mon  field and the introduction of pointing field.
+</p>
+
+<p align="center">
+<img src="Figures/MBR_Packet_structure.png" alt="drawing" width="700"/> <br />
+Figure 4: Legacy MBR (SWAN) Packet Structure.
+</p>
  
- **Coherence Loss due to packet loss**
+##	Coherence Loss due to packet loss
 
 Packet loss can cause loss in coherence as a result of time jump experienced by one of the files w.r.t other, this is best illustrated by the fig. 5, fig. 6 and fig.7 below. Hence the packet loss is an important constraint, this is taken care in the correlator software such that the user does not have to worry about the internal compensation of the packet loss. The initial decrypting of the binary file along with reading the document takes up most of the processing time, as it is IO intensive, especially with systems runngin on HDD, hence it is important to do these calculations and compensation as efficiently as possible with the available memory. 
 
- <img src="Figures/Packet_loss_with_circle.png" alt="drawing" width="400"/>
- <center>Figure 5: Noticable jump in the packet number due to the packet loss in an acquisition.</center> 
+<p align="center">
+<img src="Figures/Packet_loss_with_circle.png" alt="drawing" width="500"/> <br />
+Figure 5: Noticable jump in the packet number due to the packet loss in an acquisition.
+</p> 
  
- 
-<img src="Figures/Packet_loss_vs_GPS_blip.png" alt="drawing" width="600"/>
- <center>Figure 6: Packet loss indicator showing the magnitude of packet loss at different GPS blips, due which the width of the individual second, as percieved by the aqusition system is different, which can have downstream effect during correlation.</center>
+<p align = "center"> 
+<img src="Figures/Packet_loss_vs_GPS_blip.png" alt="drawing" width="700"/> <br />
+Figure 6: Packet loss indicator showing the magnitude of packet loss at different GPS blips, due which the width of the individual second, as percieved by the aqusition system is different, which can have downstream effect during correlation.
+</p>
 
-<img src="Figures/Noise_Source_SkyLab_v_SkyLab_with_compensation.png" alt="drawing" width="800"/>
- <center>(a)</center>
- 
- 
-<img src="Figures/Noise_Source_SkyLab_v_SkyLab_without_compensation.png" alt="drawing" width="800"/>
- <center>(b)</center>
- <center>Figure 6(a): Correlated spectrum, output of SWAN correlator corrected for the packet loss
-Figure 6(b): Correlated spectrum, output of SWAN correlator not corrected for the packet loss.</center>
+<p align="center">
+<img src="Figures/Noise_Source_SkyLab_v_SkyLab_with_compensation.png" alt="drawing" width="1000"/>
+</p>
+
+<p align="center">
+(a)
+</p>
+
+<p align="center">
+<img src="Figures/Noise_Source_SkyLab_v_SkyLab_without_compensation.png" alt="drawing" width="1000"/>
+</p>
+
+<p align="center">
+(b)
+</p>
+
+
+<p align="center">
+Figure 6(a): Correlated spectrum, output of SWAN correlator corrected for the packet loss <br />
+Figure 6(b): Correlated spectrum, output of SWAN correlator not corrected for the packet loss.
+</p>
