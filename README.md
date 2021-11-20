@@ -77,10 +77,10 @@ The packet loss is accounter for using the help of the packet counter, a 4 byte 
 
  
   
-  
- **			The SWAN datapacket:			**
- 
- The current data packet structure of the SWAN system is shown in the figure 3. The first 32 bytes of the data 
+
+**			The SWAN datapacket:			**
+
+The current data packet structure of the SWAN system is shown in the figure 3. The first 32 bytes of the data 
  
 A packet consists of 14 bytes ethernet header, 20 bytes IP header, 8 bytes UDP header, 32 bytes SWAN header, and 1024 bytes of digitized data. The starting headers related to the ethernet, IP and UDP are striped off and only the 32 byte SWAN header and the 1024 byte digitized data is stored during the acquisition.
 The new modified SWAN header (refer fig. 3 and fig. 4) was introduced considering the sizeable geographical separation, and complexities arising due to the pointing at different latitudes, pointing information is embedded in the header, in the latest version without modifying the length of the SWAN header, to keep the required backward compatibility.
