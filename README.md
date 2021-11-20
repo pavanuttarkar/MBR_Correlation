@@ -18,7 +18,7 @@
 		The program is used to correlate RAW Voltage data sets from two DAS machines, with time synchronization
 		
 		arguments:
-		
+	
 		  -h, --help    show this help message and exit
 		  
 		  -g GPSCOMPENSATION, --GPSCompensation GPSCOMPENSATION
