@@ -1,3 +1,0 @@
-f2py2.7 -c  internal_standalone_WORKING.f90 -L/usr/lib/x86_64-linux-gnu/ -lfftw3 -lm -m internal_loop2 -DF2PY_REPORT_ON_ARRAY_COPY=1 
-#--opt='-fcheck=bounds'
-#f2py -c  internal_FORTRAN.f90 -L/usr/lib/x86_64-linux-gnu/ -lfftw3 -m internal_loop2
