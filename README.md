@@ -52,7 +52,7 @@
  -  Initally for any pair of files, the package calculates the synchronization factor, if the gps flag is high. The synchronization factor is calculated by using the gps transitions recorded in the individual packets. The two byte GPS field in the header records the GPS time from the nearest 12'O clock, the header also records the 1PPS active high input from the GPS-Rb Oscillator, in a single bit, along with the GPS counter values. Data from these timming files are used to derive a straight line equation by curve fitting and stored in the HDD. This straight line equation is then used to find the point of synchronization between two files, an example figure below shows this GPS counter vs Time plot, once the point of synchronization is calculated, essentially we have the point where the correlation can be started.
  
 <p align="center">
- ![ ](Figures/GPS.png  "GPS Counter vs Time")
+<img src="Figures/GPS.png" alt="GPS vs time" width="700"/> <br />
 	Figure 1: Scatter plot of GPS counter values vs time, as seen in recorded file.
  </p>
  
