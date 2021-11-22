@@ -145,3 +145,43 @@ Figure 6: Packet loss indicator showing the magnitude of packet loss at differen
 Figure 6(a): Correlated spectrum, output of SWAN correlator corrected for the packet loss <br />
 Figure 6(b): Correlated spectrum, output of SWAN correlator not corrected for the packet loss.
 </p>
+
+##	Correlator Data Products
+The correlator produces data products in binary numpy format, the file CORRELATION is used as the parking spot for all the generated outputs, the following naming conventions are used for it,
+
+
+```
+SUN_20210419_20210419/
+|-- plot_all.py
+|-- X1X2
+|-- X1X4
+|-- X1X7
+|-- X2X4
+|-- X2X7
+ -- X4X7
+ ```
+The following files (X1X2, X1X4, etc.) contains the files such as 'Correlation_NoComp_CompX7X1_ch07_SUN_20210419_142210_001.mbr_ch01_SUN_20210419_142210_001.mbr.txt.npy', a data cube containing first 2-D dynamic spectrum as the uncompensated correlation spectrum, the second is the intrasample compensated spectrum and the third 2-D spectrum is the phase used to compensate the uncompensated spectrum. An example 5 min dynamic spectrum can be seen in the fig. 7(a) and compensated spectrum can be seen fig. 7(b).
+
+<p align="center">
+<img src="Figures/Noise_Source_SkyLab_v_SkyLab_with_compensation.png" alt="drawing" width="1000"/>
+</p>
+
+<p align="center">
+(a)
+</p>
+
+<p align="center">
+<img src="Figures/Noise_Source_SkyLab_v_SkyLab_without_compensation.png" alt="drawing" width="1000"/>
+</p>
+
+<p align="center">
+(b)
+</p>
+
+
+<p align="center">
+Figure 7(a): Cross-Correlated spectrum, output of SWAN correlator not corrected for intra-sample delay. <br />
+Figure 7(b): Cross-Correlated spectrum, output of SWAN correlator not corrected for intra-sample delay.
+</p>
+
+ 
