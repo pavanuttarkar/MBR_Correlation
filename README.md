@@ -160,7 +160,7 @@ SUN_20210419_20210419/
 |-- X2X7
  -- X4X7
  ```
-The following files (X1X2, X1X4, etc.) contains the files such as 'Correlation_NoComp_CompX7X1_ch07_SUN_20210419_142210_001.mbr_ch01_SUN_20210419_142210_001.mbr.txt.npy', a data cube containing first 2-D dynamic spectrum as the uncompensated correlation spectrum, the second is the intrasample compensated spectrum and the third 2-D spectrum is the phase used to compensate the uncompensated spectrum. An example 5 min dynamic spectrum can be seen in the fig. 7(a) and compensated spectrum can be seen fig. 7(b).
+The following files (X1X2, X1X4, etc.) contains the files such as 'Correlation_NoComp_CompX7X1_ch07_SUN_20210419_142210_001.mbr_ch01_SUN_20210419_142210_001.mbr.txt.npy', a data cube containing first 2-D dynamic spectrum as the uncompensated correlation spectrum, the second is the intrasample compensated spectrum and the third 2-D spectrum is the phase used to compensate the uncompensated spectrum. An example 2.5 min dynamic spectrum can be seen in the fig. 7(a) and compensated spectrum can be seen fig. 7(b). The correlation amplitude (correlation co-efficient) of the Solar observation taken on April 14th can be seen in fig. 9. This observation was taken on the Tile 1 - Tile 7 baseline, the compensated dynamic spectrum phase can be seen in fig. 10.
 
 <p align="center">
 <img src="Figures/Solar_Uncompensated_APR19.png" alt="drawing" width="1000"/>
@@ -190,4 +190,12 @@ Figure 7(b): Cross-Correlated spectrum, output of SWAN correlator not corrected 
 </p>
 <p align="center">
 Figure 8: Plot showing phase variation over time, for Solar observation, with and without intrasample compensation.
+</p>
+
+
+<p align="center">
+<img src="Figures/Phase_Compensted_Uncompensated.png" alt="drawing" width="1000"/>
+</p>
+<p align="center">
+Figure 9: Plot showing phase variation over time, for Solar observation, with and without intrasample compensation.
 </p>
