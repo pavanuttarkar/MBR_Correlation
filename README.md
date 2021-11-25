@@ -228,9 +228,8 @@ Figure 10: Plot showing phase variation over time, for Solar observation, with a
 
 The correlator is deployed on a server class Dell machine, with a Intel(R) Xeon(R) CPU E3-1220 v6 @ 3.00GHz processor containing 4 cores, with 16 GB of volatile memory. The current biggest bottleneck for the Correlator code is the read/write speed of the HDD. The HDD used in this server class machine is ST1000NM0018-2F2130 which essentially has a read/write speed of 193.66 MB/sec, giving a total read time of two 2GB unit files of ~22 seconds. The FORTRAN90 code used for the FFT takes about 12-15 secs to process 2 million 512 point transforms and hence makes up ~40% of the total run time of a single correlator unit. To improve this and to use multiple machines as a bewoulf clusture, using MPI, by distributing these correlator process units to different nodes to process them concurrently. Another solution to improve the efiicieny is to have NVMe or SSD based storage, especially the NVMe's claimed sequential read write speeds being above atleast 2.5 GB/s, reading the stored voltage and performing 2 million 512 point FFT even using an exsisting Xeon E3-1220 v6 processor should reduce the processing time to ~17 sec from current representing a improvement of ~50%. The table below shows the distribution of the current runtime between the processes.  
 
-| Process       		| Run time (sec)|
-| ------------------------------| ------------- |
-| Decoding pipeline and 	|     ~22	|
-| delay compensation		|		|
-| FFT Kernel  			|     ~15   	|
-|Total				|     ~37	|
+| Process       				| Run time (sec)|
+| ----------------------------------------------| ------------- |
+| Decoding pipeline and delay compensation	|     ~22	|
+| FFT Kernel  					|     ~15   	|
+|Total						|     ~37	|
