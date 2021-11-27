@@ -59,12 +59,13 @@
  -  The curve fit method is used for the 000 series files, for non 000 series the inital calculation from the 000 series file is used, along with the compensation for the packet loss. The compensation for the packet loss is done on the fly, a figure describing this can be seen below,
  
 
-<p align="center">
 
-  ![This is the caption\label{mylabel} ](Figures/Synchronization_Equation.png "Synchronization Equation Generation")
-Figure 2: Packet loss compensation in the correlator</center>
-The packet loss is accounter for using the help of the packet counter, a 4 byte header in the packet. This accounting should be done to avoid any loss in coherence, as packet loss positions in both the files are uncorrelated and requires dropping of the chunk of the dataset in the corresponding file as well to avoid the drop in coherence.
+<p align="center">
+<img src="Figures/Synchronization_Equation.png" alt="drawing" width="700"/> <br />
+Figure 2: Packet loss compensation in the correlator.
 </p>
+
+The packet loss is accounted for using the help of the packet counter, a 4 byte header in the packet. This accounting should be done to avoid any loss in coherence, as packet loss positions in both the files are uncorrelated and requires dropping of the chunk of the dataset in the corresponding file as well to avoid the drop in coherence.
  
  
  
