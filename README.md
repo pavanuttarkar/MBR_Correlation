@@ -1,9 +1,12 @@
 
 #            The SWAN-MBR Correlation Package                     
+
+
+The package described in this document is a Software Correlator written for the MBR dataset, specifically for the SWAN system. This software package is mainly written in Cython, with the computationally intensive blocks i.e FFT Kernel in FORTRAN and linked to the Python using f2py. Effort has been made to make it as human readable as possible, though some functions still lack robust documentation. If anyone is interested in contributing towards the documentation, please contact: devanshshukla99@outlook.com, pavan.uttarkar@gmail.com
  
- The package described in this document is a Software Correlator written for the MBR dataset, specifically for the SWAN system. This software package is mainly written in Cython, with the computationally intensive blocks i.e FFT Kernel in FORTRAN and linked to the Python using f2py. Effort has been made to make to as human redable as possible, though, some functions still lack the robust documentation. If anyone is interested in contributing towards the documentation, please contact: devanshshukla99@outlook.com, pavan.uttarkar@gmail.com
+ The Correlator design for the Sky-Watch Network Array is a software based FX Correlator.  Python being an interpreted language, though easy to use and with small turn around time, has the inherent disadvantage of being relatively less efficient than it’s compiled peers. Hence for efficient memory management and faster turnaround time, Cython (a C compiled version of python) is used in the pipeline for data/computationally intensive processes. This  includes  IO  operations,  decoding  the  binary  data,  plotting  operations etc..  To  further  make  the  correlator  efficient,  the  Fourier  Transforms  operations are performed using  the  FFTW in FORTRAN, and is linked to this correlator using f2py (a Python wrapper generating module for FORTRAN programs). In this design Python is used as an glue language to link all these modules and to provide high level access to it’s functionality.
  
- The Correlator design for the Sky-Watch Network Array is a software based FX  Correlator.  Python being an interpreted language, though easy to use and with small turn around time, has inherent disadvantage of being relatively less efficient than it’s compiled peers. Hence for efficient memory management and faster turnaround time, Cython (a C compiled version of python) is used in the pipeline for data/computationally intensive processes. This  includes  IO  operations,  decoding  the  binary  data,  plotting  operations etc..  To  further  make  the  correlator  efficient,  the  Fourier  Transforms  operations are performed using  the  FFTW in FORTRAN, and is linked to this correlator using f2py (a Python wrapper generating module for FORTRAN programs). In this design Python is used as an glue language to link all these modules and to provide high level access to it’s functionality.
+ 
  
  ##			Introduction to the Processing		
  
@@ -48,59 +51,61 @@
 		Example Usage:
 		 
 		 ./temp_del_after_vGPS.py -g 1 -f1 /media/MBR_8B/20210419/CH01/ch01_SUN_20210419_125703_000.mbr -f2 /media/MBR_8B/20210419/CH02/ch02_SUN_20210419_125703_000.mbr -r 1 -RA 1.8690833333333334 -D 11.621111111111112 -a 60000 -fft 256
- 
- -  Initally for any pair of files, the package calculates the synchronization factor, if the gps flag is high. The synchronization factor is calculated by using the gps transitions recorded in the individual packets. The two byte GPS field in the header records the GPS time from the nearest 12'O clock, the header also records the 1PPS active high input from the GPS-Rb Oscillator, in a single bit, along with the GPS counter values. Data from these timming files are used to derive a straight line equation by curve fitting and stored in the HDD. This straight line equation is then used to find the point of synchronization between two files, an example figure below shows this GPS counter vs Time plot, once the point of synchronization is calculated, essentially we have the point where the correlation can be started.
+
+
+ -  Initially for any pair of files, the package calculates the synchronization factor, if the gps flag is high. The synchronization factor is calculated by using the gps transitions recorded in the individual packets. The two byte GPS field in the header records the GPS time from the nearest 12 O'clock, the header also records the 1PPS active high input from the GPS-Rb Oscillator, in a single bit, along with the GPS counter values. Data from these timing files are used to derive a straight line equation by curve fitting and stored in the drive. This straight line equation is then used to find the point of synchronization between two files, an example fig. 1 below shows this GPS counter vs Time plot, once the point of synchronization is calculated, essentially we have the point where the correlation can be started.
+
+
  
 <p align="center">
 <img src="Figures/GPS.png" alt="GPS vs time" width="700"/> <br />
 	Figure 1: Scatter plot of GPS counter values vs time, as seen in recorded file.
  </p>
  
- -  The curve fit method is used for the 000 series files, for non 000 series the inital calculation from the 000 series file is used, along with the compensation for the packet loss. The compensation for the packet loss is done on the fly, a figure describing this can be seen below,
- 
+ -  The curve fit method is used for the 000 series files, for non 000 series the initial calculation from the 000 series file is used, along with the compensation for the packet loss. The compensation for the packet loss is done on the fly, a figure describing this can be seen below,
 
 
 <p align="center">
 <img src="Figures/Synchronization_Equation.png" alt="drawing" width="700"/> <br />
 Figure 2: Packet loss compensation in the correlator.
 </p>
-
 The packet loss is accounted for using the help of the packet counter, a 4 byte header in the packet. This accounting should be done to avoid any loss in coherence, as packet loss positions in both the files are uncorrelated and requires dropping of the chunk of the dataset in the corresponding file as well to avoid the drop in coherence.
  
  
  
- - Once time tag for the point of correlation is available, with compensation for the packet loss, the decryptying of the binary file is started. Memory mapping is used to read the files from the Hard Drive, to achieve this, python module memmap, which essentially is a python wrapper for C mmap, is used.  Memory mapping a file has several advantages compared to conventional read write method,  the memory mapped files are read into the address space and makes available required sections of it. This helps in reducing the required IO operations, hence, it is more efficient. Initially only the packet numbers are read, to compensate for the lower level packet loss, as any packet loss is esentially a time jump, or a loss in synchronization between two files, and will lead to decorrelation of the signal. The packet loss compensation is one of the major blocks of the program, the logic is essentially as follows,
+ - Once the time tag for the point of correlation is available, with compensation for the packet loss, the decrypting of the binary file is started. Memory mapping is used to read the files from the Hard Drive, to achieve this, python module memmap, which essentially is a python wrapper for C mmap, is used.  Memory mapping a file has several advantages compared to conventional read-write methods, the memory mapped files are read into the address space and make available required sections of it. This helps in reducing the required IO operations, hence, it is more efficient. Initially only the packet numbers are read, to compensate for the lower level packet loss, as any packet loss is essentially a time jump, or a loss in synchronization between two files, and will lead to decorrelation of the signal. The packet loss compensation is one of the major blocks of the program, the logic is essentially as follows,
       -- create a buffer of 512XPCK
       -- PCK = (initial\_packet - final\_packet)
-      -- fill the voltage values from the memory mapped files to the buffer leaving out the lost packet numbered arrays, this is relative w.r.t to start of the file.
+      -- fill the voltage values from the memory mapped files to the buffer leaving out the lost packet numbered arrays, this is relative w.r.t to the start of the file.
       -- fill lost packet numbered arrays with zeros, temporarily.  
-- Once a array of volatge values are available on the volatile memory, read from the files, the lost packets are projected on the other files to remove out the packets which do not need to be correlated (refer previous figure).
+- Once an array of voltage values are available on the volatile memory, read from the files, the lost packets are projected on the other files to remove out the packets which do not need to be correlated (refer previous figure).
 - These pair of X and Y polarization arrays are then passed on to the FORTRAN90 FFT Kernel to process and produce the Fourier Transforms of these files and to create the correlation matrix, i.e. four auto-correlation, X1, X2, Y1, Y2 and two cross-correlation, X1X2, Y1Y2, spectrums.
 - The FORTRAN program uses FFTW for the calculating FFT of the dataset and is interfaced to the Python using f2py, which will create a wrapper, a shared object file, which can be accessed through Python. (Insert the flag used for efficient FFT calculation)
 
- 
+
   
 
-##			The SWAN datapacket:			
+##			The SWAN datapacket:		
 
-The current data packet structure of the SWAN system is shown in the figure 3. The first 32 bytes of the data 
+The current data packet structure of the SWAN system is shown in figure 3. The first 32 bytes of the data 
  
-A packet consists of 14 bytes ethernet header, 20 bytes IP header, 8 bytes UDP header, 32 bytes SWAN header, and 1024 bytes of digitized data. The starting headers related to the ethernet, IP and UDP are striped off and only the 32 byte SWAN header and the 1024 byte digitized data is stored during the acquisition.
+A packet consists of 14 bytes ethernet header, 20 bytes IP header, 8 bytes UDP header, 32 bytes SWAN header, and 1024 bytes of digitized data. The starting headers related to the ethernet, IP and UDP are stripped off and only the 32 byte SWAN header and the 1024 byte digitized data is stored during the acquisition.
 The new modified SWAN header (refer fig. 3 and fig. 4) was introduced considering the sizeable geographical separation, and complexities arising due to the pointing at different latitudes, pointing information is embedded in the header, in the latest version without modifying the length of the SWAN header, to keep the required backward compatibility.
 
 The SWAN header contains the following parameters,
 
 1. DSP ID (e.g. SWAN01, SWAN05 etc.)
-2. Source position (ZA and Az, if sweetspot pointing only sweetspot number os printed)
+2. Source position (ZA and Az, if sweetspot pointing only sweet spot number is printed)
 3. Source name (as provided by the user)
 4. Attenuator values (four attenuator values, set by user)
 5. LO frequency (as set by the user)
 6. FPGA Mon
-	IMPORTRANT Bits to look for-
-	--Sweetspot bit (if high, then sweetspot pointing; if low, non sweetspot pointing, as pointed by the user)
+	IMPORTANT Bits to look for-
+	--Sweetspot bit (if high, the sweetspot pointing; if low, non sweetspot pointing, as pointed by the user)
 	-- LO Lock (to check if there was a LO was set)
 7. GPS Count (from nearest 12 AM or 12 PM)
 8. Packet count (incremental packet counter)
+
 
 <p align="center">
 <img src="Figures/swan_packet_structure.jpg" alt="drawing" width="700"/> <br />
@@ -228,7 +233,9 @@ Figure 10: Plot showing phase variation over time, for Solar observation, with a
 
 ## Evaluation of code run time and efficiency calculation of the Correlator 
 
-The correlator is deployed on a server class Dell machine, with a Intel(R) Xeon(R) CPU E3-1220 v6 @ 3.00GHz processor containing 4 cores, with 16 GB of volatile memory. The current bottleneck for the Correlator is the read/write speed of the HDD. The HDD used in this server class machine is ST1000NM0018-2F2130 which essentially has a read/write speed of 193.66 MB/sec, giving a total read time of two 2GB unit files of ~22 seconds. The FORTRAN90 code used for the FFT takes about 12-15 secs to process 2 million 512 point transforms and hence makes up ~40% of the total run time of a single correlator unit. To improve this one can use multiple machines as a bewoulf clusture, using MPI, by distributing these correlator process units to different nodes to process them concurrently. Another solution to improve the efiicieny is to have NVMe or SSD based storage, especially the NVMe's claimed sequential read write speeds being above atleast 2.5 GB/s-7GB/s (https://www.samsung.com/semiconductor/global.semi.static/Samsung_NVMe_SSD_980_PRO_with_Heatsink_Datasheet_211101.pdf), reading the stored voltage and performing 2 million 512 point FFT even using an exsisting Xeon E3-1220 v6 processor should reduce the processing time to ~17 sec from current representing a improvement of ~50%. The table below shows the distribution of the current runtime between the processes.  
+The correlator is deployed on a server class Dell machine, with a Intel(R) Xeon(R) CPU E3-1220 v6 @ 3.00GHz processor containing 4 cores, with 16 GB of volatile memory. The current bottleneck for the Correlator is the read/write speed of the HDD. The HDD used in this server class machine is ST1000NM0018-2F2130 which essentially has a read/write speed of 193.66 MB/sec, giving a total read time of two 2GB unit files of ~22 seconds. The FORTRAN90 code used for the FFT takes about 12-15 secs to process 2 million 512 point transforms and hence makes up ~40% of the total run time of a single correlator unit. To improve this one can use multiple machines as a beowulf cluster, using MPI, by distributing these correlator process units to different nodes to process them concurrently. Another solution to improve the efiicieny is to have NVMe or SSD based storage, especially the NVMe's claimed sequential read write speeds being above at least 2.5 GB/s-7GB/s (https://www.samsung.com/semiconductor/global.semi.static/Samsung_NVMe_SSD_980_PRO_with_Heatsink_Datasheet_211101.pdf), reading the stored voltage and performing 2 million 512 point FFT even using an existing Xeon E3-1220 v6 processor should reduce the processing time to ~17 sec from current representing a improvement of ~50%. The table below shows the distribution of the current runtime between the processes.  
+
+
 
 | Process       				| Run time (sec)|
 | ----------------------------------------------| ------------- |
