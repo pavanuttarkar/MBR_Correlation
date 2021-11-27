@@ -6,6 +6,7 @@ import time
 from _header_Fring_cy import *
 import datetime
 from datetime import datetime
+import internal_loop2 
 import _header_Fring_cy
 import _header_geometric_cy
 import multiprocessing
@@ -107,6 +108,195 @@ cpdef fil_list(fil1):
         tf1.close()
         tf2.close()
     return 0
+
+cpdef tuple decrypy_get_gpssync(file_name, file_name1, avg, s_mbr='000.mbr'):
+    '''
+        Getting GPS sync data..
+
+    '''
+    dt      =    np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
+    comf     = np.memmap(file_name,  dtype = dt, mode = 'c')
+    comf1    = np.memmap(file_name1, dtype = dt, mode = 'c')
+    cdef list accblipg1   =   []
+    cdef list accblipp1   =   []
+    cdef list accblipg2   =   []
+    cdef list accblipp2   =   []
+    cdef list blipp1       =   []
+    cdef list blipp2       =   []
+    cdef list blipg1       =   []
+    cdef list blipg2       =   []
+
+    cdef int fact        =   1
+    cdef int i           =   0
+    cdef str series      = file_name[-7:-4]+'.mbr'
+    cdef long long int len1        = 0#comf['Packer'][-1] - comf['Packet'][0] 
+    cdef long long int len2        = 0#comf1['Packet'][-1] - comf1['Packet'][0]
+    
+
+    for i in range(10, len(comf)-1):
+        if(comf['GPS'][i+1]- comf['GPS'][i]  ==  1 and comf['Packet'][i+1] - comf['Packet'][i] == 1):
+            accblipp1.append(float(comf['Packet'][i+1]))
+            accblipg1.append(float(comf['GPS'][i+1]))
+    #Important message to anyone opening this file.. 
+    #The condition of the diff of GPS and the Packet was added as any packet loss during the transition of GPS would
+    #skew the resulting straight line equation towards more error..hence the two condition of both Packet and GPS..
+
+    for i in range(10, len(comf1)-1):
+        if(comf1['GPS'][i+1] - comf1['GPS'][i] ==1 and comf1['Packet'][i+1] - comf1['Packet'][i] == 1):
+            accblipp2.append(float(comf1['Packet'][i+1]))
+            accblipg2.append(float(comf1['GPS'][i+1]))
+    np.savetxt('Packet_GPS', [accblipp1, accblipg1])
+    slp1    =    linregress(accblipg1, accblipp1)
+    slp2    =    linregress(accblipg2, accblipp2)
+    print(slp1)
+    print(slp2)
+    slp_1   =    linear_fit(accblipg1, accblipp1)
+    slp_2   =    linear_fit(accblipg2, accblipp2)
+    
+    slp1_eqn=       str(slp1.slope)+'*x+'+str(slp1.intercept) 
+    slp2_eqn=       str(slp2.slope)+'*x+'+str(slp2.intercept)
+    x   =   max(comf['GPS'][0], comf1['GPS'][0])+1
+    
+
+    fillist         =               np.loadtxt('DEPEND/files_naming.txt', dtype=str)
+    series_code     =               int(np.where(fillist==series)[-1][0])#fillist.index(series)+1
+    print('\n\n\n\n\n') 
+    print(series_code)
+
+    
+    
+    #fil_000         =               file_name[:-7]+'000.mbr'
+    #fil1_000        =               file_name1[:-7]+'000.mbr'
+    
+
+
+    fileeq1         =               open(str("SAMPLING_INFO/Info_on_straight_line"+str(file_name.split('/')[-1])), 'w+')
+    fileeq2         =               open(str("SAMPLING_INFO/Info_on_straight_line"+str(file_name1.split('/')[-1])), 'w+')
+    #RFI_mask1       =               np.loadtxt(str("SAMPLING_INFO/RFI_mask_X_"+str(fil_000.split('/')[-1])))#+fillist[0])
+    #RFI_mask2       =               np.loadtxt(str("SAMPLING_INFO/RFI_mask_Y_"+str(fil_000.split('/')[-1])))
+    #RFI_mask3       =               np.loadtxt(str("SAMPLING_INFO/RFI_mask_X_"+str(fil1_000.split('/')[-1])))#+fillist[0])
+    #RFI_mask4       =               np.loadtxt(str("SAMPLING_INFO/RFI_mask_Y_"+str(fil1_000.split('/')[-1])))
+
+    #fileeq1.write('First GPS Value == '+str(accblipg1[0])+'\n'+str(accblipp1[0])+'\n')
+    #fileeq2.write('First GPS Value == '+str(accblipg2[0])+'\n'+str(accblipp2[0])+'\n')
+
+    fileeq1.write('First GPS Value == '+str(comf['GPS'][10])+'\n'+str(comf['Packet'][10])+'\n')
+    fileeq2.write('First GPS Value == '+str(comf1['GPS'][10])+'\n'+str(comf1['Packet'][10])+'\n')
+
+    ctr     =   1
+    temp    =   0
+
+    if(int(float(eval(slp_1[-1]))) < 0):
+        temp    =   1
+    len1    =   int(float(eval(slp_1[-1])))-comf['Packet'][0]#len(comf)   -   int(float(eval(slp_1[-1])))
+    len2    =   int(float(eval(slp_2[-1])))-comf1['Packet'][0]#len(comf1)  -   int(float(eval(slp_2[-1])))
+    print(x, len(comf), str(int(float(eval(slp_1[-1])))), len(comf[int(float(eval(slp_1[-1]))):]))
+    print(x, len(comf1), str(int(float(eval(slp_2[-1])))), len(comf1[int(float(eval(slp_1[-1]))):]))
+    rem_len =   abs(len(comf[len1:]) - len(comf1[len2:]))#abs(len(comf[int(float(eval(slp_1[-1]))):])-len(comf1[int(float(eval(slp_1[-1]))):]))
+
+    print('######################################')
+    print(rem_len)
+    print('######################################')
+   
+    if(len1 > len2):#if(str(eval(slp_1[-1])) > str(eval(slp_2[-1])) and str(eval(slp_2[-1])) > 0):
+        fileeq1.write(str(slp2_eqn)+'\n')
+        fileeq2.write(str(slp2_eqn)+'\n')
+        
+        file_to_write       =   file_name.split('_')
+        file_to_write_fil   =   file_name.split('_')
+        file_to_write[-1]   =   fillist[int(series_code)+1]
+        file_to_write_fil[-1]=  fillist[series_code]
+        file_to_write       =   '_'.join(file_to_write)
+        print(file_to_write)
+        file_to_write_fil   =   '_'.join(file_to_write_fil)
+
+        filrem          =               open('SAMPLING_INFO/'+str(file_to_write_fil.split('/')[-1])+'_rem.data', 'w+')
+        filrem.write(str(rem_len)+'\n')#str(eval(slp_2[-1])-comf1['Packet'][0]-eval(slp_1[-1])+comf['Packet'][0])+'\n')
+        filrem.write(str(file_to_write)+'\n')
+
+        print(fillist[int(series_code)+1])
+        fileeq2.write('N,0\n')
+        fileeq1.write('Y,'+str(file_to_write)+','+str(rem_len)+'\n')
+
+
+        #try:
+        #    fil_to_rem          =   (file_to_write.split('/')[-1])[0:4]
+        #    file_to_write       =   (file_to_write.split('/')[-1])[-7:-4]
+        #except:
+        #    fil_to_rem          =   file_to_write[0:4]
+        #    file_to_write       =   file_to_write[-7:-4]
+        #filrem.write(str(fil_to_rem))
+        #print(file_to_write)
+        #print(fil_to_rem)
+    else:
+        fileeq1.write(str(slp1_eqn)+'\n')
+        fileeq2.write(str(slp1_eqn)+'\n')
+
+
+        file_to_write       =   file_name1.split('_')
+        file_to_write_fil   =   file_name1.split('_')
+        file_to_write[-1]   =   fillist[int(series_code)+1]
+        file_to_write_fil[-1]=  fillist[series_code]
+        file_to_write       =   '_'.join(file_to_write)
+        print('=============')
+        print(file_to_write)
+        print('=============')
+        file_to_write_fil   =   '_'.join(file_to_write_fil)
+
+
+        filrem          =               open('SAMPLING_INFO/'+str(file_to_write_fil.split('/')[-1])+'_rem.data', 'w+')
+        filrem.write(str(rem_len)+'\n')#str(eval(slp_1[-1])-comf['Packet'][0]-eval(slp_2[-1])+comf1['Packet'][0])+'\n')
+        #filrem.write(str(min(eval(slp_1[-1]), eval(slp_2[-1]))-comf['Packet'][0])+'\n')
+        #filrem(str())
+        filrem.write(str(file_to_write)+'\n')
+
+        #try:
+        #    fil_to_rem          =   (file_to_write.split('/')[-1])[0:4]
+        #    file_to_write       =   (file_to_write.split('/')[-1])[-7:-4]
+        #except:
+        #    fil_to_rem          =   file_to_write[0:4]
+        #    file_to_write       =   file_to_write[-7:-4]
+        #print(file_to_write)
+        #print(fil_to_rem)
+        #filrem.write(str(fil_to_rem))
+
+        fileeq1.write('N,0\n')
+        fileeq2.write('Y,'+str(file_to_write)+','+str(rem_len)+'\n')
+
+
+
+    fileeq1.write(str(comf['GPS'][0])+','+str(comf['GPS'][-1]))
+    fileeq2.write(str(comf1['GPS'][0])+',' + str(comf1['GPS'][-1]))
+
+    num =   comf['Packet'][int(np.where(comf['GPS']==comf['GPS'][-1])[0][0])]
+    num1=   comf1['Packet'][int(np.where(comf1['GPS']==comf1['GPS'][-1])[0][0])]
+
+    
+    fileeq1.write('\n'+str(comf['Packet'][-1])+'-'+str(num)+' = '+str(comf['Packet'][-1]-num)+','+ str(comf['Packet'][0]))
+    fileeq2.write('\n'+str(comf1['Packet'][-1])+'-'+str(num)+' = '+str(comf1['Packet'][-1]-num1)+','+ str(comf1['Packet'][0]))
+
+    print(str(slp1.slope)+'*x'+str(slp1.intercept))
+    
+    #Generating RFI mask#
+    if(series == s_mbr):
+        comf_X, comf_Y, comf1_X, comf1_Y, LO, Memfactor_not_used_here = call_to_read(file_name, file_name1, 60, '1', np.zeros((30)))
+        le      = len(comf_X)/(int(int(256)*2)*int(avg))
+        le1     = len(comf1_X)/(int(int(256)*2)*int(avg))
+        le      =   min(le, le1)
+        creal1, creal2, creal3, creal4, creal8, creal9= internal_loop2.external_loop(comf_X, comf_Y, comf1_X, comf1_Y, avg, le, 255)
+        RFI1    =   RFI_Reject(creal1, 1, 256, 60)
+        RFI2    =   RFI_Reject(creal2, 1, 256, 60)
+        RFI3    =   RFI_Reject(creal3, 1, 256, 60)
+        RFI4    =   RFI_Reject(creal4, 1, 256, 60)
+      
+       #Writing RFI masks#
+        np.savetxt(str("SAMPLING_INFO/RFI_mask_X_"+str(file_name.split('/')[-1])), RFI1)
+        np.savetxt(str("SAMPLING_INFO/RFI_mask_Y_"+str(file_name.split('/')[-1])), RFI2)
+        np.savetxt(str("SAMPLING_INFO/RFI_mask_X_"+str(file_name1.split('/')[-1])), RFI3)
+        np.savetxt(str("SAMPLING_INFO/RFI_mask_Y_"+str(file_name1.split('/')[-1])), RFI4)
+
+    
+    return slp1, slp2, slp_1, slp_2#, RFI_mask1, RFI_mask2, RFI_mask3, RFI_mask4
 
 cpdef get_memfactor_est(str file_name, str file_name1):
     '''
@@ -480,8 +670,8 @@ cpdef get_last_gps_timing(comf, comf1, file_name, file_name1, series, Memfactor)
 
 
     #IMP: Calculated slope values are only taken from the 000 series..for consistancy and ease of operation. 
-    cdef float slope1			=	_header_Fring_cy.gps_slope(file_name_1)
-    cdef float slope2			=	_header_Fring_cy.gps_slope(file_name1_1)
+    cdef float slope1			=	gps_slope(file_name_1)
+    cdef float slope2			=	gps_slope(file_name1_1)
     cdef float delta_time1		=	(pack1-Memfactor[0]/512.0)/slope1	
     cdef float delta_time2             	=       (pack2-Memfactor[1]/512.0)/slope2
     
@@ -612,7 +802,6 @@ cpdef tuple decrypy_file_new_SWAN_onhold(file_name, file_name1, ch, Memfactor=[0
         new_Memfactor['MemfactorX'][0][1]	     =		0
         new_Memfactor['MemfactorY'][0][0]	     =		Memfactor[0]+time_jumpY
         new_Memfactor['MemfactorY'][0][1]	     =		0
-
         new_Memfactor['MemfactorX'][1][0]            =          (Memfactor[0]%512+time_jumpX)
         if(new_Memfactor['MemfactorX'][1][0]<0):
             print("In new_Memfactor['MemfactorX'][1][0]<0 condition")
@@ -639,7 +828,6 @@ cpdef tuple decrypy_file_new_SWAN_onhold(file_name, file_name1, ch, Memfactor=[0
         print(time_jumpY, time_jumpX)
         print('new_Memfactor at the end is..')
         print(new_Memfactor)
-
     else:
 
 
@@ -761,8 +949,38 @@ cpdef tuple decrypy_file_new_SWAN_onhold(file_name, file_name1, ch, Memfactor=[0
     print(new_Memfactor_flag)
     return tempcomf_X, tempcomf_Y, tempcomf1_X, tempcomf1_Y, LO1, file_time, Memfactor1, new_Memfactor 
 
+cdef sub_brute_force(comf_search, val):
+    #cdef unsigned int i	=	0
+    #for i in range(len(comf_search)):
+    #    if(comf_search['GPS'][i] == val):
+    #        return i
+    return int(np.argmax(comf_search['GPS']> val-1))
+cpdef trans_flag_brute_force(comf_end, comf, comf1, Memfact):
+    '''
+        This module is for brute force compensation..
 
-
+    '''
+    print('Memfact in trans_flag_brute_force is..'+str(Memfact))
+    cdef long long int swt	=	int(comf['GPS'][0] > comf1['GPS'][0])
+    cdef long long int max_val	=	max(comf['GPS'][0], comf1['GPS'][0])+1
+    cdef long long int min_val  =       0
+    cdef int Mem_swt		=	0	
+    if(swt):
+        min_val			=	sub_brute_force(comf, max_val)#np.where(comf['GPS'] == max_val)[0][0]
+    else:
+        min_val			=	sub_brute_force(comf1, max_val)#np.where(comf1['GPS'] == max_val)[0][0]
+    print('Max_val in trans_flag_brute_force..'+str(max_val))
+    print('Min_val in trans_flag_brute_force..'+str(min_val))
+    cdef long long int Mem1		=	0
+    try:
+        print('Trying to find the GPS value in modified Memfact..'+str(Memfact))
+        Mem1			=	sub_brute_force(comf_end[int(Memfact)], max_val) - 1#np.where(comf_end[int(Memfact)]['GPS']==max_val)[0][0]
+    except:
+        print('Did not find the  GPS value in modified Memfact..'+str(Memfact)+' hence looking in next file!')
+        Mem1                    =       sub_brute_force(comf_end[int(Memfact)+1], max_val)#np.where(comf_end[int(Memfact)+1]['GPS']==max_val)[0][0]
+        Mem_swt			=	1
+    print('Mem1, Mem_swt..'+str(Mem1)+','+str(Mem_swt))
+    return Mem1+(len(comf)-1)*(int(Memfact)+Mem_swt) - min_val  + Mem_swt
 
 cpdef get_baseline(file_name, file_name1):
 
@@ -975,35 +1193,42 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
                     internal_jump_mem_last     =            comf_end[int(Mem_fact)-1-missing_file_flag]['Packet'][len(comf)-1] - comf_end[0]['Packet'][0] - (len(comf)-1-missing_file_flag)*(int(Mem_fact))
                 print('internal_jump_mem_last is..'+str(internal_jump_mem_last))
                 print('In Mem_fact>1 and Mem_fact<2 condition')
+                trans_flag			=		int((int(Memfactor1[0]/512) - internal_jump_mem_last)/len(comf_end[0])<int(Mem_fact))
             elif(Mem_fact>2):
                 #Check if Mem_fact changes by an interger, for transition files only!
                 #Calculating packet loss of first file, to see the translatory effect..
                 if(missing_file_flag==0):
-                    internal_jump_mem_last		=            comf_end[int(Mem_fact)-1]['Packet'][len(comf_end[0])-1] - comf_end[0]['Packet'][0] - (len(comf_end[0])-1)*int(Mem_fact) -  1*(int(Mem_fact)-1)
+                    internal_jump_mem_last	=            comf_end[int(Mem_fact)-1]['Packet'][len(comf_end[0])-1] - comf_end[0]['Packet'][0] - (len(comf_end[0])-1)*int(Mem_fact) -  1*(int(Mem_fact)-1)
                     print(comf_end[int(Mem_fact)-1]['Packet'][len(comf_end[0])-1] , comf_end[0]['Packet'][0] , (len(comf_end[0])-1)*int(Mem_fact) ,  1*(int(Mem_fact)-1))
                 else:
-                    internal_jump_mem_last             =            comf_end[int(Mem_fact)-1-missing_file_flag]['Packet'][len(comf_end[0])-1] - comf_end[0]['Packet'][0] - (len(comf_end[0])-1)*int(Mem_fact) -  1*(int(Mem_fact)-1-missing_file_flag)
-                if((int(Memfactor1[0]/512) - internal_jump_mem_last)/len(comf_end[0])<int(Mem_fact)):
-                    #Translatory effect found!
-                    print('Translatory effect found!')
-                    print('Accounting for translatory effect we have internal_jump_mem_last as..'+str(internal_jump_mem_last))
-                    trans_flag			=		1
-                else:
+                    internal_jump_mem_last      =            comf_end[int(Mem_fact)-1-missing_file_flag]['Packet'][len(comf_end[0])-1] - comf_end[0]['Packet'][0] - (len(comf_end[0])-1)*int(Mem_fact) -  1*(int(Mem_fact)-1-missing_file_flag)
+                #Translatory effect found!
+                trans_flag			=		int((int(Memfactor1[0]/512) - internal_jump_mem_last)/len(comf)<int(Mem_fact))
+                if(trans_flag!=1):
                     internal_jump_mem_last	=		comf_end[int(Mem_fact)-1]['Packet'][len(comf)-1] - comf_end[0]['Packet'][0] - (len(comf)-1)*(int(Mem_fact)) - 1*(int(Mem_fact)-1)
                 print('internal_jump_mem_last is..'+str(internal_jump_mem_last))
                 print('In Mem_fact>2 condition')
             else:
-                internal_jump_mem_last	   =            0#int(Memfactor1[0]/512)
+                internal_jump_mem_last	   	=            0#int(Memfactor1[0]/512)
             if(trans_flag==1):
-                internal_jump_mem                  =            0
-                internal_jump_mem		   =		int(Memfactor1[0]/512)  -       internal_jump_mem_last
-                print(comf_end[int(Mem_fact)]['Packet'][internal_jump_mem_last%2027520], comf_end[int(Mem_fact)]['Packet'][0], internal_jump_mem_last%2027520)
-                print('Intermediate internal_jump_mem..'+str(internal_jump_mem))
-
+                #internal_jump_mem              =            comf_end[int(Mem_fact)-1-missing_file_flag-1]['Packet'][len(comf_end[0])-1] - comf_end[0]['Packet'][0] - (len(comf_end[0])-1)*int(Mem_fact) -  1*(int(Mem_fact)-1-missing_file_flag)
+                #internal_jump_mem		=		int(Memfactor1[0]/512)  -       internal_jump_mem_last
+                #print(comf_end[int(Mem_fact)]['Packet'][internal_jump_mem_last%2027520], comf_end[int(Mem_fact)]['Packet'][0], internal_jump_mem_last%2027520)
+                #print('Intermediate internal_jump_mem..'+str(internal_jump_mem))
+                
+               
+                #We are in not so comfortable situation of transitory effect! hence using the brute force, inefficient method of synchronization!
+                internal_jump_mem	       =	    trans_flag_brute_force(comf_end, comf, comf1, (int(Memfactor1[0]/512) - internal_jump_mem_last)/len(comf))
             else:
                 Memfact_internal_jump          =            int(Memfactor1[0]/512) - internal_jump_mem_last
                 print('Memfact_internal_jump is..'+str(Memfact_internal_jump))
-                internal_jump_mem		   =		comf_end[int(Mem_fact)]['Packet'][Memfact_internal_jump%2027520]-comf_end[int(Mem_fact)]['Packet'][0] - Memfact_internal_jump%2027520
+
+
+                #internal_jump_mem		=	0
+                #if(float(Memfact_internal_jump)/len(comf)>1 and float(Memfact_internal_jump)/len(comf)<2):
+                internal_jump_mem		   =		comf_end[int(Mem_fact)]['Packet'][Memfact_internal_jump%2027520]-comf_end[int(Mem_fact)]['Packet'][0] - Memfact_internal_jump%2027520 
+
+
                 print(comf_end[int(Mem_fact)]['Packet'][Memfact_internal_jump%2027520], comf_end[int(Mem_fact)]['Packet'][0], Memfact_internal_jump%2027520)
                 print('Intermediate internal_jump_mem..'+str(internal_jump_mem))
                 internal_jump_mem		   =		int(Memfactor1[0]/512)	-	internal_jump_mem	-	internal_jump_mem_last	
@@ -1037,17 +1262,14 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
                 internal_jump_mem_last     =            comf_end[int(Mem_fact)-1]['Packet'][len(comf)-1] - comf_end[0]['Packet'][0] - (len(comf)-1)*(int(Mem_fact)) #- 1*(int(Mem_fact)-1)
                 print('internal_jump_mem_last is..'+str(internal_jump_mem_last))
                 print('In Mem_fact>1 and Mem_fact<2 condition')
+                trans_flag	=	int((int(Memfactor1[1]/512) - internal_jump_mem_last)/len(comf_end[0])<int(Mem_fact))
             elif(Mem_fact>2 and missing_file_flag ==0):
                 #Check if Mem_fact changes by an interger, for transition files only!
                 #Calculating packet loss of first file, to see the translatory effect..
                 internal_jump_mem_last          =            comf_end[int(Mem_fact)-1]['Packet'][len(comf_end[0])-1] - comf_end[0]['Packet'][0] - (len(comf_end[0])-1)*int(Mem_fact) -  1*(int(Mem_fact)-1)
                 print(comf_end[int(Mem_fact)-1]['Packet'][len(comf_end[0])-1] , comf_end[0]['Packet'][0] , (len(comf_end[0])-1)*int(Mem_fact) ,  1*(int(Mem_fact)-1))
-                if((int(Memfactor1[1]/512) - internal_jump_mem_last)/len(comf_end[0])<int(Mem_fact)):
-                    #Translatory effect found!
-                    print('Translatory effect found!')
-                    print('Accounting for translatory effect we have internal_jump_mem_last as..'+str(internal_jump_mem_last))
-                    trans_flag                  =               1
-                else:
+                trans_flag                  	=	     int((int(Memfactor1[1]/512) - internal_jump_mem_last)/len(comf_end[0])<int(Mem_fact))               
+                if(trans_flag!=1):
                     internal_jump_mem_last      =               comf_end[int(Mem_fact)-1]['Packet'][len(comf)-1] - comf_end[0]['Packet'][0] - (len(comf)-1)*(int(Mem_fact)) - 1*(int(Mem_fact)-1)
                 print('internal_jump_mem_last is..'+str(internal_jump_mem_last))
                 print('In Mem_fact>2 condition')
@@ -1067,7 +1289,13 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
             else:
                 Memfact_internal_jump          =            int(Memfactor1[1]/512) - internal_jump_mem_last
                 print('Memfact_internal_jump is..'+str(Memfact_internal_jump))
-                internal_jump_mem                  =            comf_end[int(Mem_fact)]['Packet'][Memfact_internal_jump%2027520]-comf_end[int(Mem_fact)]['Packet'][0] - Memfact_internal_jump%2027520
+
+
+                #internal_jump_mem               =       0
+                #if(float(Memfact_internal_jump)/len(comf)>1 and float(Memfact_internal_jump)/len(comf)<2):
+                internal_jump_mem                  =            comf_end[int(Mem_fact)]['Packet'][Memfact_internal_jump%2027520]-comf_end[int(Mem_fact)]['Packet'][0] - Memfact_internal_jump%2027520 
+
+
                 print(comf_end[int(Mem_fact)]['Packet'][internal_jump_mem_last%2027520], comf_end[int(Mem_fact)]['Packet'][0], internal_jump_mem_last%2027520)
                 print('Intermediate internal_jump_mem..'+str(internal_jump_mem))
                 internal_jump_mem                  =            int(Memfactor1[1]/512)  -       internal_jump_mem       -       internal_jump_mem_last
