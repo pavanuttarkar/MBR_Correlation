@@ -60,6 +60,7 @@
  
 
 <p align="center">
+
   ![This is the caption\label{mylabel} ](Figures/Synchronization_Equation.png "Synchronization Equation Generation")
 Figure 2: Packet loss compensation in the correlator</center>
 The packet loss is accounter for using the help of the packet counter, a 4 byte header in the packet. This accounting should be done to avoid any loss in coherence, as packet loss positions in both the files are uncorrelated and requires dropping of the chunk of the dataset in the corresponding file as well to avoid the drop in coherence.
