@@ -181,12 +181,12 @@ The following files (X1X2, X1X4, etc.) contains the files such as 'Correlation_N
 
 <p align="center">
 Figure 7(a): Cross-Correlated spectrum, output of SWAN correlator not corrected for intra-sample delay. <br />
-Figure 7(b): Cross-Correlated spectrum, output of SWAN correlator not corrected for intra-sample delay.
+Figure 7(b): Cross-Correlated spectrum, output of SWAN correlator corrected for intra-sample delay.
 </p>
 
 
 <p align="center">
-<img src="Figures/Solar_Uncompensated_APR19.png" alt="drawing" width="1000"/>
+<img src="Figures/Solar_Uncompensated_APR14_Real_X1X7.png" alt="drawing" width="1000"/>
 </p>
 
 <p align="center">
@@ -194,7 +194,7 @@ Figure 7(b): Cross-Correlated spectrum, output of SWAN correlator not corrected 
 </p>
 
 <p align="center">
-<img src="Figures/Solar_Compensated_APR19.png" alt="drawing" width="1000"/>
+<img src="Figures/Solar_Compensated_APR14_Real_X1X7.png" alt="drawing" width="1000"/>
 </p>
 
 <p align="center">
@@ -204,7 +204,7 @@ Figure 7(b): Cross-Correlated spectrum, output of SWAN correlator not corrected 
 
 <p align="center">
 Figure 8(a): Cross-Correlated spectrum, output of SWAN correlator not corrected for intra-sample delay, 37 min observation. <br />
-Figure 8(b): Cross-Correlated spectrum, output of SWAN correlator not corrected for intra-sample delay, 37 min observation.
+Figure 8(b): Cross-Correlated spectrum, output of SWAN correlator corrected for intra-sample delay, 37 min observation.
 </p>
 
 
@@ -218,10 +218,10 @@ Figure 9: Plot showing phase variation over time, for Solar observation, with an
 
 
 <p align="center">
-<img src="Figures/Phase_Compensted_Uncompensated.png" alt="drawing" width="1000"/>
+<img src="Figures/Phase_Compensted_Uncompensated_1_7_APR14.png" alt="drawing" width="1000"/>
 </p>
 <p align="center">
-Figure 10: Plot showing phase variation over time, for Solar observation, with and without intrasample compensation.
+Figure 10: Plot showing phase variation over time, for Solar observation, with and without intrasample compensation for observations of APR-14 2021.
 </p>
 
 ## Evaluation of code run time and efficiency calculation of the Correlator 
