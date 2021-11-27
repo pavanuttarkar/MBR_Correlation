@@ -1,0 +1,4 @@
+f2py2.7 -c  internal_standalone_WORKING_with_RFI.f90 -L/usr/lib/x86_64-linux-gnu/ -lfftw3 -lm -m internal_loop_RFI -DF2PY_REPORT_ON_ARRAY_COPY=1 --f90flags='-fcheck=bounds -frepack-arrays -C'
+f2py2.7 -c  internal_standalone_WORKING_with_RFI_for_single_file_dev.f90 -L/usr/lib/x86_64-linux-gnu/ -lfftw3 -lm -m single_file_combined_RFInoRFI -DF2PY_REPORT_ON_ARRAY_COPY=1 --f90flags='-fcheck=bounds -frepack-arrays -C'
+mkdir OBJECT_FILE
+cp -aur *.so ../OBJECT_FILE/.
