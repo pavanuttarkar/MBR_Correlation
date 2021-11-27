@@ -7,11 +7,11 @@ from Cython.Distutils import build_ext
 
 setup(
   name='Cython modules',
-  ext_modules=[Extension('api._header_Fring_cy', ['api/header_Fringe_Search_proc.pyx'],language ="c++",), \
-               Extension('api._header_read_cy', ['api/call_to_read_dev_dev_dev.pyx'],language ="c++",), \
-               Extension('api._header_geometric_cy', ['api/geometric.pyx'],language ="c++",), \
-               Extension('api._header_gps_cy', ['api/header_gps_dev.pyx'],language ="c++",), \
-               Extension('api._header_delay_cy', ['api/delay.pyx'],language ="c++",)], \
+  ext_modules=[Extension('api._header_Fring_cy', ['CYTHON/header_Fringe_Search_proc.pyx'],language ="c++",), \
+               Extension('api._header_read_cy', ['CYTHON/call_to_read_dev_dev_dev.pyx'],language ="c++",), \
+               Extension('api._header_geometric_cy', ['CYTHON/geometric.pyx'],language ="c++",), \
+               Extension('api._header_gps_cy', ['CYTHON/header_gps_dev.pyx'],language ="c++",), \
+               Extension('api._header_delay_cy', ['CYTHON/delay.pyx'],language ="c++",)], \
   cmdclass={'build_ext': build_ext, 'embedsignature': True},
 )
 
