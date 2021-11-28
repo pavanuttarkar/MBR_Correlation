@@ -1,0 +1,11 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+setuptools==44.1.1
+docutils==0.15.2
+cython==0.29.24
+python==2.7.15
+sphinx==1.8.6
+sphinx-automodapi==0.12
+sphinx-fortran==1.1.1
+sphinx_rtd_theme==0.5.2
