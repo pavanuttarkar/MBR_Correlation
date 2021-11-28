@@ -1,0 +1,6 @@
+read_spinoff
+============
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: read_spinoff

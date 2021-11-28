@@ -1,0 +1,6 @@
+comf_comf1_compensate
+=====================
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: comf_comf1_compensate

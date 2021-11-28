@@ -1,0 +1,6 @@
+get_baseline
+============
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: get_baseline

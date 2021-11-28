@@ -1,0 +1,1122 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>API Reference &mdash; MBR v1.0alpha documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LICENCE" href="../licence.html" />
+    <link rel="prev" title="Welcome to MBRCorr’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MBR
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cython-extension">Cython Extension</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-api._header_delay_cy">Header Delay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-api._header_Fring_cy">Header Fring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-api._header_geometric_cy">Header Geometric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-api._header_gps_cy">Header GPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-api._header_read_cy">Header Read</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fortran-extenions">Fortran Extenions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../licence.html">LICENCE</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MBR</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>API Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/code_ref/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="cython-extension">
+<h2>Cython Extension<a class="headerlink" href="#cython-extension" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-api._header_delay_cy">
+<span id="header-delay"></span><h3>Header Delay<a class="headerlink" href="#module-api._header_delay_cy" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="api._header_delay_cy.Equ2local">
+<code class="descclassname">api._header_delay_cy.</code><code class="descname">Equ2local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_delay_cy.Equ2local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module to covert Equatorial coordinates to Local Coordinates
+Equ2local(RA, Dec, phi, lon, second, minute, hour, day, month, year)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_delay_cy.delay_delay_rate">
+<code class="descclassname">api._header_delay_cy.</code><code class="descname">delay_delay_rate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_delay_cy.delay_delay_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module to calculate the delay delay_rate correlation function
+INPUT:  np.ndarray spec, np.ndarray delay, coarse_ran=20, smooth_ran=0.1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_delay_cy.gen_comp_spec">
+<code class="descclassname">api._header_delay_cy.</code><code class="descname">gen_comp_spec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_delay_cy.gen_comp_spec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_delay_cy.genphase_ason_OCT23_2021">
+<code class="descclassname">api._header_delay_cy.</code><code class="descname">genphase_ason_OCT23_2021</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_delay_cy.genphase_ason_OCT23_2021" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_delay_cy.genphase_phase">
+<code class="descclassname">api._header_delay_cy.</code><code class="descname">genphase_phase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_delay_cy.genphase_phase" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_delay_cy.genphase_phase_ason_OCT23_2021">
+<code class="descclassname">api._header_delay_cy.</code><code class="descname">genphase_phase_ason_OCT23_2021</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_delay_cy.genphase_phase_ason_OCT23_2021" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_delay_cy.geometric_model_using_setdelay">
+<code class="descclassname">api._header_delay_cy.</code><code class="descname">geometric_model_using_setdelay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_delay_cy.geometric_model_using_setdelay" title="Permalink to this definition">¶</a></dt>
+<dd><p>float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_delay_cy.obsdelay_ason_OCT23_2021">
+<code class="descclassname">api._header_delay_cy.</code><code class="descname">obsdelay_ason_OCT23_2021</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_delay_cy.obsdelay_ason_OCT23_2021" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_delay_cy.obsdelay_delay_rate">
+<code class="descclassname">api._header_delay_cy.</code><code class="descname">obsdelay_delay_rate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_delay_cy.obsdelay_delay_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-api._header_Fring_cy">
+<span id="header-fring"></span><h3>Header Fring<a class="headerlink" href="#module-api._header_Fring_cy" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="api._header_Fring_cy.call_to_read_donnot_use">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">call_to_read_donnot_use</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.call_to_read_donnot_use" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.change_freq">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">change_freq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.change_freq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.change_freq_builtin">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">change_freq_builtin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.change_freq_builtin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses scipy interpolation technique, of interp1d
+Inputs: data, data1, currentslope, required slope</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.change_freq_custom">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">change_freq_custom</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.change_freq_custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses custom interpolation technique, linear interpolation..
+Inputs: data, data1, currentslope, required slope</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.change_freq_fourier">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">change_freq_fourier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.change_freq_fourier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses scipy interpolation technique, of interp1d
+Inputs: data, data1, currentslope, required slope</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.change_freq_new">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">change_freq_new</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.change_freq_new" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.change_freq_new_sinc">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">change_freq_new_sinc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.change_freq_new_sinc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.change_freq_new_sinc_cortt">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">change_freq_new_sinc_cortt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.change_freq_new_sinc_cortt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.change_freq_poly">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">change_freq_poly</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.change_freq_poly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses sinc interpolation technique, with polyphase filtering..</p>
+<p>Inputs: data, data1, currentslope, required slope</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.decrypy_file_new">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">decrypy_file_new</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.decrypy_file_new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
+<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.decrypy_file_new_SWAN">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">decrypy_file_new_SWAN</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.decrypy_file_new_SWAN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
+<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.decrypy_file_new_SWAN_temp_use">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">decrypy_file_new_SWAN_temp_use</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.decrypy_file_new_SWAN_temp_use" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
+<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
+<p>LOG Development:
+Check did not yied satifactory results, not sure where the bug is hiding yet..AUG 31 2020</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.decrypy_file_new_SWAN_temp_use1">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">decrypy_file_new_SWAN_temp_use1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.decrypy_file_new_SWAN_temp_use1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
+<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.decrypy_file_new_packet_comp">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">decrypy_file_new_packet_comp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.decrypy_file_new_packet_comp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the read file and sorts the X and Y polarizartion in the file into
+Without packet loss compensation..
+comf_X, comf1_X, comf_Y, comf1_Y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.extract_series">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">extract_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.extract_series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.extract_time">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">extract_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.extract_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.geo_delay_satyapan">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">geo_delay_satyapan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.geo_delay_satyapan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.gps_slope">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">gps_slope</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.gps_slope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to get slope from the 000th file name of the series.</p>
+<dl class="docutils">
+<dt>INPUT:</dt>
+<dd>file_name</dd>
+<dt>OUTPUT:</dt>
+<dd>slope</dd>
+<dt>Possible bugs:</dt>
+<dd>Gives error is there is not SMAPLING_INFO file containing the
+Info_on_straightline* file.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.gps_sync">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">gps_sync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.gps_sync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.gps_sync_non_000">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">gps_sync_non_000</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.gps_sync_non_000" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.gps_sync_on_hold">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">gps_sync_on_hold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.gps_sync_on_hold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.gps_sync_onhold">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">gps_sync_onhold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.gps_sync_onhold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.initial_corr">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">initial_corr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.initial_corr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.internal_loop_exe">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">internal_loop_exe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.internal_loop_exe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.internal_loop_exe_old">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">internal_loop_exe_old</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.internal_loop_exe_old" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using this function we were seeing square wave like output for time series, hence this is put as old function
+and modified internal_loop function is added..</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.internal_loop_exe_old_28JULY">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">internal_loop_exe_old_28JULY</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.internal_loop_exe_old_28JULY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.interp">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">interp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.interp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate the signal to the new points using a sinc kernel
+input:
+xt    time points x is defined on
+x     input signal column vector or matrix, with a signal in each row
+xp    points to evaluate the new signal on
+output:
+y     the interpolated signal at points xp</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.interp3">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">interp3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.interp3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate the signal to the new points using a sinc kernel
+Like interp, but splits the signal into domains and calculates them
+separately using multiple threads.
+input:
+xt    time points x is defined on
+x     input signal column vector or matrix, with a signal in each row
+xp    points to evaluate the new signal on
+workers  number of threaded workers to use (default: 16)
+output:
+y     the interpolated signal at points xp</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.limit_memory">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">limit_memory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.limit_memory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.loop_external_cython">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">loop_external_cython</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.loop_external_cython" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.loop_external_cython_ason_SEP_01">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">loop_external_cython_ason_SEP_01</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.loop_external_cython_ason_SEP_01" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.loop_external_exe">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">loop_external_exe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.loop_external_exe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.loop_external_exe_old">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">loop_external_exe_old</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.loop_external_exe_old" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.loop_external_exe_old_Aug_4th">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">loop_external_exe_old_Aug_4th</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.loop_external_exe_old_Aug_4th" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.optimize">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">optimize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.optimize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.read_files">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">read_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.read_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to read binary file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.resample">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">resample</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample the signal to the given ratio using a sinc kernel
+input:</p>
+<blockquote>
+<div>x   a vector or matrix with a signal in each row
+k   ratio to resample to
+returns
+y   the up or downsampled signal
+when downsampling the signal will be decimated using scipy.signal.decimate</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.resample1">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">resample1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.resample1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.set_max_runtime">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">set_max_runtime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.set_max_runtime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.shift_samps">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">shift_samps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.shift_samps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shifting samples for getting the 2D plot..</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.sinc_interp">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">sinc_interp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.sinc_interp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolates x, sampled at “s” instants
+Output y is sampled at “u” instants (“u” for “upsampled”)</p>
+<p>from Matlab:
+<a class="reference external" href="http://phaseportrait.blogspot.com/2008/06/sinc-interpolation-in-matlab.html">http://phaseportrait.blogspot.com/2008/06/sinc-interpolation-in-matlab.html</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.time_exceeded">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">time_exceeded</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.time_exceeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.upsample">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">upsample</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.upsample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upsample the signal to the given ratio using a sinc kernel
+input:</p>
+<blockquote>
+<div>x   a vector or matrix with a signal in each row
+k   ratio to resample to
+returns
+y   the up or downsampled signal
+when downsampling the signal will be decimated using scipy.signal.decimate</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_Fring_cy.upsample3">
+<code class="descclassname">api._header_Fring_cy.</code><code class="descname">upsample3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_Fring_cy.upsample3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like upsample, but uses the multi-threaded interp3</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-api._header_geometric_cy">
+<span id="header-geometric"></span><h3>Header Geometric<a class="headerlink" href="#module-api._header_geometric_cy" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="api._header_geometric_cy.AltAz2HARA">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">AltAz2HARA</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.AltAz2HARA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module to calculate RA and Dec, HA and Dec from AltAz
+————–Convention for HA———–</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div>N</div></blockquote>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">+v<var>e</var></span></kbd></td>
+<td>-ve</td></tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>W               E</p>
+<blockquote>
+<div><table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">+v<var>e</var></span></kbd></td>
+<td>-ve
+S</td></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+<p>Usage:</p>
+<dl class="docutils">
+<dt>AltAz2HARA(float elevaltion, float azimuth, float phi/lat, float longitude,</dt>
+<dd>float sec, float minu, float hour, float day. float month, float year)</dd>
+</dl>
+<p>All inputs in degrees</p>
+<p>Returns:</p>
+<p>RA and Dec, HA and Dec</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.Cal_time">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">Cal_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.Cal_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, np.array time_array, unsigned int T1, unsigned int T2</p>
+<dl class="docutils">
+<dt>Hour Angle convention</dt>
+<dd>-ve while rising from east
++ve while setting in the west</dd>
+</dl>
+<p>Hour angle convention and integrety check – done on MAY06 2021</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.Cal_time_onhold">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">Cal_time_onhold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.Cal_time_onhold" title="Permalink to this definition">¶</a></dt>
+<dd><p>float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.Cal_time_onhold_v1">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">Cal_time_onhold_v1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.Cal_time_onhold_v1" title="Permalink to this definition">¶</a></dt>
+<dd><p>float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.ECEFto_ENU_file">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">ECEFto_ENU_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.ECEFto_ENU_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.EcefToEnu">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">EcefToEnu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.EcefToEnu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.Equ2local">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">Equ2local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.Equ2local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module to covert Equatorial coordinates to Local Coordinates
+Equ2local(RA, Dec, phi, lon, second, minute, hour, day, month, year)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.WGS842ECEF">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">WGS842ECEF</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.WGS842ECEF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module to cover WGS84 to ECEF, with lat0, lon0, alt0 as the centre..
+all inputs should be in degrees..
+Usage:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Input:</dt>
+<dd>WGS842ECEF(double lat, double lon, double alt)</dd>
+<dt>Output:</dt>
+<dd>ECEF (X, Y, Z) of lat, lon, alt inputs.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.WGS842ENU">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">WGS842ENU</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.WGS842ENU" title="Permalink to this definition">¶</a></dt>
+<dd><p>WARNING: Need to check geodedtic and geocentric latitude calculation..not sure which latitude was
+measured for the estimation of tile positions..needs to be clarified. Now assuming what
+we have is geodetic latitude.</p>
+<p>Module to cover WGS84 to ENU, with lat0, lon0, alt0 as the centre..
+all inputs should be in degrees..
+Usage:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Input:</dt>
+<dd>WGS842ENU(double lat, double lon, double alt)</dd>
+<dt>Output:</dt>
+<dd>ENU (X, Y, Z) of lat, lon, alt, lat0, lon0, alt0  inputs.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.correct_time">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">correct_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.correct_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.geometric_model_using_setdelay">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">geometric_model_using_setdelay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.geometric_model_using_setdelay" title="Permalink to this definition">¶</a></dt>
+<dd><p>float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.gmst">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">gmst</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.gmst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.julian">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">julian</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.julian" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.map_RA_Dec_to_file">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">map_RA_Dec_to_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.map_RA_Dec_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Pointing file structure:</dt>
+<dd>chXX_NAME_YYYYMMDD_HHMMSS.mbr,   Az,  za
+.                               .   .
+.                               .   .
+.                               .   .
+.                               .   .
+.                               .   .</dd>
+<dt>Usage:</dt>
+<dd>Input:  map_RA_Dec_to_file(File_name, pointing file, gps count, Tile_1 (0-N convention), Tile_2 (0-N convention))
+Output: RA, Dec</dd>
+</dl>
+<p>Note: Without timestamping this could result in inacuurate resuts..
+i.e the gps count has to be from the nearest 12.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.obsdelay">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">obsdelay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.obsdelay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.phase_compensation">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">phase_compensation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.phase_compensation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compensation for intra sample delay.
+Input:  (spectrum, delay, frequency / MHz)
+Output: compensated spectrum, phase compensation spectrum</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.phase_compensation_dev">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">phase_compensation_dev</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.phase_compensation_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compensation for intra sample delay.
+Input:  (spectrum, delay, frequency / MHz)
+Output: compensated spectrum, phase compensation spectrum</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.phase_compensation_toggle">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">phase_compensation_toggle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.phase_compensation_toggle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.phasecomp">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">phasecomp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.phasecomp" title="Permalink to this definition">¶</a></dt>
+<dd><p>creal9, delay, cenfreq, fftlen
+Used when the delay is less than one sample, i.e intra sample level compensation..</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.selflst">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">selflst</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.selflst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.uvwsim_convert_mjd_to_gast_fast">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">uvwsim_convert_mjd_to_gast_fast</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.uvwsim_convert_mjd_to_gast_fast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.uvwsim_convert_mjd_to_gmst">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">uvwsim_convert_mjd_to_gmst</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.uvwsim_convert_mjd_to_gmst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.uvwsim_datetime_to_mjd">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">uvwsim_datetime_to_mjd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.uvwsim_datetime_to_mjd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.uvwsim_equation_of_equinoxes_fast">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">uvwsim_equation_of_equinoxes_fast</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.uvwsim_equation_of_equinoxes_fast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_geometric_cy.uvwsim_evaluate_baseline_uvw">
+<code class="descclassname">api._header_geometric_cy.</code><code class="descname">uvwsim_evaluate_baseline_uvw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_geometric_cy.uvwsim_evaluate_baseline_uvw" title="Permalink to this definition">¶</a></dt>
+<dd><p>ECEF ENU Transformation..
+E  -  Y
+N  -  Z
+U  -  X</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-api._header_gps_cy">
+<span id="header-gps"></span><h3>Header GPS<a class="headerlink" href="#module-api._header_gps_cy" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="api._header_gps_cy.RFI_Reject">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">RFI_Reject</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.RFI_Reject" title="Permalink to this definition">¶</a></dt>
+<dd><p>RFI Rejection module,
+input:      spec, sigma deviation, fftsize</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.call_to_read">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">call_to_read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.call_to_read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.call_to_read_for_RFI">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">call_to_read_for_RFI</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.call_to_read_for_RFI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.decrypy_file_new_SWAN_without_compensation">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">decrypy_file_new_SWAN_without_compensation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.decrypy_file_new_SWAN_without_compensation" title="Permalink to this definition">¶</a></dt>
+<dd><p>ch should be the channel number of first file..</p>
+<p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
+<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.decrypy_get_gpssync">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">decrypy_get_gpssync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.decrypy_get_gpssync" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getting GPS sync data..</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.fil_list">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">fil_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.fil_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.gen_finer_shift_parameter">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">gen_finer_shift_parameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.gen_finer_shift_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.obsdelay">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">obsdelay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.obsdelay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.obsdelay_param">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">obsdelay_param</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.obsdelay_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.parabolic">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">parabolic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.parabolic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quadratic interpolation for estimating the true position of an
+inter-sample maximum when nearby samples are known.</p>
+<p>f is a vector and x is an index for that vector.</p>
+<p>Returns (vx, vy), the coordinates of the vertex of a parabola that goes
+through point x and its two neighbors.</p>
+<p>Example:
+Defining a vector f with a local maximum at index 3 (= 6), find local
+maximum if points 2, 3, and 4 actually defined a parabola.</p>
+<p>In [3]: f = [2, 3, 1, 6, 4, 2, 3, 1]</p>
+<p>In [4]: parabolic(f, argmax(f))
+Out[4]: (3.2142857142857144, 6.1607142857142856)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.parabolic_polyfit">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">parabolic_polyfit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.parabolic_polyfit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use the built-in polyfit() function to find the peak of a parabola
+f is a vector and x is an index for that vector.
+n is the number of samples of the curve used to fit the parabola.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.read_RFI">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">read_RFI</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.read_RFI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.sub_gen_files">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">sub_gen_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.sub_gen_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.sub_gen_finer_shift_parameter">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">sub_gen_finer_shift_parameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.sub_gen_finer_shift_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.super_sync_file">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">super_sync_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.super_sync_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for super_sync_genrator
+takes file containing paths to the files to be produce syncronization files and synchronization equation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_gps_cy.super_sync_generator">
+<code class="descclassname">api._header_gps_cy.</code><code class="descname">super_sync_generator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_gps_cy.super_sync_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>super_sync_generator:</p>
+<p>This module is use to generate synchroniation files for voltage and stokes mode data sets..using the GPS and the packet
+numbering system of the header. All the files generated will be stored in the SAMPLING_INFO folder (atleast in this machine)
+this can be changes by changing the absolute path hard coded in the ‘sub_gen_files’ module.</p>
+<p>Usage:</p>
+<p>super_sync_generator(<a href="#id1"><span class="problematic" id="id2">*</span></a>args)</p>
+<p>Example:</p>
+<p>super_sync_generator(‘’)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-api._header_read_cy">
+<span id="header-read"></span><h3>Header Read<a class="headerlink" href="#module-api._header_read_cy" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="api._header_read_cy.RFI_Reject">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">RFI_Reject</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.RFI_Reject" title="Permalink to this definition">¶</a></dt>
+<dd><p>RFI Rejection module,
+input:      spec, sigma deviation, fftsize</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.break_file_name">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">break_file_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.break_file_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.call_to_read">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">call_to_read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.call_to_read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.comf_comf1_compensate">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">comf_comf1_compensate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.comf_comf1_compensate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Important flags to remeber!!
+missing_file_comf1_1
+missing_file_comf_1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.comf_read_rem_file">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">comf_read_rem_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.comf_read_rem_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.compensate_pack_loss">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">compensate_pack_loss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.compensate_pack_loss" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.compensate_pack_loss_rem">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">compensate_pack_loss_rem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.compensate_pack_loss_rem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.compensate_packet_loss_delete_function">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">compensate_packet_loss_delete_function</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.compensate_packet_loss_delete_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.decrypy_file_new_SWAN_onhold">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">decrypy_file_new_SWAN_onhold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.decrypy_file_new_SWAN_onhold" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Module to generate the decrypted version of the files, with separate set of X and Y Pol array.
+Input:</p>
+<blockquote>
+<div><p>(file_name, file_name1, ch, Memfactor=[0, 0])
+file_name =       File name of the first file.
+file_name1=       File name of the second file.
+ch        =       Avegrage
+Memfactor =       Memory factor intented for the correction, only required for the 000 file and not required for the</p>
+<blockquote>
+<div>non-000 files.</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<dl class="docutils">
+<dt>Output:</dt>
+<dd>1. File One X-Pol 1D np array, 2. File Two Y-Pol 1D np array, 3. File Two X-Pol 1D np array, 4. File Two Y-Pol 1D np array, 5. Local Oscillator value derived
+from the header (int), 6. Memfactor 1D np array (Jump factor to use).</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.decrypy_file_new_SWAN_onhold_without_wierd_comp_for_testing_ONLY">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">decrypy_file_new_SWAN_onhold_without_wierd_comp_for_testing_ONLY</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.decrypy_file_new_SWAN_onhold_without_wierd_comp_for_testing_ONLY" title="Permalink to this definition">¶</a></dt>
+<dd><p>ch should be the channel number of first file..</p>
+<p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
+<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.decrypy_file_new_SWAN_without_compensation">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">decrypy_file_new_SWAN_without_compensation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.decrypy_file_new_SWAN_without_compensation" title="Permalink to this definition">¶</a></dt>
+<dd><p>ch should be the channel number of first file..</p>
+<p>Takes the read file and sorts the X and Y polarizartion in the file into</p>
+<p>comf_X, comf1_X, comf_Y, comf1_Y.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.decrypy_get_gpssync">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">decrypy_get_gpssync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.decrypy_get_gpssync" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getting GPS sync data..</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.fil_list">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">fil_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.fil_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.fix_time">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">fix_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.fix_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.gen_RFI_matrix">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">gen_RFI_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.gen_RFI_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>CAUTION: Should be run only one, not for every file..time constraint :/</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.get_baseline">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">get_baseline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.get_baseline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.get_fparam">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">get_fparam</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.get_fparam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.get_gps_info_000_file">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">get_gps_info_000_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.get_gps_info_000_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.get_last_gps_timing">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">get_last_gps_timing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.get_last_gps_timing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module to calculate last GPS value in the files
+This will help constrain the simulated delay error.
+INPUT:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Memmaped array file1 (comf),  Memmaped array file1 (comf1), file path (including name) of first file,</dt>
+<dd>file path (including name) of second file, series code, Memfactor array</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>OUTPUT:</dt>
+<dd>Total time of file1, Total time of file2 (in sec)</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.get_memfactor_est">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">get_memfactor_est</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.get_memfactor_est" title="Permalink to this definition">¶</a></dt>
+<dd><p>Memfactor estimation using packet numbering…</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.gps_alingn_000_file">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">gps_alingn_000_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.gps_alingn_000_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.gps_alingn_files">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">gps_alingn_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.gps_alingn_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.memmap_copy">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">memmap_copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.memmap_copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.phase_compensation">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">phase_compensation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.phase_compensation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compensation for intra sample delay.
+Input:  (spectrum, delay, frequency / MHz)
+Output: compensated spectrum, phase compensation spectrum</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.pre_gps_align">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">pre_gps_align</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.pre_gps_align" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.read_RFI">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">read_RFI</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.read_RFI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.read_comf_rem">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">read_comf_rem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.read_comf_rem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.read_spinoff">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">read_spinoff</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.read_spinoff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.shift_geo">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">shift_geo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.shift_geo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api._header_read_cy.trans_flag_brute_force">
+<code class="descclassname">api._header_read_cy.</code><code class="descname">trans_flag_brute_force</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api._header_read_cy.trans_flag_brute_force" title="Permalink to this definition">¶</a></dt>
+<dd><p>This module is for brute force compensation..</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="fortran-extenions">
+<h2>Fortran Extenions<a class="headerlink" href="#fortran-extenions" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../licence.html" class="btn btn-neutral float-right" title="LICENCE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to MBRCorr’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Pavan Uttarkar.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

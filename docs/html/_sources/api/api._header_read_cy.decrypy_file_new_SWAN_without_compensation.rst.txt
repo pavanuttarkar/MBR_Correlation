@@ -1,0 +1,6 @@
+decrypy_file_new_SWAN_without_compensation
+==========================================
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: decrypy_file_new_SWAN_without_compensation

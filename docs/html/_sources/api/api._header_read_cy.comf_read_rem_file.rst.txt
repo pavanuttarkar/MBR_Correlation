@@ -1,0 +1,6 @@
+comf_read_rem_file
+==================
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: comf_read_rem_file

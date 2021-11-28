@@ -1,0 +1,6 @@
+trans_flag_brute_force
+======================
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: trans_flag_brute_force

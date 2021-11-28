@@ -1,0 +1,6 @@
+RFI_Reject
+==========
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: RFI_Reject

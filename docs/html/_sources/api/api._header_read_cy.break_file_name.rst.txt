@@ -1,0 +1,6 @@
+break_file_name
+===============
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: break_file_name

@@ -1,0 +1,6 @@
+get_gps_info_000_file
+=====================
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: get_gps_info_000_file

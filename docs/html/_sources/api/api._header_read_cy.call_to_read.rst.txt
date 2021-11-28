@@ -1,0 +1,6 @@
+call_to_read
+============
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: call_to_read

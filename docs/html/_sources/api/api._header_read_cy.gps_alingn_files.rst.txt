@@ -1,0 +1,6 @@
+gps_alingn_files
+================
+
+.. currentmodule:: api._header_read_cy
+
+.. autofunction:: gps_alingn_files
