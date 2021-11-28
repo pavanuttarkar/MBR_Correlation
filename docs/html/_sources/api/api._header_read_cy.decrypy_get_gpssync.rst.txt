@@ -1,6 +1,0 @@
-decrypy_get_gpssync
-===================
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: decrypy_get_gpssync

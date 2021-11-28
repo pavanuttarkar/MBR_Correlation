@@ -1,6 +1,0 @@
-compensate_pack_loss_rem
-========================
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: compensate_pack_loss_rem

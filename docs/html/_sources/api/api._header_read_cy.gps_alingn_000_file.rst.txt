@@ -1,6 +1,0 @@
-gps_alingn_000_file
-===================
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: gps_alingn_000_file

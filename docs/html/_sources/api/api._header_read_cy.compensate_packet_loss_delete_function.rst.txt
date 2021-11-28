@@ -1,6 +1,0 @@
-compensate_packet_loss_delete_function
-======================================
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: compensate_packet_loss_delete_function

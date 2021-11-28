@@ -1,6 +1,0 @@
-memmap_copy
-===========
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: memmap_copy

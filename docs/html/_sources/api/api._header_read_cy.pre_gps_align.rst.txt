@@ -1,6 +1,0 @@
-pre_gps_align
-=============
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: pre_gps_align

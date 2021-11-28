@@ -1,6 +1,0 @@
-get_last_gps_timing
-===================
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: get_last_gps_timing

@@ -1,6 +1,0 @@
-fix_time
-========
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: fix_time

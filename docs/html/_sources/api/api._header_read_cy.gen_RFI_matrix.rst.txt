@@ -1,6 +1,0 @@
-gen_RFI_matrix
-==============
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: gen_RFI_matrix

@@ -1,6 +1,0 @@
-fil_list
-========
-
-.. currentmodule:: api._header_read_cy
-
-.. autofunction:: fil_list
