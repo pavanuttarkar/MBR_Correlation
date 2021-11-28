@@ -119,7 +119,7 @@ cpdef  geometric_model_using_setdelay(float sec, float minu, float hour, float d
     cdef double mint        =   minu
     cdef double hourt       =   hour
     cdef double dayt        =   day
-    cdef double montht      =   month
+    cdef double montht      =   montht
     cdef double sindec      =   np.sin(dec*np.pi/180)
     cdef double cosdec      =   np.cos(dec*np.pi/180)
     cdef double d2r         =   np.pi/180

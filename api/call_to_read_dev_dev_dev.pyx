@@ -6,7 +6,6 @@ import time
 from _header_Fring_cy import *
 import datetime
 from datetime import datetime
-import internal_loop2 
 import _header_Fring_cy
 import _header_geometric_cy
 import multiprocessing
@@ -18,7 +17,6 @@ import sympy
 from os.path import getsize
 import sys
 import _header_gps_cy
-from cython.view cimport array as cvarray
 import cython
 #cython: profile=True
 
@@ -37,9 +35,6 @@ import cython
 #
 #fromfile is highly unpredictable interms of reading time!!
 #
-from cpython cimport Py_buffer
-from cpython.buffer cimport PyBUF_SIMPLE, PyBUF_WRITEABLE
-from libcpp.vector cimport vector
 
 cdef linear_fit(a,b):
         z                       =       np.polyfit(a,b,1)
@@ -52,251 +47,6 @@ cdef linear_fit(a,b):
         poly = sum(S("{:6.2f}".format(v))*x**i for i, v in enumerate(z[::-1]))
         eq_latex = sympy.printing.latex(poly)
         return  a_new,b_new, eq_latex
-
-
-cpdef fil_list(fil1):
-    f1_1  =   open(fil1, 'r').readlines()
-    f1  =   ''.join(f1_1).split('>>>')[0]
-    f1  =   f1.split('\n')[:-1]
-
-    f2  =   ''.join(f1_1).split('>>>')[1]
-    f2  =   f2.split('\n')[1:-1]
-    
-
-    cdef int i  =   0
-
-    cdef list line =   []
-    #cdef list line2 =   []
-    cdef list slope1  =  []  
-    cdef list slope2  =  []
-    cdef list inter1  =  []
-    cdef list inter2  =  []
-
-
-    for i in range(len(f1)):
-        line.append(decrypy_get_gpssync(f1[i], f2[i], 60))  # 60 is insignificant ason 23 DEC 2020.
-        slope1.append(line[i][0].slope)
-        slope2.append(line[i][1].slope)
-        inter1.append(line[i][0].intercept)
-        inter2.append(line[i][1].intercept)
-    slope   =   (np.mean(slope1)+np.mean(slope2))/2
-    inter   =   np.mean(inter1)/2+np.mean(inter2)/2
-    slope_1  =   np.mean(slope1)
-    slope_2  =   np.mean(slope2)
-    inter_1  =   np.mean(inter1)
-    inter_2  =   np.mean(inter2)
-    for i in range(len(f1)):
-        tf1    =   open(str("SAMPLING_INFO/Info_on_straight_line"+str(f1[i].split('/')[-1])), 'rw')
-        tf2    =   open(str("SAMPLING_INFO/Info_on_straight_line"+str(f2[i].split('/')[-1])), 'rw')
-        temp1  =   tf1.readlines()
-        temp2  =   tf2.readlines()
-        if(inter >0):
-            temp1[2] =   str(slope)+'*x+'+str(inter)+'\n' #Replaced slope_1 and inter_1 with slope and inter..Remember!!
-            temp2[2] =   str(slope)+'*x+'+str(inter)+'\n'
-        else:
-            temp1[2] =   str(slope)+'*x-'+str(inter)
-            temp2[2] =   str(slope)+'*x-'+str(inter)
-        tf1.close()
-        tf2.close()
-        tf1    =   open(str("SAMPLING_INFO/Info_on_straight_line"+str(f1[i].split('/')[-1])), 'w+')
-        tf2    =   open(str("SAMPLING_INFO/Info_on_straight_line"+str(f2[i].split('/')[-1])), 'w+')
-
-        tf1.writelines(temp1)
-        tf2.writelines(temp2)
-        #Not Applicable..#Replaced here from temp2 to temp1 for both files to have same synchronization equation#
-        #tf2.writelines(temp1)
-        tf1.close()
-        tf2.close()
-    return 0
-
-cpdef tuple decrypy_get_gpssync(file_name, file_name1, avg, s_mbr='000.mbr'):
-    '''
-        Getting GPS sync data..
-
-    '''
-    dt      =    np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
-    comf     = np.memmap(file_name,  dtype = dt, mode = 'c')
-    comf1    = np.memmap(file_name1, dtype = dt, mode = 'c')
-    cdef list accblipg1   =   []
-    cdef list accblipp1   =   []
-    cdef list accblipg2   =   []
-    cdef list accblipp2   =   []
-    cdef list blipp1       =   []
-    cdef list blipp2       =   []
-    cdef list blipg1       =   []
-    cdef list blipg2       =   []
-
-    cdef int fact        =   1
-    cdef int i           =   0
-    cdef str series      = file_name[-7:-4]+'.mbr'
-    cdef long long int len1        = 0#comf['Packer'][-1] - comf['Packet'][0] 
-    cdef long long int len2        = 0#comf1['Packet'][-1] - comf1['Packet'][0]
-    
-
-    for i in range(10, len(comf)-1):
-        if(comf['GPS'][i+1]- comf['GPS'][i]  ==  1 and comf['Packet'][i+1] - comf['Packet'][i] == 1):
-            accblipp1.append(float(comf['Packet'][i+1]))
-            accblipg1.append(float(comf['GPS'][i+1]))
-    #Important message to anyone opening this file.. 
-    #The condition of the diff of GPS and the Packet was added as any packet loss during the transition of GPS would
-    #skew the resulting straight line equation towards more error..hence the two condition of both Packet and GPS..
-
-    for i in range(10, len(comf1)-1):
-        if(comf1['GPS'][i+1] - comf1['GPS'][i] ==1 and comf1['Packet'][i+1] - comf1['Packet'][i] == 1):
-            accblipp2.append(float(comf1['Packet'][i+1]))
-            accblipg2.append(float(comf1['GPS'][i+1]))
-    np.savetxt('Packet_GPS', [accblipp1, accblipg1])
-    slp1    =    linregress(accblipg1, accblipp1)
-    slp2    =    linregress(accblipg2, accblipp2)
-    print(slp1)
-    print(slp2)
-    slp_1   =    linear_fit(accblipg1, accblipp1)
-    slp_2   =    linear_fit(accblipg2, accblipp2)
-    
-    slp1_eqn=       str(slp1.slope)+'*x+'+str(slp1.intercept) 
-    slp2_eqn=       str(slp2.slope)+'*x+'+str(slp2.intercept)
-    x   =   max(comf['GPS'][0], comf1['GPS'][0])+1
-    
-
-    fillist         =               np.loadtxt('DEPEND/files_naming.txt', dtype=str)
-    series_code     =               int(np.where(fillist==series)[-1][0])#fillist.index(series)+1
-    print('\n\n\n\n\n') 
-    print(series_code)
-
-    
-    
-    #fil_000         =               file_name[:-7]+'000.mbr'
-    #fil1_000        =               file_name1[:-7]+'000.mbr'
-    
-
-
-    fileeq1         =               open(str("SAMPLING_INFO/Info_on_straight_line"+str(file_name.split('/')[-1])), 'w+')
-    fileeq2         =               open(str("SAMPLING_INFO/Info_on_straight_line"+str(file_name1.split('/')[-1])), 'w+')
-    #RFI_mask1       =               np.loadtxt(str("SAMPLING_INFO/RFI_mask_X_"+str(fil_000.split('/')[-1])))#+fillist[0])
-    #RFI_mask2       =               np.loadtxt(str("SAMPLING_INFO/RFI_mask_Y_"+str(fil_000.split('/')[-1])))
-    #RFI_mask3       =               np.loadtxt(str("SAMPLING_INFO/RFI_mask_X_"+str(fil1_000.split('/')[-1])))#+fillist[0])
-    #RFI_mask4       =               np.loadtxt(str("SAMPLING_INFO/RFI_mask_Y_"+str(fil1_000.split('/')[-1])))
-
-    #fileeq1.write('First GPS Value == '+str(accblipg1[0])+'\n'+str(accblipp1[0])+'\n')
-    #fileeq2.write('First GPS Value == '+str(accblipg2[0])+'\n'+str(accblipp2[0])+'\n')
-
-    fileeq1.write('First GPS Value == '+str(comf['GPS'][10])+'\n'+str(comf['Packet'][10])+'\n')
-    fileeq2.write('First GPS Value == '+str(comf1['GPS'][10])+'\n'+str(comf1['Packet'][10])+'\n')
-
-    ctr     =   1
-    temp    =   0
-
-    if(int(float(eval(slp_1[-1]))) < 0):
-        temp    =   1
-    len1    =   int(float(eval(slp_1[-1])))-comf['Packet'][0]#len(comf)   -   int(float(eval(slp_1[-1])))
-    len2    =   int(float(eval(slp_2[-1])))-comf1['Packet'][0]#len(comf1)  -   int(float(eval(slp_2[-1])))
-    print(x, len(comf), str(int(float(eval(slp_1[-1])))), len(comf[int(float(eval(slp_1[-1]))):]))
-    print(x, len(comf1), str(int(float(eval(slp_2[-1])))), len(comf1[int(float(eval(slp_1[-1]))):]))
-    rem_len =   abs(len(comf[len1:]) - len(comf1[len2:]))#abs(len(comf[int(float(eval(slp_1[-1]))):])-len(comf1[int(float(eval(slp_1[-1]))):]))
-
-    print('######################################')
-    print(rem_len)
-    print('######################################')
-   
-    if(len1 > len2):#if(str(eval(slp_1[-1])) > str(eval(slp_2[-1])) and str(eval(slp_2[-1])) > 0):
-        fileeq1.write(str(slp2_eqn)+'\n')
-        fileeq2.write(str(slp2_eqn)+'\n')
-        
-        file_to_write       =   file_name.split('_')
-        file_to_write_fil   =   file_name.split('_')
-        file_to_write[-1]   =   fillist[int(series_code)+1]
-        file_to_write_fil[-1]=  fillist[series_code]
-        file_to_write       =   '_'.join(file_to_write)
-        print(file_to_write)
-        file_to_write_fil   =   '_'.join(file_to_write_fil)
-
-        filrem          =               open('SAMPLING_INFO/'+str(file_to_write_fil.split('/')[-1])+'_rem.data', 'w+')
-        filrem.write(str(rem_len)+'\n')#str(eval(slp_2[-1])-comf1['Packet'][0]-eval(slp_1[-1])+comf['Packet'][0])+'\n')
-        filrem.write(str(file_to_write)+'\n')
-
-        print(fillist[int(series_code)+1])
-        fileeq2.write('N,0\n')
-        fileeq1.write('Y,'+str(file_to_write)+','+str(rem_len)+'\n')
-
-
-        #try:
-        #    fil_to_rem          =   (file_to_write.split('/')[-1])[0:4]
-        #    file_to_write       =   (file_to_write.split('/')[-1])[-7:-4]
-        #except:
-        #    fil_to_rem          =   file_to_write[0:4]
-        #    file_to_write       =   file_to_write[-7:-4]
-        #filrem.write(str(fil_to_rem))
-        #print(file_to_write)
-        #print(fil_to_rem)
-    else:
-        fileeq1.write(str(slp1_eqn)+'\n')
-        fileeq2.write(str(slp1_eqn)+'\n')
-
-
-        file_to_write       =   file_name1.split('_')
-        file_to_write_fil   =   file_name1.split('_')
-        file_to_write[-1]   =   fillist[int(series_code)+1]
-        file_to_write_fil[-1]=  fillist[series_code]
-        file_to_write       =   '_'.join(file_to_write)
-        print('=============')
-        print(file_to_write)
-        print('=============')
-        file_to_write_fil   =   '_'.join(file_to_write_fil)
-
-
-        filrem          =               open('SAMPLING_INFO/'+str(file_to_write_fil.split('/')[-1])+'_rem.data', 'w+')
-        filrem.write(str(rem_len)+'\n')#str(eval(slp_1[-1])-comf['Packet'][0]-eval(slp_2[-1])+comf1['Packet'][0])+'\n')
-        #filrem.write(str(min(eval(slp_1[-1]), eval(slp_2[-1]))-comf['Packet'][0])+'\n')
-        #filrem(str())
-        filrem.write(str(file_to_write)+'\n')
-
-        #try:
-        #    fil_to_rem          =   (file_to_write.split('/')[-1])[0:4]
-        #    file_to_write       =   (file_to_write.split('/')[-1])[-7:-4]
-        #except:
-        #    fil_to_rem          =   file_to_write[0:4]
-        #    file_to_write       =   file_to_write[-7:-4]
-        #print(file_to_write)
-        #print(fil_to_rem)
-        #filrem.write(str(fil_to_rem))
-
-        fileeq1.write('N,0\n')
-        fileeq2.write('Y,'+str(file_to_write)+','+str(rem_len)+'\n')
-
-
-
-    fileeq1.write(str(comf['GPS'][0])+','+str(comf['GPS'][-1]))
-    fileeq2.write(str(comf1['GPS'][0])+',' + str(comf1['GPS'][-1]))
-
-    num =   comf['Packet'][int(np.where(comf['GPS']==comf['GPS'][-1])[0][0])]
-    num1=   comf1['Packet'][int(np.where(comf1['GPS']==comf1['GPS'][-1])[0][0])]
-
-    
-    fileeq1.write('\n'+str(comf['Packet'][-1])+'-'+str(num)+' = '+str(comf['Packet'][-1]-num)+','+ str(comf['Packet'][0]))
-    fileeq2.write('\n'+str(comf1['Packet'][-1])+'-'+str(num)+' = '+str(comf1['Packet'][-1]-num1)+','+ str(comf1['Packet'][0]))
-
-    print(str(slp1.slope)+'*x'+str(slp1.intercept))
-    
-    #Generating RFI mask#
-    if(series == s_mbr):
-        comf_X, comf_Y, comf1_X, comf1_Y, LO, Memfactor_not_used_here = call_to_read(file_name, file_name1, 60, '1', np.zeros((30)))
-        le      = len(comf_X)/(int(int(256)*2)*int(avg))
-        le1     = len(comf1_X)/(int(int(256)*2)*int(avg))
-        le      =   min(le, le1)
-        creal1, creal2, creal3, creal4, creal8, creal9= internal_loop2.external_loop(comf_X, comf_Y, comf1_X, comf1_Y, avg, le, 255)
-        RFI1    =   RFI_Reject(creal1, 1, 256, 60)
-        RFI2    =   RFI_Reject(creal2, 1, 256, 60)
-        RFI3    =   RFI_Reject(creal3, 1, 256, 60)
-        RFI4    =   RFI_Reject(creal4, 1, 256, 60)
-      
-       #Writing RFI masks#
-        np.savetxt(str("SAMPLING_INFO/RFI_mask_X_"+str(file_name.split('/')[-1])), RFI1)
-        np.savetxt(str("SAMPLING_INFO/RFI_mask_Y_"+str(file_name.split('/')[-1])), RFI2)
-        np.savetxt(str("SAMPLING_INFO/RFI_mask_X_"+str(file_name1.split('/')[-1])), RFI3)
-        np.savetxt(str("SAMPLING_INFO/RFI_mask_Y_"+str(file_name1.split('/')[-1])), RFI4)
-
-    
-    return slp1, slp2, slp_1, slp_2#, RFI_mask1, RFI_mask2, RFI_mask3, RFI_mask4
 
 cpdef get_memfactor_est(str file_name, str file_name1):
     '''
@@ -2017,41 +1767,4 @@ cdef genphase(spec, delay):
         for j in range(len(test[0])):
             pha[i][j] = (exp(complex(0, -2*pi*f[i]*delay[j])))
     return pha
-
-cdef plot_all(file_name, file_name1):
-    fill1    =   file_name.split('_')
-    fill2    =   file_name1.split('_')
-
-    cdef str filll                         =   fill1[-4]+'_'+fill1[-3]+'_'+fill1[-3]#dat+'_'+tim
-    
-
-    cdef str chX1      =   'X'+str((fill1[-5])[-1])
-    cdef str chX2      =   'X'+str((fill2[-5])[-1])
-    cdef str chY1      =   'Y'+str((fill1[-5])[-1])
-    cdef str chY2      =   'Y'+str((fill2[-5])[-1])
-
-    ltXX      =   glob.glob('CORRELATION/'+filll+'/Correlation_'+str(chX1)+str(chX2)+'*')
-    ltYY      =   glob.glob('CORRELATION/'+filll+'/Correlation_'+str(chY1)+str(chY2)+'*')
-    spXX    =   'spec =  np.hstack(('
-    spYY    =   'specY = np.hstack((' 
-    cdef list sp1     =   []
-    cdef list sp2     =   []
-    cdef int i        =   0
-
-
-    for i in range(len(ltXX)):
-        sp1.append(load(ltXX[i]))
-        sp2.append(load(ltYY[i]))
-        spXX  =   spXX+'sp1['+str(i)+'], '
-        spYY  =   spYY+'sp2['+str(i)+'], '
-    spXX  =   spXX+'))'
-    spYY  =   spYY+'))'
-    exec(spXX)
-    exec(spYY)
-
-    
-    savetxt('CORRELATION/Correlation_filter_'+str(chX1)+str(chX2), spec)
-    savetxt('CORRELATION/Correlation_filter_'+str(chY1)+str(chY2), spec1)
-
-    return spXX, spYY
 
