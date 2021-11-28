@@ -1,7 +1,8 @@
-from distutils.core import setup
-from distutils.extension import Extension
 from numpy.distutils.core import Extension as FExtension
 from numpy.distutils.core import setup as fsetup
+
+from distutils.core import setup
+from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
 f_modules = [
