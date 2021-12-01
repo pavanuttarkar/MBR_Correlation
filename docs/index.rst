@@ -9,9 +9,13 @@ Welcome to MBRCorr's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   user_guide
+   why
+   how_it_works
    code_ref/index
    licence
 
+.. include:: ../README.md
 
 Indices and tables
 ==================
