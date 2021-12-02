@@ -11,7 +11,25 @@ import LatLong
 
 import _header_Fring_cy
 
+
 cpdef double julian (float dd,int mm,int yr):
+    """
+    Function to  compute julian date(JD) ## Check here MJD or JD
+
+    Parameters
+    ----------
+        dd: `float`
+            Days
+        mm: `float`
+            Month
+        yr: `float`
+            Year
+
+    Returns
+    -------
+        `float`
+        Returns julian day.
+    """
     cdef double jy,jm,r,s;
     cdef double p,q,ja,julday;
     cdef double A, B, C,E, F
@@ -32,10 +50,26 @@ cpdef double julian (float dd,int mm,int yr):
     F = int(30.6001*(jm+1.0))
     julday= C+dd+E+F-1524.5
     return julday; 
-   
-                                                               
+
 
 cpdef float  selflst(float second, float minute, float hour, float day, float month, float year):
+    """
+    Function to compute local sidereal time.
+
+    Parameters
+    ----------
+        second: `float`
+        minute: `float`
+        hour: `float`
+        day: `float`
+        month: `float`
+        year: `float`
+
+    Returns
+    -------
+        `float`
+        Returns local sidereal time(LST).
+    """
     #cdef float hour     =    int(tim)
     #cdef float minute   =    (tim-int(tim))*60
     #cdef float second   =    math.modf(minute)[0]*3600.0
@@ -79,6 +113,7 @@ cpdef float  selflst(float second, float minute, float hour, float day, float mo
     lsts = (lstm1 - lstm) * 60.0;
     return lst
 
+
 cpdef double uvwsim_datetime_to_mjd(int year, int month, int day, int hour, int minute, double seconds):
     cdef double day_fraction;
     cdef int a, y, m, jdn;
@@ -95,10 +130,6 @@ cpdef double uvwsim_datetime_to_mjd(int year, int month, int day, int hour, int 
     #/* Compute day fraction. */
     day_fraction -= 0.5;
     return (jdn - 2400000.5) + day_fraction;
-
-
-
-
 
 
 #LST equation from uvw_sim
@@ -180,19 +211,19 @@ cpdef float  gmst(float second, float minute, float hour, float day, float month
         gmst = gmst - 24.0;
     return gmst
 
-cpdef double uvwsim_convert_mjd_to_gast_fast(double mjd):
 
+cpdef double uvwsim_convert_mjd_to_gast_fast(double mjd):
     cdef double gmst = uvwsim_convert_mjd_to_gmst(mjd);
     cdef double gast = gmst + uvwsim_equation_of_equinoxes_fast(mjd);
     return gast;
 
+
 cpdef uvwsim_evaluate_baseline_uvw(str file_name, str file_name1, float RA, float dec, float avg, np.ndarray time_array, unsigned int T1, unsigned int T2):
-    
     '''
-         ECEF ENU Transformation..
-         E  -  Y
-         N  -  Z
-         U  -  X 
+    ECEF ENU Transformation..
+    E  -  Y
+    N  -  Z
+    U  -  X 
     '''
     cdef double c_per_mus   = 299.792458
     cdef int    i       =       0
@@ -259,6 +290,7 @@ cpdef uvwsim_evaluate_baseline_uvw(str file_name, str file_name1, float RA, floa
         W_geometric[i] = t * cosdec0 + z_ecef * sindec0;
     return W_geometric/c_per_mus
 
+
 cpdef Cal_time(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, np.ndarray time_array, unsigned int T1, unsigned int T2):
 
     '''
@@ -271,8 +303,6 @@ cpdef Cal_time(float sec, float minu, float hour, float day, float month, float 
     Hour angle convention and integrety check -- done on MAY06 2021
 
     '''
-
-
 
     cdef double c_per_mus   = 299.792458                                       
     cdef int    i       =       0                                              
@@ -321,141 +351,7 @@ cpdef Cal_time(float sec, float minu, float hour, float day, float month, float 
         Y_param[i]           = -1.0*y_loc*cosdec*np.sin(ha)/c_per_mus;                                                               
         Z_param[i]           = z_loc*sindec/c_per_mus;                                                                               
         W_geometric[i]       = (X_param[i]+Y_param[i]+Z_param[i])                                                                    
-    return W_geometric  
-
-
-cpdef  geometric_model_using_setdelay(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, np.ndarray time_array, unsigned int T1, unsigned int T2):
-#(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2):
-
-    '''
-    float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2
-    '''
-    cdef double c_per_mus   = 299.792458
-    cdef int    i       =       0
-    print (year, month, day, hour, minu, sec)
-    cdef np.ndarray X_param     =      np.zeros(len(time_array), dtype = float)
-    cdef np.ndarray Y_param     =      np.zeros(len(time_array), dtype = float)
-    cdef np.ndarray Z_param     =      np.zeros(len(time_array), dtype = float)
-    cdef np.ndarray W_geometric =      np.zeros(len(time_array), dtype = float)
-
-    cdef float alt              =       0
-    cdef float az               =       0
-    cdef list az1               =       []
-    cdef list alt1              =       []
-    coslat               = np.cos(13.6111*np.pi/180)
-    sinlat               = np.sin(13.6111*np.pi/180)#77.451944444*np.pi/180)
-    
-    #lat=13.6112*u.deg, lon=77.5170*u.deg
-    #Gettine ECEF Coordinates of Tiles#
-    ecef    =   np.loadtxt('ECEF_from_header_geometric.txt')#np.loadtxt('ENU_v6.txt')
-    x_loc   =   ecef[:,0][T1] - ecef[:,0][T2]#np.loadtxt('ECEF_x')
-    y_loc   =   ecef[:,1][T1] - ecef[:,1][T2]#np.loadtxt('ECEF_y')
-    z_loc   =   ecef[:,2][T1] - ecef[:,2][T2]#np.loadtxt('ECEF_z')
-    print(x_loc, y_loc, z_loc)
-    
-    #Getting LatLong#
-    cdef double secu        =   sec
-    cdef double mint        =   minu
-    cdef double hourt       =   hour
-    cdef double dayt        =   day
-    cdef double montht      =   montht
-    cdef double sindec      =   np.sin(dec*np.pi/180)
-    cdef double cosdec      =   np.cos(dec*np.pi/180)
-    cdef double d2r         =   np.pi/180
-    cdef int dayflag        =   0
-    ha1 =   []
-    for i in range(len(time_array)):
-        hourt_temp   =   int(time_array[i])
-        mint_temp    =   (time_array[i]%1)*60
-        secu_temp    =   (mint_temp%1)*60
-
-        hourt       =   int(hourt_temp)
-        mint        =   int(mint_temp)
-        secu        =   secu_temp
-
-
-        az, alt, ha = Equ2local(RA, dec, LatLong.Lat_local, LatLong.Long_local, secu, mint, hourt, day, month, year)
-        print(secu, mint, hourt, dayt, montht, year, az, alt, i)
-        alt1.append(alt)
-        az1.append(az)
-        ha1.append(ha)
-        za                   = np.pi-alt
-        X_param[i]           = x_loc*np.cos(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.cos(ha*np.pi/180)/c_per_mus;
-        Y_param[i]           = y_loc*np.sin(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.sin(ha*np.pi/180)/c_per_mus;
-        Z_param[i]           = z_loc*np.sin(alt1[i])/c_per_mus#*np.sin(dec*np.pi/180)/c_per_mus;
-        W_geometric[i]       = (x_loc*np.sin(az)+y_loc*np.cos(az))*np.sin(za)/c_per_mus##(X_param[i]+Y_param[i]+Z_param[i])
-    return W_geometric, alt1, az1, ha1
-
-
-cpdef  Cal_time_onhold(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, np.ndarray time_array, unsigned int T1, unsigned int T2):
-#(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2):
-
-    '''
-    float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2
-    '''
-    cdef double c_per_mus   = 299.792458
-    cdef int    i       =       0
-    print (year, month, day, hour, minu, sec)
-    cdef np.ndarray X_param     =      np.zeros(len(time_array), dtype = float)
-    cdef np.ndarray Y_param     =      np.zeros(len(time_array), dtype = float)
-    cdef np.ndarray Z_param     =      np.zeros(len(time_array), dtype = float)
-    cdef np.ndarray W_geometric =      np.zeros(len(time_array), dtype = float)
-
-    cdef float alt              =       0
-    cdef float az               =       0
-    cdef list az1               =       []
-    cdef list alt1              =       []
-    coslat               = np.cos(13.6111*np.pi/180)
-    sinlat               = np.sin(13.6111*np.pi/180)#77.451944444*np.pi/180)
-    
-    #lat=13.6112*u.deg, lon=77.5170*u.deg
-    #Gettine ECEF Coordinates of Tiles#
-    ecef    =   np.loadtxt('ECEF_from_header_geometric.txt')#np.loadtxt('ENU_v6.txt')
-    x_loc   =   ecef[:,0][T1] - ecef[:,0][T2]#np.loadtxt('ECEF_x')
-    y_loc   =   ecef[:,1][T1] - ecef[:,1][T2]#np.loadtxt('ECEF_y')
-    z_loc   =   ecef[:,2][T1] - ecef[:,2][T2]#np.loadtxt('ECEF_z')
-    print(x_loc, y_loc, z_loc)
-    
-    #Getting LatLong#
-    cdef double secu        =   sec
-    cdef double mint        =   minu
-    cdef double hourt       =   hour
-    cdef double dayt        =   day
-    cdef double montht      =   montht
-    cdef double sindec      =   np.sin(dec*np.pi/180)
-    cdef double cosdec      =   np.cos(dec*np.pi/180)
-    cdef double d2r         =   np.pi/180
-    cdef int dayflag        =   0
-    ha1 =   []
-    for i in range(len(time_array)):
-        hourt_temp   =   int(time_array[i])
-        mint_temp    =   (time_array[i]%1)*60
-        secu_temp    =   (mint_temp%1)*60
-
-        hourt       =   int(hourt_temp)
-        mint        =   int(mint_temp)
-        secu        =   secu_temp
-
-        #if(hourt_temp > 24.0):
-        #    print('Increasing day..')
-        #    dayt    =   day+1
-        #    hourt   =   0
-        #    minu    =   0
-        #    secu    =   0
-        #    dayflag =   1
-
-        az, alt, ha = Equ2local(RA, dec, LatLong.Lat_local, LatLong.Long_local, secu, mint, hourt, day, month, year)
-        print(secu, mint, hourt, dayt, montht, year, az, alt, i)
-        alt1.append(alt)
-        az1.append(az)
-        ha1.append(ha)
-
-        X_param[i]           = x_loc*np.cos(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.cos(ha*np.pi/180)/c_per_mus;
-        Y_param[i]           = y_loc*np.sin(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.sin(ha*np.pi/180)/c_per_mus;
-        Z_param[i]           = z_loc*np.sin(alt1[i])/c_per_mus#*np.sin(dec*np.pi/180)/c_per_mus;
-        W_geometric[i]       = (X_param[i]+Y_param[i]+Z_param[i])
-    return W_geometric, alt1, az1, ha1
-
+    return W_geometric
 
 cpdef np.ndarray Cal_time_onhold_v1(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2):
 
@@ -540,6 +436,70 @@ cpdef np.ndarray Cal_time_onhold_v1(float sec, float minu, float hour, float day
         W_geometric[i]       = X_param[i]*cosha + Y_param[i]*sinha + Z_param[i];
     return W_geometric
 
+
+cpdef  geometric_model_using_setdelay(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, np.ndarray time_array, unsigned int T1, unsigned int T2):
+#(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2):
+
+    '''
+    float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2
+    '''
+    cdef double c_per_mus   = 299.792458
+    cdef int    i       =       0
+    print (year, month, day, hour, minu, sec)
+    cdef np.ndarray X_param     =      np.zeros(len(time_array), dtype = float)
+    cdef np.ndarray Y_param     =      np.zeros(len(time_array), dtype = float)
+    cdef np.ndarray Z_param     =      np.zeros(len(time_array), dtype = float)
+    cdef np.ndarray W_geometric =      np.zeros(len(time_array), dtype = float)
+
+    cdef float alt              =       0
+    cdef float az               =       0
+    cdef list az1               =       []
+    cdef list alt1              =       []
+    coslat               = np.cos(13.6111*np.pi/180)
+    sinlat               = np.sin(13.6111*np.pi/180)#77.451944444*np.pi/180)
+    
+    #lat=13.6112*u.deg, lon=77.5170*u.deg
+    #Gettine ECEF Coordinates of Tiles#
+    ecef    =   np.loadtxt('ECEF_from_header_geometric.txt')#np.loadtxt('ENU_v6.txt')
+    x_loc   =   ecef[:,0][T1] - ecef[:,0][T2]#np.loadtxt('ECEF_x')
+    y_loc   =   ecef[:,1][T1] - ecef[:,1][T2]#np.loadtxt('ECEF_y')
+    z_loc   =   ecef[:,2][T1] - ecef[:,2][T2]#np.loadtxt('ECEF_z')
+    print(x_loc, y_loc, z_loc)
+    
+    #Getting LatLong#
+    cdef double secu        =   sec
+    cdef double mint        =   minu
+    cdef double hourt       =   hour
+    cdef double dayt        =   day
+    cdef double montht      =   month
+    cdef double sindec      =   np.sin(dec*np.pi/180)
+    cdef double cosdec      =   np.cos(dec*np.pi/180)
+    cdef double d2r         =   np.pi/180
+    cdef int dayflag        =   0
+    ha1 =   []
+    for i in range(len(time_array)):
+        hourt_temp   =   int(time_array[i])
+        mint_temp    =   (time_array[i]%1)*60
+        secu_temp    =   (mint_temp%1)*60
+
+        hourt       =   int(hourt_temp)
+        mint        =   int(mint_temp)
+        secu        =   secu_temp
+
+
+        az, alt, ha = Equ2local(RA, dec, LatLong.Lat_local, LatLong.Long_local, secu, mint, hourt, day, month, year)
+        print(secu, mint, hourt, dayt, montht, year, az, alt, i)
+        alt1.append(alt)
+        az1.append(az)
+        ha1.append(ha)
+        za                   = np.pi-alt
+        X_param[i]           = x_loc*np.cos(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.cos(ha*np.pi/180)/c_per_mus;
+        Y_param[i]           = y_loc*np.sin(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.sin(ha*np.pi/180)/c_per_mus;
+        Z_param[i]           = z_loc*np.sin(alt1[i])/c_per_mus#*np.sin(dec*np.pi/180)/c_per_mus;
+        W_geometric[i]       = (x_loc*np.sin(az)+y_loc*np.cos(az))*np.sin(za)/c_per_mus##(X_param[i]+Y_param[i]+Z_param[i])
+    return W_geometric, alt1, az1, ha1
+
+
 cpdef phase_compensation(spect, delay, freq):
     '''
         Compensation for intra sample delay.
@@ -560,6 +520,7 @@ cpdef phase_compensation(spect, delay, freq):
     comp    =   pha*spect
     
     return comp, pha
+
 
 cpdef phase_compensation_dev(spect, delay, freq):
     '''
@@ -618,8 +579,6 @@ cpdef obsdelay(creal9):
     return phase1, phase_total, icorr
 
 
-
-
 cpdef phasecomp(creal9, delay, cenfreq, fftlen):
     '''
         creal9, delay, cenfreq, fftlen
@@ -643,10 +602,6 @@ cpdef phasecomp(creal9, delay, cenfreq, fftlen):
     return creal9_1, creal9_2
 
 
-
-
-
-
 def ECEFto_ENU_file(file_path):
     ecef    =   np.loadtxt(file_path)
     enu     =   []
@@ -654,44 +609,60 @@ def ECEFto_ENU_file(file_path):
         print(i)
         enu.append(EcefToEnu(ecef[i][0], ecef[i][1], ecef[i][2]))
     return enu
+
+
 def EcefToEnu(x, y, z):#, lat0, lon0, h0):
-        #// Convert to radians in notation consistent with the paper:
-        #Tile 1 as the reference 
-        lat0    =   13.60246667#13.6033333
-        lon0    =   77.42778333#77.451944444 
-        h0      =   691#483
-        a       = 6378137.0;      #   // WGS-84 Earth semimajor axis (m)
-        b       = 6356752.314245; #    // Derived Earth semiminor axis (m)
-        f       = (a - b) / a;    #       // Ellipsoid Flatness
-        f_inv   = 1.0 / f;    #   // Inverse flattening
+    """
+    Function to transform ECEF coordinates to ENU coordinates
 
-        a_sq    = a * a;
-        b_sq    = b * b;
-        e_sq    = f * (2 - f); 
-        lambd   = lat0*np.pi/180
-        phi     = lon0*np.pi/180
-        s       = np.sin(lambd);
-        N       = a/np.sqrt(1-e_sq*s*s);
+    Parameters
+    ----------
+        x: `float`
+        y: `float`
+        z: `float`
+    
+    Returns
+    -------
+        `float`, `float`, `float`
+        Returns East, North and Up coordinates
+    """
+    #// Convert to radians in notation consistent with the paper:
+    #Tile 1 as the reference
+    lat0    =   13.60246667#13.6033333
+    lon0    =   77.42778333#77.451944444
+    h0      =   691#483
+    a       = 6378137.0;      #   // WGS-84 Earth semimajor axis (m)
+    b       = 6356752.314245; #    // Derived Earth semiminor axis (m)
+    f       = (a - b) / a;    #       // Ellipsoid Flatness
+    f_inv   = 1.0 / f;    #   // Inverse flattening
 
-        sin_lambda = np.sin(lambd);
-        cos_lambda = np.cos(lambd);
-        cos_phi = np.cos(phi);
-        sin_phi = np.sin(phi);
+    a_sq    = a * a;
+    b_sq    = b * b;
+    e_sq    = f * (2 - f); 
+    lambd   = lat0*np.pi/180
+    phi     = lon0*np.pi/180
+    s       = np.sin(lambd);
+    N       = a/np.sqrt(1-e_sq*s*s);
 
-        x0 = (h0 + N) * cos_lambda * cos_phi;
-        y0 = (h0 + N) * cos_lambda * sin_phi;
-        z0 = (h0 + (1 - e_sq) * N) * sin_lambda;
+    sin_lambda = np.sin(lambd);
+    cos_lambda = np.cos(lambd);
+    cos_phi = np.cos(phi);
+    sin_phi = np.sin(phi);
 
-        #xd, yd, zd;# Current reference Tile 1.. 
-        xd = x - 1349783.1183164874 #1347182.8954636795#1349783.1183164874#x0;
-        yd = y - 6052369.1881498210 #6052720.426106435 #6052369.188149821#y0;
-        zd = z - 1490432.8161248143 #1491361.0540407044#1490432.8161248143#x0#z0;
+    x0 = (h0 + N) * cos_lambda * cos_phi;
+    y0 = (h0 + N) * cos_lambda * sin_phi;
+    z0 = (h0 + (1 - e_sq) * N) * sin_lambda;
 
-        #// This is the matrix multiplication
-        xEast = -sin_phi * xd + cos_phi * yd;
-        yNorth = -cos_phi * sin_lambda * xd - sin_lambda * sin_phi * yd + cos_lambda * zd;
-        zUp = cos_lambda * cos_phi * xd + cos_lambda * sin_phi * yd + sin_lambda * zd;
-        return xEast, yNorth, zUp
+    #xd, yd, zd;# Current reference Tile 1.. 
+    xd = x - 1349783.1183164874 #1347182.8954636795#1349783.1183164874#x0;
+    yd = y - 6052369.1881498210 #6052720.426106435 #6052369.188149821#y0;
+    zd = z - 1490432.8161248143 #1491361.0540407044#1490432.8161248143#x0#z0;
+
+    #// This is the matrix multiplication
+    xEast = -sin_phi * xd + cos_phi * yd;
+    yNorth = -cos_phi * sin_lambda * xd - sin_lambda * sin_phi * yd + cos_lambda * zd;
+    zUp = cos_lambda * cos_phi * xd + cos_lambda * sin_phi * yd + sin_lambda * zd;
+    return xEast, yNorth, zUp
 
 
 cpdef   WGS842ENU(double lat, double lon, double alt, double lat0, double lon0, double alt0):
@@ -708,8 +679,6 @@ cpdef   WGS842ENU(double lat, double lon, double alt, double lat0, double lon0, 
                 WGS842ENU(double lat, double lon, double alt)
             Output:
                 ENU (X, Y, Z) of lat, lon, alt, lat0, lon0, alt0  inputs.
-
-
 
     '''
     cdef double E=0
@@ -734,17 +703,25 @@ cpdef   WGS842ENU(double lat, double lon, double alt, double lat0, double lon0, 
     return E, N, U
 
 
-
-
-cpdef   WGS842ECEF(double lat, double lon, double alt):
+cpdef WGS842ECEF(double lat, double lon, double alt):
     '''
-        Module to cover WGS84 to ECEF, with lat0, lon0, alt0 as the centre..
-        all inputs should be in degrees..
-        Usage:
-            Input:
-                WGS842ECEF(double lat, double lon, double alt)
-            Output:
-                ECEF (X, Y, Z) of lat, lon, alt inputs.
+    Function to cover WGS84 to ECEF, with lat0, lon0, alt0 as the centre.
+    All inputs should be in degrees.
+    
+    Parameters
+    ----------
+        lat: `double`
+        lon: `double`
+        alt: `double`
+    
+    Returns
+    -------
+        `list`
+        Returns list of X, Y, Z (ECEF) coordinates.
+
+    Examples
+    --------
+        WGS842ECEF(double lat, double lon, double alt)
     '''
     cdef double X=0
     cdef double Y=0
@@ -762,12 +739,25 @@ cpdef   WGS842ECEF(double lat, double lon, double alt):
 
     return [X, Y, Z]
 
+
 cdef Nphi(lat):
     '''
-        #Earth's equatorial and polar radius from https://en.wikipedia.org/wiki/Earth_radius
-        #IERS	WGS-84 ellipsoid, semi-major axis (a)	6378137.0
-        #IERS	WGS-84 ellipsoid, semi-minor axis (b)	6356752.3142	[6]
-        #IERS	WGS-84 first eccentricity squared (e2)	0.00669437999014
+    Function to compute corrected Earth's radius with WSG-84 model.
+    
+    Earth's equatorial and polar radius from https://en.wikipedia.org/wiki/Earth_radius
+    IERS	WGS-84 ellipsoid, semi-major axis (a)	6378137.0
+    IERS	WGS-84 ellipsoid, semi-minor axis (b)	6356752.3142	[6]
+    IERS	WGS-84 first eccentricity squared (e2)	0.00669437999014
+
+    Parameters
+    ----------
+        lat: `float`
+            Latitude
+
+    Returns
+    -------
+        `float`
+        Returns corrected Earth's radius at latitude `lat`
     '''
     cdef double N   =0
     cdef double a   =6378137.0
@@ -775,36 +765,53 @@ cdef Nphi(lat):
     cdef double e2  =0.00669437999014
     N               =a/np.sqrt(1-e2*(np.sin(lat*np.pi/180))**2)
     return N
+
+
 cpdef AltAz2HARA(float el, float az, float phi, float lon,
-                    float second, float minute, float hour, float day, float month, float year):
-    
-    
-    
+                    float second, float minute, float hour, float day, float month, float year):    
     '''
-        Module to calculate RA and Dec, HA and Dec from AltAz
-        --------------Convention for HA-----------
-                        N   
-                   +ve     -ve
+    Module to calculate RA and Dec, HA and Dec from AltAz
+    --------------Convention for HA-----------
+                    N   
+                +ve     -ve
 
-                W               E
-                        
-                   +ve     -ve
-                        S
-        -----------------------------------------
+            W               E
+                    
+                +ve     -ve
+                    S
+    -----------------------------------------
 
+    Parameters
+    ----------
+        el: `float`
+        az: `float`
+            Azimuthal angle
+        phi: `float`
+            Phi angle
+        lon: `float`
+            Longitude of the observatory
+        second: `float`
+        minute: `float`
+        hour: `float`
+        day: `float`
+        month: `float`
+        year: `float`
 
-        Usage:
-        
-        AltAz2HARA(float elevaltion, float azimuth, float phi/lat, float longitude,
-            float sec, float minu, float hour, float day. float month, float year)
-        All inputs in degrees
+    Returns
+    -------
+        RA and Dec: `~numpy.array`
+        HA and Dec: `~numpy.array`
 
-
-        Returns:
-
-        RA and Dec, HA and Dec
-    '''
     
+    Examples
+    --------
+    All inputs in degrees
+    ```
+    AltAz2HARA(float elevaltion, float azimuth, float phi/lat, float longitude,
+        float sec, float minu, float hour, float day. float month, float year)
+    ```
+    >>> AltAz2HARA(0, 45, 12.97, 77.58, 0, 0, 0, 1, 12, 2021) 
+    '''
     
     cdef float sa = np.sin(az*np.pi/180);
     cdef float ca = np.cos(az*np.pi/180);
@@ -835,12 +842,29 @@ cpdef AltAz2HARA(float el, float az, float phi, float lon,
     return np.array([RA, dec*180/np.pi]), np.array([ha/15.0*180/np.pi, dec*180/np.pi] )
 
 
-
 cdef HA2RA(HA, second, minute, hour, day, month, year):
-     
-     LST    =   selflst(second, minute, hour, day, month, year)
-     RA     =   LST-HA
-     return RA
+    """
+    Function to convert Hour-angle to Right Ascension
+
+    Parameters
+    ----------
+        HA: `float`
+            Hour-angle
+        second: `float`
+        minute: `float`
+        hour: `float`
+        day: `float`
+        month: `float`
+        year: `float`
+
+    Returns
+    -------
+        `float`
+        Returns right ascension using the formula RA = LST - HA
+    """
+    LST    =   selflst(second, minute, hour, day, month, year)
+    RA     =   LST-HA
+    return RA
 
 
 cpdef map_RA_Dec_to_file(fil, pointing_file, gps, LO, Tile_1, Tile_2):
@@ -853,15 +877,29 @@ cpdef map_RA_Dec_to_file(fil, pointing_file, gps, LO, Tile_1, Tile_2):
         .                               .   .
         .                               .   .
 
-    Usage:
-        Input:  map_RA_Dec_to_file(File_name, pointing file, gps count, Tile_1 (0-N convention), Tile_2 (0-N convention))
-        Output: RA, Dec
+    Parameters
+    ----------
+        fil: `str`
+            File name
+        pointing_file: `str`
+            Pointing file
+        gps: `float`
+            GPS Count
+        Tile_1: `int`
+            Tile number 1 (0-N convention)
+        Tile_2: `int`
+            Tile number 2 (0-N convention)
 
-    Note: Without timestamping this could result in inacuurate resuts..
-    i.e the gps count has to be from the nearest 12.  
+    Returns
+    -------
+        RA, Dec
+
+    Note
+    ----
+        Without timestamping this could result in inaccurate resuts,
+        i.e the gps count has to be from the nearest 12th hour.  
     '''
-    
-    
+
     cdef float Alt
     cdef float Az
     cdef int noon   =   0
@@ -884,8 +922,7 @@ cpdef map_RA_Dec_to_file(fil, pointing_file, gps, LO, Tile_1, Tile_2):
             Alt =   float(fil_temp[2])
             print('ZA..'+str(Alt)+'\tAzimuth..'+str(Az))
             fact=   1
-    
-    
+
     if(fact==0):
         print('No file match found..check pointing file')
         return -1
@@ -905,13 +942,28 @@ cpdef map_RA_Dec_to_file(fil, pointing_file, gps, LO, Tile_1, Tile_2):
     #float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2
 
     series, sec_junk, minu_junk, hour_junk, dat, month, year               =       _header_Fring_cy.extract_time(file_temp1)
-    pointing                    =   AltAz2HARA((90.0-Alt), Az , LatLong.Lat_local, LatLong.Long_local, sec, minu, hour, float(dat), float(month), float(year))#, float(file_list[i].split(',')[-1]), float(file_list[i].split(',')[-1]))[0]
-    delay                       =   Cal_time_onhold_v1(sec, minu, hour, float(dat), float(month), float(year), pointing[0][0], pointing[0][1], 6000, 0.1, 40, Tile_1, Tile_2)
-    
-    
+    pointing =  AltAz2HARA((90.0-Alt), Az , LatLong.Lat_local, LatLong.Long_local, sec, minu, hour, float(dat), float(month), float(year))#, float(file_list[i].split(',')[-1]), float(file_list[i].split(',')[-1]))[0]
+    delay =  Cal_time_onhold_v1(sec, minu, hour, float(dat), float(month), float(year), pointing[0][0], pointing[0][1], 6000, 0.1, 40, Tile_1, Tile_2)
     return delay, pointing
 
 cpdef correct_time(float second, float minute, float hour, float day, float month, float year):
+    """
+    Parameters
+    ----------
+        second: `float` 
+        minute: `float` 
+        hour: `float` 
+        day: `float` 
+        month: `float` 
+        year: `float`
+    
+    Returns
+    -------
+        secu: `float`
+        mint: `float`
+        hourt: `float`
+        dayt: `float`
+    """
     cdef double mint    =   minute
     cdef double secu    =   second
     cdef double hourt   =   hour
@@ -930,10 +982,33 @@ cpdef correct_time(float second, float minute, float hour, float day, float mont
 cpdef Equ2local(float RA, float Dec, float phi, float lon,
         float second, float minute, float hour, float day, float month, float year):
     '''
-        Module to covert Equatorial coordinates to Local Coordinates 
+    Function to covert Equatorial coordinates to Local Coordinates
+
+    Parameters
+    ----------
+        RA: `float`
+            Right Ascension
+        Dec: `float`
+            Declination
+        phi: `float`
+        lon: `float`
+            Longitude
+        second: `float`
+        minute: `float`
+        hour: `float`
+        day: `float`
+        month: `float`
+        year: `float`
+
+    Returns
+    -------
+        `float`, `float`, `float`
+        Returns local coordinates, Azimuth, Altitude, Hour-angle
+
+    Examples
+    --------
         Equ2local(RA, Dec, phi, lon, second, minute, hour, day, month, year) 
     '''
-
     cdef double secu        =   second
     cdef double mint        =   minute
     cdef double hourt       =   hour
