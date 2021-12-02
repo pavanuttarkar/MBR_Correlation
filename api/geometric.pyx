@@ -27,8 +27,8 @@ cpdef double julian (float dd,int mm,int yr):
 
     Returns
     -------
-        `float`
-        Returns julian day.
+        julday: `float`
+            Julian day
     """
     cdef double jy,jm,r,s;
     cdef double p,q,ja,julday;
@@ -67,8 +67,8 @@ cpdef float  selflst(float second, float minute, float hour, float day, float mo
 
     Returns
     -------
-        `float`
-        Returns local sidereal time(LST).
+        lst: `float`
+            Local sidereal time
     """
     #cdef float hour     =    int(tim)
     #cdef float minute   =    (tim-int(tim))*60
@@ -178,6 +178,28 @@ cpdef double uvwsim_equation_of_equinoxes_fast(double mjd):
     return eqeq;
 
 cpdef float  gmst(float second, float minute, float hour, float day, float month, float year):
+    """
+    Function to compute gmst
+
+    Parameters
+    ----------
+        second: `float`
+            Seconds
+        minute: `float`
+            Minutes
+        hour: `float`
+            Hours
+        day: `float`
+            Days
+        month: `float`
+            Month
+        year: `float`
+            Year
+
+    Returns
+    -------
+        gmst: `float`
+    """
     #cdef float hour     =    int(tim)
     #cdef float minute   =    (tim-int(tim))*60
     #cdef float second   =    math.modf(minute)[0]*3600.0
@@ -295,8 +317,9 @@ cpdef Cal_time(float sec, float minu, float hour, float day, float month, float 
 
     '''
     float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, np.array time_array, unsigned int T1, unsigned int T2
-
-    Hour Angle convention
+    
+    .. note:: 
+        Hour Angle convention
         -ve while rising from east
         +ve while setting in the west
 
@@ -613,7 +636,8 @@ def ECEFto_ENU_file(file_path):
 
 def EcefToEnu(x, y, z):#, lat0, lon0, h0):
     """
-    Function to transform ECEF coordinates to ENU coordinates
+    Function to transform ECEF coordinates to ENU coordinates.
+    Returns East, North and Up coordinates.
 
     Parameters
     ----------
@@ -623,8 +647,9 @@ def EcefToEnu(x, y, z):#, lat0, lon0, h0):
     
     Returns
     -------
-        `float`, `float`, `float`
-        Returns East, North and Up coordinates
+        East: `float`
+        North: `float`
+        Up: `float`
     """
     #// Convert to radians in notation consistent with the paper:
     #Tile 1 as the reference
@@ -667,19 +692,40 @@ def EcefToEnu(x, y, z):#, lat0, lon0, h0):
 
 cpdef   WGS842ENU(double lat, double lon, double alt, double lat0, double lon0, double alt0):
     '''
-        WARNING: Need to check geodedtic and geocentric latitude calculation..not sure which latitude was
+    Function to cover WGS84 to ENU, with lat0, lon0, alt0 as the centre.
+    all inputs should be in degrees.
+    
+    WGS842ENU(double lat, double lon, double alt)
+    ENU (X, Y, Z) of lat, lon, alt, lat0, lon0, alt0  inputs.
+    
+    .. warning::
+        Need to check geodetic and geocentric latitude calculation..not sure which latitude was
         measured for the estimation of tile positions..needs to be clarified. Now assuming what
         we have is geodetic latitude.
+    
+    Parameters
+    ----------
+        lat: `double`
+            Latitute
+        lon: `double`
+            Longitude
+        alt: `double`
+            Altitude
+        lat0: `double`
+            Latitute of the center
+        lon0: `double`
+            Longitude of the center
+        alt0: `double`
+            Altitude of the center
 
-
-        Module to cover WGS84 to ENU, with lat0, lon0, alt0 as the centre..
-        all inputs should be in degrees..
-        Usage:
-            Input:
-                WGS842ENU(double lat, double lon, double alt)
-            Output:
-                ENU (X, Y, Z) of lat, lon, alt, lat0, lon0, alt0  inputs.
-
+    Returns
+    -------
+        E: `double`
+            East
+        N: `double`
+            North
+        U: `double` 
+            Up
     '''
     cdef double E=0
     cdef double N=0
@@ -716,8 +762,8 @@ cpdef WGS842ECEF(double lat, double lon, double alt):
     
     Returns
     -------
-        `list`
-        Returns list of X, Y, Z (ECEF) coordinates.
+        [X,Y,Z]: `list`
+            X, Y, Z (ECEF) coordinates
 
     Examples
     --------
@@ -771,16 +817,18 @@ cpdef AltAz2HARA(float el, float az, float phi, float lon,
                     float second, float minute, float hour, float day, float month, float year):    
     '''
     Module to calculate RA and Dec, HA and Dec from AltAz
-    --------------Convention for HA-----------
-                    N   
-                +ve     -ve
 
-            W               E
-                    
-                +ve     -ve
-                    S
-    -----------------------------------------
+    .. code-block:: text
 
+        --------------Convention for HA-----------
+                        N
+                   +ve     -ve
+
+                W               E
+
+                   +ve     -ve
+                        S
+        -----------------------------------------
     Parameters
     ----------
         el: `float`
@@ -806,10 +854,10 @@ cpdef AltAz2HARA(float el, float az, float phi, float lon,
     Examples
     --------
     All inputs in degrees
-    ```
+
     AltAz2HARA(float elevaltion, float azimuth, float phi/lat, float longitude,
         float sec, float minu, float hour, float day. float month, float year)
-    ```
+
     >>> AltAz2HARA(0, 45, 12.97, 77.58, 0, 0, 0, 1, 12, 2021) 
     '''
     
@@ -845,6 +893,7 @@ cpdef AltAz2HARA(float el, float az, float phi, float lon,
 cdef HA2RA(HA, second, minute, hour, day, month, year):
     """
     Function to convert Hour-angle to Right Ascension
+    Returns right ascension using the formula RA = LST - HA
 
     Parameters
     ----------
@@ -859,8 +908,8 @@ cdef HA2RA(HA, second, minute, hour, day, month, year):
 
     Returns
     -------
-        `float`
-        Returns right ascension using the formula RA = LST - HA
+        RA: `float`
+            Right ascension
     """
     LST    =   selflst(second, minute, hour, day, month, year)
     RA     =   LST-HA
@@ -869,13 +918,15 @@ cdef HA2RA(HA, second, minute, hour, day, month, year):
 
 cpdef map_RA_Dec_to_file(fil, pointing_file, gps, LO, Tile_1, Tile_2):
     '''
-    Pointing file structure:
-        chXX_NAME_YYYYMMDD_HHMMSS.mbr,   Az,  za
-        .                               .   .
-        .                               .   .
-        .                               .   .
-        .                               .   .
-        .                               .   .
+    .. code-block:: text
+
+        Pointing file structure:
+            chXX_NAME_YYYYMMDD_HHMMSS.mbr,   Az,  za
+            .                               .   .
+            .                               .   .
+            .                               .   .
+            .                               .   .
+            .                               .   .
 
     Parameters
     ----------
@@ -889,10 +940,6 @@ cpdef map_RA_Dec_to_file(fil, pointing_file, gps, LO, Tile_1, Tile_2):
             Tile number 1 (0-N convention)
         Tile_2: `int`
             Tile number 2 (0-N convention)
-
-    Returns
-    -------
-        RA, Dec
 
     Note
     ----
@@ -950,12 +997,18 @@ cpdef correct_time(float second, float minute, float hour, float day, float mont
     """
     Parameters
     ----------
-        second: `float` 
+        second: `float`
+            Seconds
         minute: `float` 
-        hour: `float` 
-        day: `float` 
-        month: `float` 
+            Minutes
+        hour: `float`
+            Hours
+        day: `float`
+            Days
+        month: `float`
+            Month(1-12)
         year: `float`
+            Year
     
     Returns
     -------
@@ -983,6 +1036,7 @@ cpdef Equ2local(float RA, float Dec, float phi, float lon,
         float second, float minute, float hour, float day, float month, float year):
     '''
     Function to covert Equatorial coordinates to Local Coordinates
+    Returns local coordinates, Azimuth, Altitude, Hour-angle
 
     Parameters
     ----------
@@ -994,20 +1048,30 @@ cpdef Equ2local(float RA, float Dec, float phi, float lon,
         lon: `float`
             Longitude
         second: `float`
+            Seconds
         minute: `float`
+            Minutes
         hour: `float`
+            Hours
         day: `float`
+            Days
         month: `float`
+            Month(1-12)
         year: `float`
+            Year
 
     Returns
     -------
-        `float`, `float`, `float`
-        Returns local coordinates, Azimuth, Altitude, Hour-angle
+        az: `float`
+            Azimuth
+        alt: `float`
+            Altitude
+        ha: `float`
+            Hour-angle
 
     Examples
     --------
-        Equ2local(RA, Dec, phi, lon, second, minute, hour, day, month, year) 
+        >>> Equ2local(RA, Dec, phi, lon, second, minute, hour, day, month, year) 
     '''
     cdef double secu        =   second
     cdef double mint        =   minute
