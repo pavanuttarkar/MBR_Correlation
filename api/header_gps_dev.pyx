@@ -67,6 +67,7 @@ cpdef sub_gen_finer_shift_parameter(fil1, fil2, comf_X, comf_Y, comf1_X, comf1_Y
     
     return delay_paramX, delay_paramY
 
+
 cpdef gen_finer_shift_parameter(file_name, file_name1, comf_X, comf_Y, comf1_X, comf1_Y, avg, le, RFI):
 
     '''
@@ -185,6 +186,7 @@ cpdef np.ndarray RFI_Reject(spec, sig, fftsize, avg):
 
 import sys
 
+
 def super_sync_file(fil):
     '''
        Wrapper for super_sync_genrator
@@ -209,6 +211,7 @@ def super_sync_file(fil):
             temp    =   temp+str(fil_list[i])+','
         temp    =   temp + ')'
     return 0
+
 
 def super_sync_generator(*args):
     '''
@@ -246,9 +249,8 @@ def super_sync_generator(*args):
         #file_name.append(args[i])
     #sub_gen_files(file_name, series, comf, slp1)
 
-
-
     return slp1
+
 
 cdef sub_sync_generator(fil_name, series, dt):
     '''
@@ -270,9 +272,7 @@ cdef sub_sync_generator(fil_name, series, dt):
        line param: linregress solution
            array of line parameters 
 
-         
     '''
-
 
     cdef list   comf1         =      []
     cdef list   slp1          =      []     
@@ -310,8 +310,8 @@ cdef sub_sync_generator(fil_name, series, dt):
     print(slp)
     return slp 
 
-def sub_gen_files(file_name, series, comf, slp):
 
+def sub_gen_files(file_name, series, comf, slp):
     '''
         Module to calculate the synchronization information using the embedded GPS information.
         This is mainly used in the Intterferometric mode of operation, this is a lower level
@@ -390,6 +390,7 @@ def sub_gen_files(file_name, series, comf, slp):
             np.savetxt(str("SAMPLING_INFO/RFI_mask_Y_"+str(fil1))+'_ascii.rfi', RFI2)
     return 0;
 
+
 cpdef call_to_read_for_RFI(comf_1, avg):
     '''
        Module to decrypt file for RFI measurments
@@ -416,6 +417,7 @@ cpdef call_to_read_for_RFI(comf_1, avg):
     comf_Y	=	tempcomf[1::2]
 
     return comf_X, comf_Y
+
 
 cpdef read_RFI(file_name, file_name1):
     '''
@@ -459,7 +461,6 @@ cpdef read_RFI(file_name, file_name1):
 
 
 cpdef obsdelay(creal):
-
     '''
        Module to calculate the delay in the correlation spectrum,
        by Hilbert Trabsform.
@@ -483,8 +484,6 @@ cpdef obsdelay(creal):
                 
     '''
 
-
-
     phase1      =   np.zeros((len(creal[0])), dtype=float)
     phase_total =   []
     ampmax	=   np.zeros((len(creal[0])), dtype=float)
@@ -504,10 +503,11 @@ cpdef obsdelay(creal):
     ampmax	=	ampmax - min(ampmax) 
     return phase1, phase_total, ampmax
 
+
 cpdef obsdelay_param(creal):
     '''
        Module to calculate the finer delay, using the correlation spectrum,
-       by Hilbert Trabsform.
+       by Hilbert Transform.
 
        Parameters
        ----------
@@ -536,8 +536,6 @@ cpdef obsdelay_param(creal):
     return ampmax
 
 
-
-  
 cpdef parabolic(f, x):
     """Quadratic interpolation for estimating the true position of an
     inter-sample maximum when nearby samples are known.
@@ -562,6 +560,7 @@ cpdef parabolic(f, x):
     yv = f[x] - 1/4 * (f[x-1] - f[x+1]) * (xv - x)
     return (xv, yv)
 
+
 cpdef parabolic_polyfit(f, x, n):
     """Use the built-in polyfit() function to find the peak of a parabola
     f is a vector and x is an index for that vector.
@@ -571,4 +570,3 @@ cpdef parabolic_polyfit(f, x, n):
     xv = -0.5 * b/a
     yv = a * xv**2 + b * xv + c
     return (xv, yv)
-
