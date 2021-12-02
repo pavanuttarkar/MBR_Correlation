@@ -37,20 +37,48 @@ import cython
 #
 
 cdef linear_fit(a,b):
-        z                       =       np.polyfit(a,b,1)
-        print("ATTENTION!!")
-        print(z[0], z[1])
-        r                       =       np.poly1d(z)
-        a_new                   =       np.linspace(a[0],a[-1],len(a))
-        b_new                   =       r(a_new)
-        x = symbols("*x")#Change of * made
-        poly = sum(S("{:6.2f}".format(v))*x**i for i, v in enumerate(z[::-1]))
-        eq_latex = sympy.printing.latex(poly)
-        return  a_new,b_new, eq_latex
+    """
+    Least squares a linear fit, using :function:~numpy.polyfit
+
+    Parameters
+    ----------
+        a: `list`
+            X-data
+        b: `list`
+            Y-data
+    
+    Returns
+    -------
+        a_new: `list`
+        b_new: `list`
+        eq_latex: `str`
+    """
+    z                       =       np.polyfit(a,b,1)
+    print("ATTENTION!!")
+    print(z[0], z[1])
+    r                       =       np.poly1d(z)
+    a_new                   =       np.linspace(a[0],a[-1],len(a))
+    b_new                   =       r(a_new)
+    x = symbols("*x")#Change of * made
+    poly = sum(S("{:6.2f}".format(v))*x**i for i, v in enumerate(z[::-1]))
+    eq_latex = sympy.printing.latex(poly)
+    return  a_new,b_new, eq_latex
 
 cpdef get_memfactor_est(str file_name, str file_name1):
     '''
-         Memfactor estimation using packet numbering...
+    Memfactor estimation using packet numbering.
+
+    Parameters
+    ----------
+        file_name: `str`
+            File name 1
+        file_name: `str`
+            File name 2
+
+    Returns
+    -------
+        tag_gp1: `int`
+        tag_gp2: `int`
     '''
     dt  =       np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
     comf        =       np.memmap(file_name, dtype=dt, mode='c')
@@ -73,8 +101,24 @@ cpdef get_memfactor_est(str file_name, str file_name1):
 
 
 cpdef read_RFI(file_name, file_name1):
+    """
+    Function to read RFI data using :function:~numpy.loadtxt
 
+    Parameters
+    ----------
+        file_name: `str`
+            File name 1
+        file_name1: `str`
+            File name 2
 
+    Returns
+    -------
+        RFI_mask1: `numpy.array`
+        RFI_mask2: `numpy.array`
+        RFI_mask3: `numpy.array`
+        RFI_mask4: `numpy.array`
+        [ch01, ch02, ch02, ch04]: `list`
+    """
     fil_000         =               file_name[:-7]+'000.mbr'
     fil1_000        =               file_name1[:-7]+'000.mbr'
 
@@ -110,7 +154,25 @@ cpdef read_RFI(file_name, file_name1):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef compensate_pack_loss(comf, comf1, tempcomf, tempcomf1, lin1, lin2, Mem1, Mem2):
-     
+    """
+    Function to compensate packet loss
+
+    Parameters
+    ----------
+        comf
+        comf1
+        tempcomf
+        tempcomf1
+        lin1
+        lin2
+        Mem1
+        Mem2
+
+    Returns
+    -------
+        tempcomf: `numpy.ndarray`
+        tempcomf1: `numpy.ndarray`
+    """
     search_time       =   time.time()
     cdef np.ndarray pack_loss         =   comf['Packet'][1:] - comf['Packet'][0:len(comf['Packet'])-1]  
     cdef np.ndarray pack_loss1        =   comf1['Packet'][1:] - comf1['Packet'][0:len(comf1['Packet'])-1]
@@ -118,8 +180,6 @@ cpdef compensate_pack_loss(comf, comf1, tempcomf, tempcomf1, lin1, lin2, Mem1, M
     cdef np.ndarray pack_loss_t2      =   np.where(pack_loss1 != 1)[0]
     cdef np.ndarray pack_loss_val1    =   pack_loss[pack_loss_t1]
     cdef np.ndarray pack_loss_val2    =   pack_loss1[pack_loss_t2]
-
-
 
     time_marker       =   time.time()
     marker_str1       =     'np.hstack(('
@@ -151,18 +211,14 @@ cpdef compensate_pack_loss(comf, comf1, tempcomf, tempcomf1, lin1, lin2, Mem1, M
     #np.save('marker1', marker1)
     #np.save('marker2', marker2)
 
-
     print('Marker Time..'+str(time.time() - time_marker))
     print(Mem1, Mem2)
-
 
     time_delete       =   time.time()
     #np.save('tempcomf', tempcomf)
     #np.save('tempcomf1', tempcomf1)
     #tempcomf		 =   compensate_packet_loss_delete_function(tempcomf[Mem1:], marker)
     #tempcomf1		 =   compensate_packet_loss_delete_function(tempcomf1[Mem2:], marker)
-
-
 
     #tempcomf_1           =   np.delete(tempcomf[Mem1:],  marker , axis = 0)
     #tempcomf_2           =   np.delete(tempcomf1[Mem2:], marker , axis = 0)
@@ -174,10 +230,6 @@ cpdef compensate_pack_loss(comf, comf1, tempcomf, tempcomf1, lin1, lin2, Mem1, M
 
     #print('Search time..'+str(time.time() - search_time))
     #print('Delete Time..'+str(time.time() - time_delete))
-
-
-
-
 
     tempcomf    = tempcomf.ravel()
     tempcomf1   = tempcomf1.ravel()
@@ -347,17 +399,29 @@ cpdef tuple decrypy_file_new_SWAN_onhold_without_wierd_comp_for_testing_ONLY(fil
 
 cpdef get_last_gps_timing(comf, comf1, file_name, file_name1, series, Memfactor):
     '''
-         Module to calculate last GPS value in the files
-         This will help constrain the simulated delay error.
-         INPUT:
-                 Memmaped array file1 (comf),  Memmaped array file1 (comf1), file path (including name) of first file,
-                     file path (including name) of second file, series code, Memfactor array 
-         OUTPUT:
-                 Total time of file1, Total time of file2 (in sec)  
-    '''
+    Function to calculate last GPS value in the files
+    This will help constrain the simulated delay error.
 
+    Parameters
+    ----------
+        comf: `numpy.ndarray` 
+            Memmaped array file1
+        comf1: `numpy.ndarray`
+            Memmaped array file1
+        file_name: `str`
+            File name 1
+        file_name1: `str`
+            File name 2
+        series: `str`
+            Series code
+        Memfactor: `numpy.array`
+            Memfactor array
+
+    Returns
+    -------
+    Total time of file1, Total time of file2 (in sec)  
+    '''
     cdef str file_name_1, file_name1_1 
-    
     try:
         file_name_1 =       file_name.split('/')[-1]
         file_name1_1=       file_name1.split('/')[-1]
@@ -366,7 +430,6 @@ cpdef get_last_gps_timing(comf, comf1, file_name, file_name1, series, Memfactor)
         file_name1_1=       file_name1
     file_name_1		=		file_name_1[:-7]+'000.mbr'
     file_name1_1	=		file_name1_1[:-7]+'000.mbr'
-    
 
     #Last GPS value recorded in the packet
     cdef long long int last_gps1	=	0
@@ -376,127 +439,140 @@ cpdef get_last_gps_timing(comf, comf1, file_name, file_name1, series, Memfactor)
     cdef long long int last_pack1       =       0
     cdef long long int last_pack2       =       0
 
- 
     cdef double	       comp1		=	0
     cdef double        comp2            =       0
    
     cdef long long int first_gps1	=	0
     cdef long long int first_gps2	=	0
 
-
-
     #Getting last GPS Value associated packet number 
-    last_gps1				=	comf['GPS'][len(comf)-1]
-    last_gps2                           =       comf1['GPS'][len(comf1)-1]
+    last_gps1 = comf['GPS'][len(comf)-1]
+    last_gps2 = comf1['GPS'][len(comf1)-1]
 
-    last_pack1				=	comf['Packet'][len(comf)-1]
-    last_pack2                          =       comf1['Packet'][len(comf1)-1]
+    last_pack1 = comf['Packet'][len(comf)-1]
+    last_pack2 = comf1['Packet'][len(comf1)-1]
 
     #Getting penultimate GPS Value associated packetnumper
-    penul_gps1				=	comf['Packet'][np.where(comf['GPS'] == last_gps1-1)[0][0]]
-    penul_gps2                          =       comf1['Packet'][np.where(comf1['GPS'] == last_gps2-1)[0][0]]
+    penul_gps1 = comf['Packet'][np.where(comf['GPS'] == last_gps1-1)[0][0]]
+    penul_gps2 = comf1['Packet'][np.where(comf1['GPS'] == last_gps2-1)[0][0]]
     
-    #Getting difference 
-    
+    #Getting difference
     cdef int gps_check			=	0
 
-    delta_gps1				=	last_pack1	-	penul_gps1
-    delta_gps2				=	last_pack2	-	penul_gps2
+    delta_gps1 = last_pack1	- penul_gps1
+    delta_gps2 = last_pack2	- penul_gps2
 
     #Getting total packet number
     cdef long long int pack1		
     cdef long long int pack2            
 
     if(series=='000'):
-        first_gps1			=	comf['GPS'][100]
-        first_gps2			=	comf1['GPS'][100]
-        pack1            		=       comf['Packet'][np.where(comf['Packet'] == penul_gps1)[0][0]] - comf['Packet'][100]    +delta_gps1
-        pack2                           =       comf1['Packet'][np.where(comf1['Packet'] == penul_gps2)[0][0]] -comf1['Packet'][100]   +delta_gps2
+        first_gps1 = comf['GPS'][100]
+        first_gps2 = comf1['GPS'][100]
+        pack1 = comf['Packet'][np.where(comf['Packet'] == penul_gps1)[0][0]] - comf['Packet'][100]    +delta_gps1
+        pack2 = comf1['Packet'][np.where(comf1['Packet'] == penul_gps2)[0][0]] -comf1['Packet'][100]   +delta_gps2
     else:
-        first_gps1                      =       comf['GPS'][0]
-        first_gps2                      =       comf1['GPS'][0]
-        pack1                           =       comf['Packet'][np.where(comf['Packet'] == penul_gps1)[0][0]] - comf['Packet'][0] +delta_gps1
-        pack2                           =       comf1['Packet'][np.where(comf1['Packet'] == penul_gps2)[0][0]]- comf1['Packet'][0]+delta_gps2
+        first_gps1 = comf['GPS'][0]
+        first_gps2 = comf1['GPS'][0]
+        pack1 = comf['Packet'][np.where(comf['Packet'] == penul_gps1)[0][0]] - comf['Packet'][0] +delta_gps1
+        pack2 = comf1['Packet'][np.where(comf1['Packet'] == penul_gps2)[0][0]]- comf1['Packet'][0]+delta_gps2
 
 
     #IMP: Calculated slope values are only taken from the 000 series..for consistancy and ease of operation. 
-    cdef float slope1			=	gps_slope(file_name_1)
-    cdef float slope2			=	gps_slope(file_name1_1)
-    cdef float delta_time1		=	(pack1-Memfactor[0]/512.0)/slope1	
-    cdef float delta_time2             	=       (pack2-Memfactor[1]/512.0)/slope2
+    cdef float slope1 =	gps_slope(file_name_1)
+    cdef float slope2 =	gps_slope(file_name1_1)
+    cdef float delta_time1 = (pack1-Memfactor[0]/512.0)/slope1	
+    cdef float delta_time2 = (pack2-Memfactor[1]/512.0)/slope2
     
     #Saving these values if not already saved..
-        
 
- 
     return np.array([[first_gps1+(Memfactor[0]/512)/slope1, delta_time1], [first_gps2+(Memfactor[1]/512)/slope2, delta_time2]])
 
+
 cpdef get_gps_info_000_file(comf, comf1, Memfactor):
-    cdef long long int Mem1_index =   0
-    cdef long long int Mem2_index =   0
-    cdef long long int Mem1_fact      =   0
-    cdef long long int Mem2_fact      =   0
-    cdef long long int Mem1           =   0
-    cdef long long int Mem2           =   0
+    cdef long long int Mem1_index = 0
+    cdef long long int Mem2_index = 0
+    cdef long long int Mem1_fact = 0
+    cdef long long int Mem2_fact = 0
+    cdef long long int Mem1 = 0
+    cdef long long int Mem2 = 0
     
     print('Memfactor in get_gps_info_000_file..'+str(Memfactor[0])+','+str(Memfactor[1]))
-    Mem1_fact           =   int(float(Memfactor[0]/512.0))
-    Mem2_fact           =   int(float(Memfactor[1]/512.0))
+    Mem1_fact = int(float(Memfactor[0]/512.0))
+    Mem2_fact = int(float(Memfactor[1]/512.0))
     print('Mem1_fact, Mem2_fact'+str(Mem1_fact)+','+str(Mem2_fact))
 
     for i in range(len(comf)):
         if(comf['Packet'][i] == Mem1_fact and Mem1_index==0):
-            Mem1             =  i
-            Mem1_index       =  1
+            Mem1 = i
+            Mem1_index = 1
         if(comf1['Packet'][i] == Mem2_fact and Mem2_index==0):
-            Mem2             =  i
-            Mem2_index       =  1
-        if(Mem1_index & Mem2_index  ==  1):
+            Mem2 = i
+            Mem2_index = 1
+        if(Mem1_index & Mem2_index == 1):
             break;
-    cdef long long int pre_ploss	=	comf['Packet'][Mem1] - comf['Packet'][0] - Mem1#len(comf['Packet'][:Mem1])+1
-    cdef long long int pre_ploss1	=	comf1['Packet'][Mem2] - comf1['Packet'][0] - Mem2#len(comf1['Packet'][:Mem2])+1
+    cdef long long int pre_ploss = comf['Packet'][Mem1] - comf['Packet'][0] - Mem1#len(comf['Packet'][:Mem1])+1
+    cdef long long int pre_ploss1 =	comf1['Packet'][Mem2] - comf1['Packet'][0] - Mem2#len(comf1['Packet'][:Mem2])+1
     print('Memfactor 1.....'+str(Mem1))
     print('Memfactor 2.....'+str(Mem2))
    
     print('pre_ploss, pre_ploss1 in get_gps_info_000_file is..'+str(pre_ploss)+','+str(pre_ploss1)) 
-    Mem1	    =	Mem1 + pre_ploss #+1
-    Mem2	    =   Mem2 + pre_ploss1#+1   
+    Mem1 = Mem1 + pre_ploss #+1
+    Mem2 = Mem2 + pre_ploss1#+1   
 
-    Memfactor[0]    =   Mem1*512 + (Memfactor[0]%512)#*512
-    Memfactor[1]    =   Mem2*512 + (Memfactor[1]%512)#*512
+    Memfactor[0] = Mem1*512 + (Memfactor[0]%512)#*512
+    Memfactor[1] = Mem2*512 + (Memfactor[1]%512)#*512
 
     print('Memfactor in get_gps_info_000_file..'+str(Memfactor[0])+','+str(Memfactor[1]))
-
     return Mem1, Mem2, np.array(Memfactor)
 
+
 cpdef tuple decrypy_file_new_SWAN_onhold(file_name, file_name1, ch, Memfactor=[0, 0]):
-
-
     '''
-         Module to generate the decrypted version of the files, with separate set of X and Y Pol array.
-         Input:
-              (file_name, file_name1, ch, Memfactor=[0, 0])
-              file_name	=	File name of the first file.
-              file_name1=	File name of the second file.
-              ch 	=	Avegrage
-              Memfactor	=	Memory factor intented for the correction, only required for the 000 file and not required for the
-              			non-000 files.
-        Output:
-              1. File One X-Pol 1D np array, 2. File Two Y-Pol 1D np array, 3. File Two X-Pol 1D np array, 4. File Two Y-Pol 1D np array, 5. Local Oscillator value derived
-              from the header (int), 6. Memfactor 1D np array (Jump factor to use).
-              
+    Module to generate the decrypted version of the files, with separate set of X and Y Pol array.
+
+    Parameters
+    ----------
+        file_name: `str`
+            File name 1
+        file_name1: `str`
+            File name 2
+        ch: `int`
+            Avegrage !CHECKTHIS!
+            Channel no.
+        Memfactor: `list`, optional
+            Defaults to [0, 0]
+            Memory factor intented for the correction, only required for the 000 file and not required for the
+                non-000 files.
+
+    Returns
+    -------
+        tempcomf_X: 1D`numpy.array`
+            File 1 X-Pol
+        tempcomf_Y: 1D`numpy.array`
+            File 1 Y-Pol
+        tempcomf1_X: 1D`numpy array`
+            File 2 X-Pol
+        tempcomf1_Y: 1D`numpy.array`
+            File 2 Y-Pol
+        LO1: `int`
+            Local Oscillator value derived from the header
+        file_time: ``
+            File time
+        Memfactor1: `int`
+            Memfactor 1D np array (Jump factor to use).
+        new_Memfactor: `int`
+            Memfactor 1D np array (Jump factor to use).
     '''
     #If available get the earlier data set#
-    cdef str series      = file_name[-7:-4]
-    dt      =    np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
-     
+    cdef str series = file_name[-7:-4]
+    dt = np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
+
     cdef int LO1, LO2
-
-
-    cdef np.ndarray Memfactor1  =       np.zeros((2), dtype=float)
-    cdef double timea    = time.time()
-    cdef str fil_tag     = file_name.split('_')[-4]
-    cdef int    i        = 0
+    cdef np.ndarray Memfactor1 = np.zeros((2), dtype=float)
+    cdef double timea = time.time()
+    cdef str fil_tag = file_name.split('_')[-4]
+    cdef int i = 0
     print('Caching memory, for faster read..')    
     #os.system('./comp '+str(file_name)+' '+str(file_name1))
     #comf     = np.memmap(file_name,  dtype = dt, mode = 'c')
@@ -506,108 +582,94 @@ cpdef tuple decrypy_file_new_SWAN_onhold(file_name, file_name1, ch, Memfactor=[0
 
     #comf11	=	np.memmap(file_next, dtype = dt, mode = 'c')
     #comf1	=	np.concatenate((comf1, comf11[0:600000]))
-    time_read		=		time.time() 
+    time_read = time.time() 
     cdef np.ndarray file_time
     #Calling reading_function_spinoff
-    tempcomf_X, tempcomf_Y, tempcomf1_X, tempcomf1_Y, Memfactor, Mem1, Mem2, LO1, LO2, file_time	=	read_spinoff(series, Memfactor, file_name, file_name1, dt)  
+    tempcomf_X, tempcomf_Y, tempcomf1_X, tempcomf1_Y, Memfactor, Mem1, Mem2, LO1, LO2, file_time = read_spinoff(series, Memfactor, file_name, file_name1, dt)  
     print('Time for readspinoff...'+str(time.time()-time_read))
 
-    Memfactor1		 =   Memfactor
+    Memfactor1 = Memfactor
 
     #Now reading next file, to make up for the packet loss and GPS shift#
-    cdef int le      			= 	(len(tempcomf_X)-int(round(Memfactor[0])))/(int(512)*int(ch)) #- int(round(Memfactor[0]))/512.0
-    cdef int le1     			= 	(len(tempcomf1_X)-int(round(Memfactor[1])))/(int(512)*int(ch))#- int(round(Memfactor[1]))/512.0
-    file_name_1, file_name1_1           =       break_file_name(file_name, file_name1)   
+    cdef int le = (len(tempcomf_X)-int(round(Memfactor[0])))/(int(512)*int(ch)) #- int(round(Memfactor[0]))/512.0
+    cdef int le1 = (len(tempcomf1_X)-int(round(Memfactor[1])))/(int(512)*int(ch))#- int(round(Memfactor[1]))/512.0
+    file_name_1, file_name1_1 = break_file_name(file_name, file_name1)   
 
-
-    
-    time_jumpX, time_jumpY, time_flag	=	 get_fparam(file_name_1, file_name1_1) 
-    le      				=   	 min(le, le1)
-    RFI 				=	 _header_gps_cy.read_RFI(file_name, file_name1) 
+    time_jumpX, time_jumpY, time_flag = get_fparam(file_name_1, file_name1_1) 
+    le = min(le, le1)
+    RFI = _header_gps_cy.read_RFI(file_name, file_name1) 
     '''
         dt_Memfactor composition
             Pol-X   Pol-Y
         0
         1
-        
-        
+
         dt_Memfactor_flag composition
             Pol-X   Pol-Y
         0
         1
-
-
-
     '''
-
-    dt_Memfactor			=	np.dtype([('MemfactorX', np.float64), ('MemfactorY', np.float64)])#, [('Memfacto1X', '>u4'), ('Memfactor1Y', '>u4')]])
-    new_Memfactor			=	np.zeros((2, 2), dtype=dt_Memfactor)
-    dt_Memfactor_flag                   =       np.dtype([('MemfactorX_flag', '>i1'), ('MemfactorY_flag', '>i')])
-    new_Memfactor_flag			=	np.zeros((2), dtype=dt_Memfactor_flag)
+    dt_Memfactor = np.dtype([('MemfactorX', np.float64), ('MemfactorY', np.float64)])#, [('Memfacto1X', '>u4'), ('Memfactor1Y', '>u4')]])
+    new_Memfactor = np.zeros((2, 2), dtype=dt_Memfactor)
+    dt_Memfactor_flag = np.dtype([('MemfactorX_flag', '>i1'), ('MemfactorY_flag', '>i')])
+    new_Memfactor_flag = np.zeros((2), dtype=dt_Memfactor_flag)
 
     print('Memfactor last..')
     print(Memfactor)
     if(Memfactor[0]!=0): 
-        new_Memfactor['MemfactorX'][0][0]	     =	    	Memfactor[0]+time_jumpX
-        new_Memfactor['MemfactorX'][0][1]	     =		0
-        new_Memfactor['MemfactorY'][0][0]	     =		Memfactor[0]+time_jumpY
-        new_Memfactor['MemfactorY'][0][1]	     =		0
-        new_Memfactor['MemfactorX'][1][0]            =          (Memfactor[0]%512+time_jumpX)
+        new_Memfactor['MemfactorX'][0][0] = Memfactor[0]+time_jumpX
+        new_Memfactor['MemfactorX'][0][1] = 0
+        new_Memfactor['MemfactorY'][0][0] = Memfactor[0]+time_jumpY
+        new_Memfactor['MemfactorY'][0][1] = 0
+        new_Memfactor['MemfactorX'][1][0] = (Memfactor[0]%512+time_jumpX)
         if(new_Memfactor['MemfactorX'][1][0]<0):
             print("In new_Memfactor['MemfactorX'][1][0]<0 condition")
-            new_Memfactor['MemfactorX'][1][0]        =          (Memfactor[0]%512+time_jumpX)%512
+            new_Memfactor['MemfactorX'][1][0] = (Memfactor[0]%512+time_jumpX)%512
         
-        new_Memfactor['MemfactorX'][1][1]            =          0
+        new_Memfactor['MemfactorX'][1][1] = 0
         
-        new_Memfactor['MemfactorY'][1][0]            =          (Memfactor[0]%512+time_jumpY)
+        new_Memfactor['MemfactorY'][1][0] = (Memfactor[0]%512+time_jumpY)
         if(new_Memfactor['MemfactorY'][1][0]<0):
             print("In new_Memfactor['MemfactorY'][1][0]<0 condition")
-            new_Memfactor['MemfactorY'][1][0]        =          (Memfactor[0]%512+time_jumpY)%512
+            new_Memfactor['MemfactorY'][1][0] = (Memfactor[0]%512+time_jumpY)%512
         
-        new_Memfactor['MemfactorY'][1][1]            =          0
-
+        new_Memfactor['MemfactorY'][1][1] = 0
 
         if( int((Memfactor[0]+time_jumpY)/512) < int(Memfactor[0]/512)):
-            tempcomf1_Y                       		 =          tempcomf1_Y[int(512-(Memfactor[0]%512+time_jumpY))%512:]
-            new_Memfactor['MemfactorY'][1][0]            =          0#(Memfactor[0]%512+time_jumpY)%512
+            tempcomf1_Y = tempcomf1_Y[int(512-(Memfactor[0]%512+time_jumpY))%512:]
+            new_Memfactor['MemfactorY'][1][0] = 0#(Memfactor[0]%512+time_jumpY)%512
             print('\n\n\n\n')
         if( int((Memfactor[0]+time_jumpX)/512) < int(Memfactor[0]/512)):
-            tempcomf1_X                       		 =          tempcomf1_X[int(512-(Memfactor[0]%512+time_jumpX))%512:]
-            new_Memfactor['MemfactorX'][1][0]            =          0#(Memfactor[0]%512+time_jumpX)%512
+            tempcomf1_X = tempcomf1_X[int(512-(Memfactor[0]%512+time_jumpX))%512:]
+            new_Memfactor['MemfactorX'][1][0] = 0#(Memfactor[0]%512+time_jumpX)%512
             print('\n\n\n\n')
         print(time_jumpY, time_jumpX)
         print('new_Memfactor at the end is..')
         print(new_Memfactor)
     else:
+        new_Memfactor['MemfactorX'][0][0]= 0#Memfactor[0] - time_jumpX
+        new_Memfactor['MemfactorY'][0][0]= 0#Memfactor[0] - time_jumpY
 
+        new_Memfactor['MemfactorX'][0][1] = Memfactor[1] - time_jumpX#X
+        new_Memfactor['MemfactorY'][0][1] = Memfactor[1] - time_jumpY#Y
 
+        new_Memfactor['MemfactorX'][1][0] = 0#Memfactor[0] - time_jumpX
+        new_Memfactor['MemfactorY'][1][0] = 0#Memfactor[0] - time_jumpY
 
-        new_Memfactor['MemfactorX'][0][0]  =       0#Memfactor[0] - time_jumpX
-        new_Memfactor['MemfactorY'][0][0]  =       0#Memfactor[0] - time_jumpY
-
-        new_Memfactor['MemfactorX'][0][1]  =       Memfactor[1] - time_jumpX#X
-        new_Memfactor['MemfactorY'][0][1]  =       Memfactor[1] - time_jumpY#Y
-
-
-
-        new_Memfactor['MemfactorX'][1][0]  =       0#Memfactor[0] - time_jumpX
-        new_Memfactor['MemfactorY'][1][0]  =       0#Memfactor[0] - time_jumpY
-
-        new_Memfactor['MemfactorX'][1][1]  =       (Memfactor[1]%512 - time_jumpX)#X
+        new_Memfactor['MemfactorX'][1][1] = (Memfactor[1]%512 - time_jumpX)#X
         if(new_Memfactor['MemfactorX'][1][1] < 0):
-            new_Memfactor['MemfactorX'][1][1]  =       (Memfactor[1]%512 - time_jumpX)%512#X
-        new_Memfactor['MemfactorY'][1][1]  =       (Memfactor[1]%512 - time_jumpY)#Y
+            new_Memfactor['MemfactorX'][1][1] = (Memfactor[1]%512 - time_jumpX)%512#X
+        new_Memfactor['MemfactorY'][1][1] = (Memfactor[1]%512 - time_jumpY)#Y
         print(Memfactor[1]%512-time_jumpX, Memfactor[1]%512-time_jumpY)
         if(new_Memfactor['MemfactorY'][1][1]<0):
-            new_Memfactor['MemfactorY'][1][1]  =       (Memfactor[1]%512 - time_jumpY)%512
+            new_Memfactor['MemfactorY'][1][1] = (Memfactor[1]%512 - time_jumpY)%512
 
-
-        if( int((Memfactor[1]-time_jumpY)/512) < int(Memfactor[1]/512)):
-            tempcomf_Y                                  =          tempcomf_Y[512:]#tempcomf_Y[int(512-(Memfactor[1]%512+time_jumpY))%512:]
+        if(int((Memfactor[1]-time_jumpY)/512) < int(Memfactor[1]/512)):
+            tempcomf_Y = tempcomf_Y[512:]#tempcomf_Y[int(512-(Memfactor[1]%512+time_jumpY))%512:]
             #new_Memfactor['MemfactorY'][1][1]           =          (Memfactor[0]%512-time_jumpY + 512
             print('In int((Memfactor[1]-time_jumpY)/512) < int(Memfactor[1]/512) condition..')
-        if( int((Memfactor[1]-time_jumpX)/512) < int(Memfactor[1]/512)):
-            tempcomf_X                                  =          tempcomf_X[512:]#tempcomf_X[int(512-(Memfactor[1]%512+time_jumpX))%512:]
+        if(int((Memfactor[1]-time_jumpX)/512) < int(Memfactor[1]/512)):
+            tempcomf_X = tempcomf_X[512:]#tempcomf_X[int(512-(Memfactor[1]%512+time_jumpX))%512:]
             #new_Memfactor['MemfactorX'][1][1]           =          (Memfactor[0]%512-time_jumpX + 512
             print('In int((Memfactor[1]-time_jumpX)/512) < int(Memfactor[1]/512) condition..')
         print(time_jumpY, time_jumpX)
@@ -619,85 +681,77 @@ cpdef tuple decrypy_file_new_SWAN_onhold(file_name, file_name1, ch, Memfactor=[0
         fparam_delayX, fparam_delayY	=	_header_gps_cy.gen_finer_shift_parameter(file_name, file_name1, tempcomf_X[int((Memfactor[0]%512)):], tempcomf_Y[int((Memfactor[0]%512)):], tempcomf1_X[int((Memfactor[1]%512)):], tempcomf1_Y[int((Memfactor[1]%512)):], ch, le, RFI) 
         #Fitting a parabolic curve, we have 
         print('fparam are X, Y..'+str(fparam_delayX)+','+str(fparam_delayY))
-        
-        if(Memfactor[0]!=0):
-            new_Memfactor['MemfactorX'][0][0]            =          Memfactor[0]+time_jumpX
-            new_Memfactor['MemfactorX'][0][1]            =          0
-            new_Memfactor['MemfactorY'][0][0]            =          Memfactor[0]+time_jumpY
-            new_Memfactor['MemfactorY'][0][1]            =          0
 
-            new_Memfactor['MemfactorX'][1][0]            =          (Memfactor[0]%512+time_jumpX)
+        if(Memfactor[0]!=0):
+            new_Memfactor['MemfactorX'][0][0] = Memfactor[0]+time_jumpX
+            new_Memfactor['MemfactorX'][0][1] = 0
+            new_Memfactor['MemfactorY'][0][0] = Memfactor[0]+time_jumpY
+            new_Memfactor['MemfactorY'][0][1] = 0
+
+            new_Memfactor['MemfactorX'][1][0] = (Memfactor[0]%512+time_jumpX)
             if(new_Memfactor['MemfactorX'][1][0]<0):
                 print("In new_Memfactor['MemfactorX'][1][0]<0 condition")
-                new_Memfactor['MemfactorX'][1][0]        =          (Memfactor[0]%512+time_jumpX)%512
+                new_Memfactor['MemfactorX'][1][0] = (Memfactor[0]%512+time_jumpX)%512
 
-            new_Memfactor['MemfactorX'][1][1]            =          0
+            new_Memfactor['MemfactorX'][1][1] = 0
 
-            new_Memfactor['MemfactorY'][1][0]            =          (Memfactor[0]%512+time_jumpY)
+            new_Memfactor['MemfactorY'][1][0] = (Memfactor[0]%512+time_jumpY)
             if(new_Memfactor['MemfactorY'][1][0]<0):
                 print("In new_Memfactor['MemfactorY'][1][0]<0 condition")
-                new_Memfactor['MemfactorY'][1][0]        =          (Memfactor[0]%512+time_jumpY)%512
+                new_Memfactor['MemfactorY'][1][0] = (Memfactor[0]%512+time_jumpY)%512
 
-            new_Memfactor['MemfactorY'][1][1]            =          0
-
+            new_Memfactor['MemfactorY'][1][1] = 0
 
             if( int((Memfactor[0]+time_jumpY)/512) < int(Memfactor[0]/512)):
-                tempcomf1_Y                                  =          tempcomf1_Y[int(512-(Memfactor[0]%512+time_jumpY))%512:]
-                new_Memfactor['MemfactorY'][1][0]            =          0#(Memfactor[0]%512+time_jumpY)%512
+                tempcomf1_Y = tempcomf1_Y[int(512-(Memfactor[0]%512+time_jumpY))%512:]
+                new_Memfactor['MemfactorY'][1][0] = 0#(Memfactor[0]%512+time_jumpY)%512
                 print('\n\n\n\n')
             if( int((Memfactor[0]+time_jumpX)/512) < int(Memfactor[0]/512)):
-                tempcomf1_X                                  =          tempcomf1_X[int(512-(Memfactor[0]%512+time_jumpX))%512:]
-                new_Memfactor['MemfactorX'][1][0]            =          0#(Memfactor[0]%512+time_jumpX)%512
+                tempcomf1_X = tempcomf1_X[int(512-(Memfactor[0]%512+time_jumpX))%512:]
+                new_Memfactor['MemfactorX'][1][0] = 0#(Memfactor[0]%512+time_jumpX)%512
                 print('\n\n\n\n')
             print(time_jumpY, time_jumpX)
             print('new_Memfactor at the end is..')
             print(new_Memfactor)
 
         else:
+            new_Memfactor['MemfactorX'][0][0] = 0#Memfactor[0] - time_jumpX
+            new_Memfactor['MemfactorY'][0][0] = 0#Memfactor[0] - time_jumpY
 
+            new_Memfactor['MemfactorX'][0][1] = Memfactor[1] - time_jumpX#X
+            new_Memfactor['MemfactorY'][0][1] = Memfactor[1] - time_jumpY#Y
 
+            new_Memfactor['MemfactorX'][1][0] = 0#Memfactor[0] - time_jumpX
+            new_Memfactor['MemfactorY'][1][0] = 0#Memfactor[0] - time_jumpY
 
-            new_Memfactor['MemfactorX'][0][0]  =       0#Memfactor[0] - time_jumpX
-            new_Memfactor['MemfactorY'][0][0]  =       0#Memfactor[0] - time_jumpY
-
-            new_Memfactor['MemfactorX'][0][1]  =       Memfactor[1] - time_jumpX#X
-            new_Memfactor['MemfactorY'][0][1]  =       Memfactor[1] - time_jumpY#Y
-
-
-
-            new_Memfactor['MemfactorX'][1][0]  =       0#Memfactor[0] - time_jumpX
-            new_Memfactor['MemfactorY'][1][0]  =       0#Memfactor[0] - time_jumpY
-
-            new_Memfactor['MemfactorX'][1][1]  =       (Memfactor[1]%512 - time_jumpX)#X
+            new_Memfactor['MemfactorX'][1][1] = (Memfactor[1]%512 - time_jumpX)#X
             if(new_Memfactor['MemfactorX'][1][1] < 0):
-                new_Memfactor['MemfactorX'][1][1]  =       (Memfactor[1]%512 - time_jumpX)%512#X
-            new_Memfactor['MemfactorY'][1][1]  =       (Memfactor[1]%512 - time_jumpY)#Y
+                new_Memfactor['MemfactorX'][1][1] = (Memfactor[1]%512 - time_jumpX)%512#X
+            new_Memfactor['MemfactorY'][1][1] = (Memfactor[1]%512 - time_jumpY)#Y
             print(Memfactor[1]%512-time_jumpX, Memfactor[1]%512-time_jumpY)
             if(new_Memfactor['MemfactorY'][1][1]<0):
-                new_Memfactor['MemfactorY'][1][1]  =       (Memfactor[1]%512 - time_jumpY)%512
+                new_Memfactor['MemfactorY'][1][1] = (Memfactor[1]%512 - time_jumpY)%512
 
 
             if( int((Memfactor[1]-time_jumpY)/512) < int(Memfactor[1]/512)):
-                tempcomf_Y                                  =          tempcomf_Y[int(512-(Memfactor[1]%512+time_jumpY))%512:]
-                new_Memfactor['MemfactorY'][1][1]           =          0#(Memfactor[0]%512+time_jumpY)%512
+                tempcomf_Y = tempcomf_Y[int(512-(Memfactor[1]%512+time_jumpY))%512:]
+                new_Memfactor['MemfactorY'][1][1] = 0#(Memfactor[0]%512+time_jumpY)%512
 
             if( int((Memfactor[1]-time_jumpX)/512) < int(Memfactor[1]/512)):
-                tempcomf_X                                  =          tempcomf_X[int(512-(Memfactor[1]%512+time_jumpX))%512:]
-                new_Memfactor['MemfactorX'][1][1]           =          0#(Memfactor[0]%512+time_jumpX)%512
+                tempcomf_X = tempcomf_X[int(512-(Memfactor[1]%512+time_jumpX))%512:]
+                new_Memfactor['MemfactorX'][1][1] = 0#(Memfactor[0]%512+time_jumpX)%512
             print(time_jumpY, time_jumpX)
             print('new_Memfactor at the end is..')
             print(new_Memfactor)
 
-
-
-
-        Memfactor	=	Memfactor1
+        Memfactor =	Memfactor1
         print('Memfactor...'+str(Memfactor[0])+' , '+str(Memfactor[1]))
     
     print('Time required to decrypt both files..'+str(time.time()-timea))
     print(len(tempcomf_X), len(tempcomf1_X))
     print(new_Memfactor_flag)
-    return tempcomf_X, tempcomf_Y, tempcomf1_X, tempcomf1_Y, LO1, file_time, Memfactor1, new_Memfactor 
+    return tempcomf_X, tempcomf_Y, tempcomf1_X, tempcomf1_Y, LO1, file_time, Memfactor1, new_Memfactor
+
 
 cdef sub_brute_force(comf_search, val):
     #cdef unsigned int i	=	0
@@ -705,6 +759,8 @@ cdef sub_brute_force(comf_search, val):
     #    if(comf_search['GPS'][i] == val):
     #        return i
     return int(np.argmax(comf_search['GPS']> val-1))
+
+
 cpdef trans_flag_brute_force(comf_end, comf, comf1, Memfact):
     '''
         This module is for brute force compensation..
@@ -732,6 +788,7 @@ cpdef trans_flag_brute_force(comf_end, comf, comf1, Memfact):
     print('Mem1, Mem_swt..'+str(Mem1)+','+str(Mem_swt))
     return Mem1+(len(comf)-1)*(int(Memfact)+Mem_swt) - min_val  + Mem_swt
 
+
 cpdef get_baseline(file_name, file_name1):
 
     try:
@@ -752,6 +809,7 @@ cpdef get_baseline(file_name, file_name1):
 
     return int(cdas1)-1, int(cdas2)-1
 
+
 cpdef break_file_name(file_name, file_name1):
 
     try:
@@ -763,16 +821,14 @@ cpdef break_file_name(file_name, file_name1):
 
     return file_name_1, file_name1_1
 
-cdef get_next_file(file_name, series):
 
+cdef get_next_file(file_name, series):
     return file_name[:-7]+str(int(series)+1).rjust(3, '0')+'.mbr'
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef comf_comf1_compensate(comf, comf1, file_name, file_name1, Memfactor, series):
-
-
     '''
         Important flags to remeber!!
         missing_file_comf1_1
@@ -817,8 +873,6 @@ cpdef comf_comf1_compensate(comf, comf1, file_name, file_name1, Memfactor, serie
         except:
             #Did not find the next file!
             missing_file_comf_1       =    1
-       
-
 
         if(missing_file_comf1_1==0 and missing_file_comf_1 ==0):
             comf                           =    np.concatenate((comf[internal_jump:], comf_1))
@@ -840,12 +894,11 @@ cpdef comf_comf1_compensate(comf, comf1, file_name, file_name1, Memfactor, serie
         internal_read                  =            (comf1['Packet'][(int((Memfactor1[1]/512.0)))] -comf1['Packet'][0] - len(comf1[0:(int((Memfactor1[1]/512.0)))]) )
         internal_read1                 =            (comf['Packet'][len(comf)-1]   -   comf['Packet'][0]- len(comf) + 1)
 
-
         #internal_read		       =	    0
 
         file_next                      =            get_next_file(file_name1, series)#file_name1[:-7]+str(int(series)+1).rjust(3, '0')+'.mbr'
         file_next1                     =            get_next_file(file_name, series)#file_name[:-7]+str(int(series)+1).rjust(3, '0')+'.mbr'
-        
+
         try: 
             #Trying to read next file, if it even exsists!
             comf1_1                        =            np.memmap(file_next,  dtype = dt, mode = 'c')[0:int(Memfactor1[1]/512.0)+internal_read]
@@ -876,7 +929,6 @@ cpdef comf_comf1_compensate(comf, comf1, file_name, file_name1, Memfactor, serie
         print('Internal GPS+Pack2 loss jump is..'+str(internal_jump))
         print('Total length is comf, comf1..'+str(len(comf))+','+str(len(comf1)))
 
-
     return comf, comf1, Memfactor1
 
 
@@ -899,7 +951,6 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
         print('LO1 = ' +str(LO1)+'\n')
         print('LO2 = ' +str(LO2)+'\n')
         #raise RuntimeError ('Both LOs are different!')
-
 
     cdef long long int ploss1                                      =       comf['Packet'][-1]  -  comf['Packet'][0] -len(comf['Packet']) + 1
     cdef long long int ploss2                                      =       comf1['Packet'][-1] -  comf1['Packet'][0] - len(comf1['Packet']) + 1
@@ -1025,33 +1076,23 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
                 print('In Mem_fact>2 condition')
             else:
                 internal_jump_mem_last     =            0#int(Memfactor1[0]/512)
-            
-
-
-
 
             if(trans_flag==1):
                 internal_jump_mem                  =            0
                 internal_jump_mem                  =            int(Memfactor1[1]/512)  -       internal_jump_mem_last
                 print(comf_end[int(Mem_fact)]['Packet'][internal_jump_mem_last%2027520], comf_end[int(Mem_fact)]['Packet'][0], internal_jump_mem_last%2027520)
                 print('Intermediate internal_jump_mem..'+str(internal_jump_mem))
-
             else:
                 Memfact_internal_jump          =            int(Memfactor1[1]/512) - internal_jump_mem_last
                 print('Memfact_internal_jump is..'+str(Memfact_internal_jump))
-
-
                 #internal_jump_mem               =       0
                 #if(float(Memfact_internal_jump)/len(comf)>1 and float(Memfact_internal_jump)/len(comf)<2):
                 internal_jump_mem                  =            comf_end[int(Mem_fact)]['Packet'][Memfact_internal_jump%2027520]-comf_end[int(Mem_fact)]['Packet'][0] - Memfact_internal_jump%2027520 
-
-
                 print(comf_end[int(Mem_fact)]['Packet'][internal_jump_mem_last%2027520], comf_end[int(Mem_fact)]['Packet'][0], internal_jump_mem_last%2027520)
                 print('Intermediate internal_jump_mem..'+str(internal_jump_mem))
                 internal_jump_mem                  =            int(Memfactor1[1]/512)  -       internal_jump_mem       -       internal_jump_mem_last
             print('Length of comf_end is..'+str(len(comf_end)))
             print('internal_jump_mem is..'+str(internal_jump_mem))
-           
              
             if(missing_file_flag>0):
                 comf1                           =            comf_end[int(internal_jump_mem/2027520)][internal_jump_mem%2027520:]#np.concatenate((comf_end[int(internal_jump_mem/2027520)-missing_file_flag][internal_jump_mem%2027520:], comf_end[int(internal_jump_mem/2027520)+1-missing_file_flag][:internal_jump_mem%2027520]))
@@ -1064,7 +1105,6 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
         print('Memfactor..'+str(Memfactor[0])+','+str(Memfactor[1]))    
     print('Time till getting Memfactor..'+str(time.time()-time_init))
 
-
     cdef float dploss1		#			=		tot_len_end-tot_len_start
     cdef float dploss2		#			=		tot_len_end1-tot_len_start1
     Mem1=int(Memfactor1[0]/512.0)
@@ -1073,26 +1113,25 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
     Memfactor                    =  Memfactor1
     print('After Memfactor change..Memfactor[0], Memfactor[1]..'+str(Memfactor[0])+','+str(Memfactor[1]))
    
-    
     time_a					=		time.time()
     #dploss					=		(dploss1-Memfactor[0]/512.0)-(dploss2-Memfactor[1]/512.0)
-    
+
     #Adjusting for the packet loss..        
     #print('dploss1 and dploss2..'+str(dploss1)+','+str(dploss2)+','+str(dploss))
     #cdef np.ndarray lin1       		=   	comf['Packet'][0:]  -comf['Packet'][0]
     #cdef np.ndarray lin2       		=	comf1['Packet'][0:] -comf1['Packet'][0]
 
     tim_allot                      	=   	time.time()
-        
+
     #cdef long long int templen	   	=	comf['Packet'][-1]  -comf['Packet'][0]+10
     #cdef long long int templen1    	=   	comf1['Packet'][-1] -comf1['Packet'][0]+10
 
     ##Allocoating memory
     ##tempcomf, tempcomf1 		=	mem_alloc(templen, templen1)
-    
+
     #cdef np.ndarray 	tempcomf	=   	np.zeros((templen, 1024), dtype = np.int8)
     #cdef np.ndarray	tempcomf1	=	np.zeros((templen1, 1024), dtype = np.int8)
-     
+
     print('Time from Memfactor to memmap_copy...'+str(time.time()-time_a))
     cdef np.ndarray file_time		
     file_time				=	get_last_gps_timing(comf, comf1, file_name, file_name1, series, Memfactor)
@@ -1118,7 +1157,6 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
     #from the correlation GPS compensation..
     print('tempcomf and tempcomf1 length..'+str(len(tempcomf))+','+str(len(tempcomf1))+' Memfactor..'+str(Memfactor1[0])+','+str(Memfactor1[1]))
 
-
     print('The length of tempcomf...'+str(len(tempcomf)))
     print('The length of tempcomf1...'+str(len(tempcomf1)))
     print('The length of dploss..'+str(dploss))
@@ -1138,8 +1176,6 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
     #    tempcomf	   		=       np.concatenate((tempcomf, tempcomf_rem1[0:]))#np.vstack((comf1, tempcomf_rem[0:abs(dploss)]))
     #    print(len(tempcomf_rem1))
 
-
-
     time_allot				=   time.time() 
     tempcomf_X                          =   np.array(tempcomf[1::2],  order = 'F')
     tempcomf_Y                          =   np.array(tempcomf[0::2],  order = 'F')
@@ -1148,6 +1184,7 @@ cpdef read_spinoff(series, Memfactor, file_name, file_name1, dt):
     print('Time for Pol array allotment...'+str(time.time()-tim_allot))
     print(len(tempcomf_X), len(tempcomf1_X))
     return tempcomf_X, tempcomf_Y, tempcomf1_X, tempcomf1_Y, Memfactor, Mem1, Mem2, LO1, LO2, file_time
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -1188,6 +1225,7 @@ cpdef memmap_copy(comf, comf1, Mem1, Mem2):
     #tempcomf, tempcomf1	    =   tempcomf.ravel(), tempcomf1.ravel() 
     print('Time for copying memmap array to numpy array...'+str(time.time()-time_allot))
     return tempcomf, tempcomf1
+
 
 '''
 cpdef mem_alloc(templen, templen1):
@@ -1244,44 +1282,38 @@ cpdef pre_gps_align(file_name, file_name1):
 
 cpdef comf_read_rem_file(file_next, val):
     
-    dt      =    np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
+    dt = np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
     try:
-        comf_rem    = np.memmap(file_next,  dtype = dt, mode = 'c')
+        comf_rem = np.memmap(file_next,  dtype = dt, mode = 'c')
     except:
         print('\n\n\n\n No '+str(file_next)+ ' found in the given location..\n\n\n\n')
         return np.array(['N'])
-    len1_fil1    =   comf_rem['Packet'][0]
-    len2_fil1    =   comf_rem['Packet'][int(round(val))]
+    len1_fil1 = comf_rem['Packet'][0]
+    len2_fil1 = comf_rem['Packet'][int(round(val))]
 
     start_point1 =   len(comf_rem['data'])
     templen      =   len2_fil1  -len1_fil1
     print('value to read..'+str(templen))
     #print('len2_fil1-len1_fil1 '+str(len2_fil1)+'-'+str(len1_fil1)+'='+str(templen))
 
-    cdef np.ndarray  lin1       =   comf_rem['Packet'][0:val]  -len1_fil1
-    cdef float       tim_allot  =   time.time()
+    cdef np.ndarray  lin1 = comf_rem['Packet'][0:val]  -len1_fil1
+    cdef float       tim_allot = time.time()
     cdef np.ndarray tempcomf_rem=   np.zeros((templen, 1024), dtype = np.int8) 
     print('Time for array array allotment...'+str(time.time()-tim_allot))
     print(len(comf_rem['data'][0:val]), len(tempcomf_rem), len(lin1))
-    tempcomf_rem[lin1]           =   np.memmap.copy(comf_rem['data'][0:val])
+    tempcomf_rem[lin1] =   np.memmap.copy(comf_rem['data'][0:val])
     #tempcomf                     =   compensate_pack_loss_rem(comf_rem, tempcomf_rem, lin1, val)#compensate_pack_loss(comf_rem, comf_rem, tempcomf_rem, tempcomf_rem, lin1, lin1, 0, 0)    
-    tempcomf			 =	tempcomf_rem.ravel()    
-
+    tempcomf =	tempcomf_rem.ravel()    
     return tempcomf
 
 
-
 cpdef gps_alingn_files(double ploss1, double ploss2, double pjump1, double pjump2, file_name, file_name1, series):
-  
     try:
-        file_name_1 =       file_name.split('/')[-1]
-        file_name1_1=       file_name1.split('/')[-1]
+        file_name_1 = file_name.split('/')[-1]
+        file_name1_1 = file_name1.split('/')[-1]
     except:
-        file_name_1 =       file_name
-        file_name1_1=       file_name1
-
-
-    
+        file_name_1 = file_name
+        file_name1_1 = file_name1
 
     print('pjump1, pjump2..'+str(pjump1)+', '+str(pjump2))
     cdef double pjump=(pjump1-pjump2)
@@ -1301,14 +1333,11 @@ cpdef gps_alingn_files(double ploss1, double ploss2, double pjump1, double pjump
             np.savetxt('SAMPLING_INFO/Packet_info_'+file_name_1, np.array([ploss1, 0]))
             np.savetxt('SAMPLING_INFO/Packet_info_'+file_name1_1, np.array([ploss2, abs(pjump)]))
 
-        
-        
         for i in range(int(series)):
             file_pre    =       'SAMPLING_INFO/Packet_info_'+file_name_1[:-7]+str(int(series)-i-1).rjust(3, '0')+'.mbr'
             file_pre1   =       'SAMPLING_INFO/Packet_info_'+file_name1_1[:-7]+str(int(series)-i-1).rjust(3, '0')+'.mbr'
             #print('Now reading..') 
             #print(file_pre, file_pre1)
-
 
             packet          =       np.loadtxt(file_pre)
             packet1         =       np.loadtxt(file_pre1)
@@ -1356,6 +1385,7 @@ cpdef gps_alingn_files(double ploss1, double ploss2, double pjump1, double pjump
         print('Returning..'+str([(abs(Nxt_file_jump1))*512+time_jump, 0]))
         return np.array([0, abs(Nxt_file_jump1)*512])
 
+
 cpdef get_fparam(file_name_1, file_name1_1):
     cdef double time_jumpX               =    0
     cdef double time_jumpY               =    0
@@ -1389,9 +1419,8 @@ cpdef get_fparam(file_name_1, file_name1_1):
         time_jump_flag  =       0
     return time_jumpX, time_jumpY, time_jump_flag
 
-cpdef gps_alingn_000_file(ploss1, ploss2, pjump1, pjump2, file_name, file_name1):
-   
 
+cpdef gps_alingn_000_file(ploss1, ploss2, pjump1, pjump2, file_name, file_name1):
     try:
         file_name_1 =       file_name.split('/')[-1]
         file_name1_1=       file_name1.split('/')[-1]
@@ -1409,12 +1438,10 @@ cpdef gps_alingn_000_file(ploss1, ploss2, pjump1, pjump2, file_name, file_name1)
     cdef int time_jump_flag              =      0
     #time_jump, time_jump_flag            =    get_fparam(file_name_1, file_name1_1)
     print('Time jump for 000 series files from .fparam file is..'+str(time_jump))
-
     
     #Previously generated files might not be the suitable in all senarios..hence
     #Not using this block..
     #Below commented region is related to that..
-
 
     #try:
     #    #Searching for reviously save files..
@@ -1431,7 +1458,6 @@ cpdef gps_alingn_000_file(ploss1, ploss2, pjump1, pjump2, file_name, file_name1)
     #    print('\n\nNo previously generated synchronization data exsists..building new one\n\n')
     #    pass;
     
-
     if(pjump<0):
         #If negative then the second file needs longer jump, hence if -ve then file 2 jump..
         packet2[0]  =   ploss2
@@ -1461,15 +1487,30 @@ cpdef gps_alingn_000_file(ploss1, ploss2, pjump1, pjump2, file_name, file_name1)
 
 
 cpdef tuple decrypy_file_new_SWAN_without_compensation(file_name, file_name1, ch):
-
-
     '''
-                ch should be the channel number of first file..
+    ch should be the channel number of first file..
 
-		Takes the read file and sorts the X and Y polarizartion in the file into
+    Takes the read file and sorts the X and Y polarizartion in the file into
 
-		comf_X, comf1_X, comf_Y, comf1_Y.
+    comf_X, comf1_X, comf_Y, comf1_Y.
 
+    Parameters
+    ----------
+        file_name: `str`
+            File name 1
+        file_name1: `str`
+            File name 2
+        ch: `int`
+            Channel number of the first file
+
+    Returns
+    -------
+        tempcomf_X: `numpy.array`
+        tempcomf_Y: `numpy.array`
+        tempcomf1_X: `numpy.array`
+        tempcomf1_Y: `numpy.array`
+        LO1: `int`
+            Local oscillator
     '''
     #If available get the earlier data set#
     cdef str series      = file_name[-7:-4]
@@ -1503,76 +1544,66 @@ cpdef tuple decrypy_file_new_SWAN_without_compensation(file_name, file_name1, ch
     print('Time required to read..'+str(time.time()-timea))
     print(file_name)
 
-
-
     if(series != '000' and file_name[-39:-35] == rem_l[1][-39:-35] and rem_l[0] == 'Y'):
         print('\n\n\n\n\n\n\n\nIn 1\n\n\n\n')
         comf    =   np.hstack((comf, comf_rem))
     elif(series != '000' and file_name1[-39:-35] == rem_l[1][-39:-35] and rem_l1[0] == 'Y'):
         print('\n\n\n\n\n\n\n\nIn 2\n\n\n\n')
         comf1   =   np.hstack((comf1, comf_rem))
-    
-    
-    
+
     print(len(comf), len(comf1))
-    LO1                  =   comf['LO'][100]
-    LO2                  =   comf1['LO'][100]
+    LO1 = comf['LO'][100]
+    LO2 = comf1['LO'][100]
 
     if(LO1!=LO2):
         print('LO1 = ' +str(LO1)+'\n')
         print('LO2 = ' +str(LO2)+'\n')
         #raise RuntimeError ('Both LOs are different!')
 
-
     #cdef long long int le       = min(len(comf)/avg, (len(comf1)/avg))
-    cdef long long int templen    =   0
-    cdef long long int templen1   =   0
+    cdef long long int templen = 0
+    cdef long long int templen1 = 0
 
-    ft      =   np.dtype('>i1')
+    ft = np.dtype('>i1')
     #fopen   =   open('START_file_'+str(fil_tag), 'a')
-    st      =   max(comf['GPS'][0], comf1['GPS'][0])
-    op      =   min(comf['GPS'][-1], comf1['GPS'][-1])
+    st = max(comf['GPS'][0], comf1['GPS'][0])
+    op = min(comf['GPS'][-1], comf1['GPS'][-1])
     #fopen.write('\nStarting_GPS\n'+str(st)+'\nEnding GPS = \t'+str(op))
     #fopen.close()
 
-    len1_fil1    =   comf['Packet'][10]
-    len1_fil2    =   comf1['Packet'][10]
-    len2_fil1    =   comf['Packet'][-1]
-    len2_fil2    =   comf1['Packet'][-1]
+    len1_fil1 = comf['Packet'][10]
+    len1_fil2 = comf1['Packet'][10]
+    len2_fil1 = comf['Packet'][-1]
+    len2_fil2 = comf1['Packet'][-1]
 
-    start_point1 =   len(comf['data']) -10
-    start_point2 =   len(comf1['data'])-10
-    templen =   len2_fil1  -len1_fil1 + 10
-    templen1=   len2_fil2  -len1_fil2 + 10
+    start_point1 = len(comf['data']) -10
+    start_point2 = len(comf1['data'])-10
+    templen = len2_fil1  -len1_fil1 + 10
+    templen1 = len2_fil2  -len1_fil2 + 10
 
     print('len2_fil1-len1_fil1 '+str(len2_fil1)+'-'+str(len1_fil1)+'='+str(templen))
     print('len2_fil2-len1_fil2 '+str(len2_fil2)+'-'+str(len1_fil2)+'='+str(templen1))
 
-
-    tempcomf    =   np.memmap.copy(comf['data'][10:])#data_temp#np.frombuffer(data_temp, dtype=ft, count=1024)
+    tempcomf = np.memmap.copy(comf['data'][10:])#data_temp#np.frombuffer(data_temp, dtype=ft, count=1024)
 
     print('Time required to decrypt one file..'+str(time.time()-timea))
-    tempcomf1   =   np.memmap.copy(comf1['data'][10:])#data_temp#np.frombuffer(data_temp, dtype=ft, count=1024)
-    tempcomf    = tempcomf.ravel()
-    tempcomf1   = tempcomf1.ravel()
+    tempcomf1 = np.memmap.copy(comf1['data'][10:])#data_temp#np.frombuffer(data_temp, dtype=ft, count=1024)
+    tempcomf = tempcomf.ravel()
+    tempcomf1 = tempcomf1.ravel()
 
-
-    tempcomf_X  			=   np.array(tempcomf[1::2], order = 'F')
-    tempcomf_Y  			=   np.array(tempcomf[0::2],  order = 'F')
-    tempcomf1_X 			=   np.array(tempcomf1[1::2], order = 'F')
-    tempcomf1_Y 			=   np.array(tempcomf1[0::2], order = 'F')
-
+    tempcomf_X = np.array(tempcomf[1::2], order = 'F')
+    tempcomf_Y = np.array(tempcomf[0::2],  order = 'F')
+    tempcomf1_X = np.array(tempcomf1[1::2], order = 'F')
+    tempcomf1_Y = np.array(tempcomf1[0::2], order = 'F')
 
     print('Time required to decrypt both files..'+str(time.time()-timea))
     #GPS_len =   [op, st]
     return tempcomf_X, tempcomf_Y, tempcomf1_X, tempcomf1_Y, LO1
 
 
-
 cpdef fix_time(sec, mi, hr, day):
     cdef int trk =   0
     cdef int fact=   1
-    
 
     hour    =   int(sec/3600.0)+hr
     mint    =   (sec/3600.0%1)*60+mi
@@ -1589,8 +1620,6 @@ cpdef fix_time(sec, mi, hr, day):
             mi  =   mi+1
         fact=1
         trk=0
-    
-    
     if(minu>59):   
         while(fact):
             
@@ -1602,20 +1631,17 @@ cpdef fix_time(sec, mi, hr, day):
             hr  =   hr+1
         fact=1
         trk=0
-    
     if(hour>23):
         while(fact):
-
-
             hour =   hour-24
             if(hour<24 and hour > 0):
                 fact=0
             trk =   trk+1
             day =  day+1
-    
         fact=1
         trk=0
     return sece, minu, hour, day
+
 
 cpdef shift_geo(np.ndarray comf_X, np.ndarray comf_Y, np.ndarray comf1_X, np.ndarray comf1_Y, dela):
     cdef i                         =   0
@@ -1661,10 +1687,8 @@ cpdef shift_geo(np.ndarray comf_X, np.ndarray comf_Y, np.ndarray comf1_X, np.nda
     return comf_X, comf_Y, comf1_X, comf1_Y
 
 
-
 cpdef call_to_read(str file_name, str file_name1, avg, sysargv, Memfactor=[0,0]):#, number, number1):
     print('Sync factor..'+str(sysargv))
-
     if(sysargv==str(1)):
         comf_X, comf_Y, comf1_X, comf1_Y,LO, file_time, Memfactor, new_Memfactor        =       decrypy_file_new_SWAN_onhold(file_name, file_name1, avg, Memfactor)
         #comf_X, comf_Y, comf1_X, comf1_Y, LO, file_time, Memfactor, new_Memfactor
@@ -1682,21 +1706,21 @@ cpdef call_to_read(str file_name, str file_name1, avg, sysargv, Memfactor=[0,0])
         Memfactor                                  =       -1
     return comf_X, comf_Y, comf1_X, comf1_Y, LO, file_time, Memfactor, new_Memfactor
 
+
 def gen_RFI_matrix(str file_name, str file_name1):
     '''
-        CAUTION: Should be run only one, not for every file..time constraint :/
+    .. warning::
+        Should be run only one, not for every file..time constraint :/
 
     '''
-    dt      =    np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
-
+    dt = np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
     comf_X, comf_Y, comf1_X, comf1_Y,LO        =       decrypy_file_new_SWAN_onhold(file_name, file_name1, 60)
     #Memfactor                                  = _header_Fring_cy.gps_sync(file_name, file_name1, 1)
     creal1, creal2, creal3, creal4creal8, creal9= internal_loop_RFI.external_loop(comf_X_1, comf_Y_1, comf1_X_1, comf1_Y_1, avg, le, 255)
-    RFI_X1  =   RFI_Reject(creal1, 2, 256, 60)
-    RFI_Y1  =   RFI_Reject(creal2, 2, 256, 60)
-    RFI_X2  =   RFI_Reject(creal3, 2, 256, 60)
-    RFI_Y2  =   RFI_Reject(creal4, 2, 256, 60)
-    
+    RFI_X1 = RFI_Reject(creal1, 2, 256, 60)
+    RFI_Y1 = RFI_Reject(creal2, 2, 256, 60)
+    RFI_X2 = RFI_Reject(creal3, 2, 256, 60)
+    RFI_Y2 = RFI_Reject(creal4, 2, 256, 60)
     return RFI_X1, RFI_Y1, RFI_X2, RFI_Y2
 
 
@@ -1708,7 +1732,6 @@ cdef np.ndarray rms(a,meana, fftsize):
                  rmsa[i] = np.std(a[i])#np.sqrt(np.mean((a[i] - meana[i])**2))#    rmsa[i] += (a[i][j] - meana[i])**2
                 #rmsa[i]=sqrt(rmsa[i]/len(a[0]))
         return rmsa
-
 
 
 cpdef np.ndarray RFI_Reject(spec, sig, fftsize, avg):
@@ -1733,10 +1756,7 @@ cpdef np.ndarray RFI_Reject(spec, sig, fftsize, avg):
             #spec[i]   =   np.zeros((len(spec[0])))
             RFI_list.append(i)
             FLAGS[i]    =   0   
-    
-    
     return FLAGS
-
 
 
 cpdef phase_compensation(spect, delay, freq):
@@ -1746,7 +1766,6 @@ cpdef phase_compensation(spect, delay, freq):
         Output: compensated spectrum, phase compensation spectrum
     '''
 
-
     cdef np.ndarray   pha =   spect.copy()
     cdef np.ndarray   comp=   spect.copy()
     cdef np.ndarray   f   =   np.linspace(freq-16.5/2, freq+16.5/2, 256)
@@ -1755,10 +1774,9 @@ cpdef phase_compensation(spect, delay, freq):
     for i in range(256):
         for j in range(len(spect[0])):
             pha[i][j] = (np.exp(complex(0, -2*np.pi*f[i]*delay[j])))
-
     comp    =   pha*spect
-
     return comp, pha
+
 
 cdef genphase(spec, delay):
     cdef np.ndarray pha     =    spec.copy()
