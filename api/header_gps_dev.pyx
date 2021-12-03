@@ -6,8 +6,8 @@ import glob
 from scipy.stats import linregress
 from sympy import S, symbols
 from os.path import getsize
-from FFT_KERNEL import single_file_combined_RFInoRFI as internal_loop_without_RFI_single_file
-from FFT_KERNEL import internal_loop_RFI
+from . import single_file_combined_RFInoRFI as internal_loop_without_RFI_single_file
+from . import internal_loop_RFI
 
 '''
 0 1 2 3 4 5
