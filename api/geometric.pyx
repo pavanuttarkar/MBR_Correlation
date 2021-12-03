@@ -376,6 +376,140 @@ cpdef Cal_time(float sec, float minu, float hour, float day, float month, float 
         W_geometric[i]       = (X_param[i]+Y_param[i]+Z_param[i])                                                                    
     return W_geometric
 
+
+cpdef  geometric_model_using_setdelay(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, np.ndarray time_array, unsigned int T1, unsigned int T2):
+    #(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2):
+
+    '''
+    float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2
+    '''
+    cdef double c_per_mus   = 299.792458
+    cdef int    i       =       0
+    print (year, month, day, hour, minu, sec)
+    cdef np.ndarray X_param     =      np.zeros(len(time_array), dtype = float)
+    cdef np.ndarray Y_param     =      np.zeros(len(time_array), dtype = float)
+    cdef np.ndarray Z_param     =      np.zeros(len(time_array), dtype = float)
+    cdef np.ndarray W_geometric =      np.zeros(len(time_array), dtype = float)
+
+    cdef float alt              =       0
+    cdef float az               =       0
+    cdef list az1               =       []
+    cdef list alt1              =       []
+    coslat               = np.cos(13.6111*np.pi/180)
+    sinlat               = np.sin(13.6111*np.pi/180)#77.451944444*np.pi/180)
+    
+    #lat=13.6112*u.deg, lon=77.5170*u.deg
+    #Gettine ECEF Coordinates of Tiles#
+    ecef    =   np.loadtxt('ECEF_from_header_geometric.txt')#np.loadtxt('ENU_v6.txt')
+    x_loc   =   ecef[:,0][T1] - ecef[:,0][T2]#np.loadtxt('ECEF_x')
+    y_loc   =   ecef[:,1][T1] - ecef[:,1][T2]#np.loadtxt('ECEF_y')
+    z_loc   =   ecef[:,2][T1] - ecef[:,2][T2]#np.loadtxt('ECEF_z')
+    print(x_loc, y_loc, z_loc)
+    
+    #Getting LatLong#
+    cdef double secu        =   sec
+    cdef double mint        =   minu
+    cdef double hourt       =   hour
+    cdef double dayt        =   day
+    cdef double montht      =   month
+    cdef double sindec      =   np.sin(dec*np.pi/180)
+    cdef double cosdec      =   np.cos(dec*np.pi/180)
+    cdef double d2r         =   np.pi/180
+    cdef int dayflag        =   0
+    ha1 =   []
+    for i in range(len(time_array)):
+        hourt_temp   =   int(time_array[i])
+        mint_temp    =   (time_array[i]%1)*60
+        secu_temp    =   (mint_temp%1)*60
+
+        hourt       =   int(hourt_temp)
+        mint        =   int(mint_temp)
+        secu        =   secu_temp
+
+
+        az, alt, ha = Equ2local(RA, dec, LatLong.Lat_local, LatLong.Long_local, secu, mint, hourt, day, month, year)
+        print(secu, mint, hourt, dayt, montht, year, az, alt, i)
+        alt1.append(alt)
+        az1.append(az)
+        ha1.append(ha)
+        za                   = np.pi-alt
+        X_param[i]           = x_loc*np.cos(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.cos(ha*np.pi/180)/c_per_mus;
+        Y_param[i]           = y_loc*np.sin(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.sin(ha*np.pi/180)/c_per_mus;
+        Z_param[i]           = z_loc*np.sin(alt1[i])/c_per_mus#*np.sin(dec*np.pi/180)/c_per_mus;
+        W_geometric[i]       = (x_loc*np.sin(az)+y_loc*np.cos(az))*np.sin(za)/c_per_mus##(X_param[i]+Y_param[i]+Z_param[i])
+    return W_geometric, alt1, az1, ha1
+
+
+cpdef  Cal_time_onhold(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, np.ndarray time_array, unsigned int T1, unsigned int T2):
+#(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2):
+
+    '''
+    float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2
+    '''
+    cdef double c_per_mus   = 299.792458
+    cdef int    i       =       0
+    print (year, month, day, hour, minu, sec)
+    cdef np.ndarray X_param     =      np.zeros(len(time_array), dtype = float)
+    cdef np.ndarray Y_param     =      np.zeros(len(time_array), dtype = float)
+    cdef np.ndarray Z_param     =      np.zeros(len(time_array), dtype = float)
+    cdef np.ndarray W_geometric =      np.zeros(len(time_array), dtype = float)
+
+    cdef float alt              =       0
+    cdef float az               =       0
+    cdef list az1               =       []
+    cdef list alt1              =       []
+    coslat               = np.cos(13.6111*np.pi/180)
+    sinlat               = np.sin(13.6111*np.pi/180)#77.451944444*np.pi/180)
+
+    #lat=13.6112*u.deg, lon=77.5170*u.deg
+    #Gettine ECEF Coordinates of Tiles#
+    ecef    =   np.loadtxt('ECEF_from_header_geometric.txt')#np.loadtxt('ENU_v6.txt')
+    x_loc   =   ecef[:,0][T1] - ecef[:,0][T2]#np.loadtxt('ECEF_x')
+    y_loc   =   ecef[:,1][T1] - ecef[:,1][T2]#np.loadtxt('ECEF_y')
+    z_loc   =   ecef[:,2][T1] - ecef[:,2][T2]#np.loadtxt('ECEF_z')
+    print(x_loc, y_loc, z_loc)
+
+    #Getting LatLong#
+    cdef double secu        =   sec
+    cdef double mint        =   minu
+    cdef double hourt       =   hour
+    cdef double dayt        =   day
+    cdef double montht      =   montht
+    cdef double sindec      =   np.sin(dec*np.pi/180)
+    cdef double cosdec      =   np.cos(dec*np.pi/180)
+    cdef double d2r         =   np.pi/180
+    cdef int dayflag        =   0
+    ha1 =   []
+    for i in range(len(time_array)):
+        hourt_temp   =   int(time_array[i])
+        mint_temp    =   (time_array[i]%1)*60
+        secu_temp    =   (mint_temp%1)*60
+
+        hourt       =   int(hourt_temp)
+        mint        =   int(mint_temp)
+        secu        =   secu_temp
+
+        #if(hourt_temp > 24.0):
+        #    print('Increasing day..')
+        #    dayt    =   day+1
+        #    hourt   =   0
+        #    minu    =   0
+        #    secu    =   0
+        #    dayflag =   1
+
+        az, alt, ha = Equ2local(RA, dec, LatLong.Lat_local, LatLong.Long_local, secu, mint, hourt, day, month, year)
+        print(secu, mint, hourt, dayt, montht, year, az, alt, i)
+        alt1.append(alt)
+        az1.append(az)
+        ha1.append(ha)
+
+        X_param[i]           = x_loc*np.cos(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.cos(ha*np.pi/180)/c_per_mus;
+        Y_param[i]           = y_loc*np.sin(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.sin(ha*np.pi/180)/c_per_mus;
+        Z_param[i]           = z_loc*np.sin(alt1[i])/c_per_mus#*np.sin(dec*np.pi/180)/c_per_mus;
+        W_geometric[i]       = (X_param[i]+Y_param[i]+Z_param[i])
+    return W_geometric, alt1, az1, ha1
+
+
 cpdef np.ndarray Cal_time_onhold_v1(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2):
 
     '''
@@ -458,69 +592,6 @@ cpdef np.ndarray Cal_time_onhold_v1(float sec, float minu, float hour, float day
         Z_param[i]           = (z_loc*sindec)/c_per_mus;#z_loc*np.sin(alt)#*np.sin(dec*np.pi/180)/c_per_mus;
         W_geometric[i]       = X_param[i]*cosha + Y_param[i]*sinha + Z_param[i];
     return W_geometric
-
-
-cpdef  geometric_model_using_setdelay(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, np.ndarray time_array, unsigned int T1, unsigned int T2):
-#(float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2):
-
-    '''
-    float sec, float minu, float hour, float day, float month, float year, float RA, float dec, float avg, float del_t, float time, unsigned int T1, unsigned int T2
-    '''
-    cdef double c_per_mus   = 299.792458
-    cdef int    i       =       0
-    print (year, month, day, hour, minu, sec)
-    cdef np.ndarray X_param     =      np.zeros(len(time_array), dtype = float)
-    cdef np.ndarray Y_param     =      np.zeros(len(time_array), dtype = float)
-    cdef np.ndarray Z_param     =      np.zeros(len(time_array), dtype = float)
-    cdef np.ndarray W_geometric =      np.zeros(len(time_array), dtype = float)
-
-    cdef float alt              =       0
-    cdef float az               =       0
-    cdef list az1               =       []
-    cdef list alt1              =       []
-    coslat               = np.cos(13.6111*np.pi/180)
-    sinlat               = np.sin(13.6111*np.pi/180)#77.451944444*np.pi/180)
-    
-    #lat=13.6112*u.deg, lon=77.5170*u.deg
-    #Gettine ECEF Coordinates of Tiles#
-    ecef    =   np.loadtxt('ECEF_from_header_geometric.txt')#np.loadtxt('ENU_v6.txt')
-    x_loc   =   ecef[:,0][T1] - ecef[:,0][T2]#np.loadtxt('ECEF_x')
-    y_loc   =   ecef[:,1][T1] - ecef[:,1][T2]#np.loadtxt('ECEF_y')
-    z_loc   =   ecef[:,2][T1] - ecef[:,2][T2]#np.loadtxt('ECEF_z')
-    print(x_loc, y_loc, z_loc)
-    
-    #Getting LatLong#
-    cdef double secu        =   sec
-    cdef double mint        =   minu
-    cdef double hourt       =   hour
-    cdef double dayt        =   day
-    cdef double montht      =   month
-    cdef double sindec      =   np.sin(dec*np.pi/180)
-    cdef double cosdec      =   np.cos(dec*np.pi/180)
-    cdef double d2r         =   np.pi/180
-    cdef int dayflag        =   0
-    ha1 =   []
-    for i in range(len(time_array)):
-        hourt_temp   =   int(time_array[i])
-        mint_temp    =   (time_array[i]%1)*60
-        secu_temp    =   (mint_temp%1)*60
-
-        hourt       =   int(hourt_temp)
-        mint        =   int(mint_temp)
-        secu        =   secu_temp
-
-
-        az, alt, ha = Equ2local(RA, dec, LatLong.Lat_local, LatLong.Long_local, secu, mint, hourt, day, month, year)
-        print(secu, mint, hourt, dayt, montht, year, az, alt, i)
-        alt1.append(alt)
-        az1.append(az)
-        ha1.append(ha)
-        za                   = np.pi-alt
-        X_param[i]           = x_loc*np.cos(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.cos(ha*np.pi/180)/c_per_mus;
-        Y_param[i]           = y_loc*np.sin(az1[i])*np.cos(alt1[i])/c_per_mus#*np.cos(dec*np.pi/180)*np.sin(ha*np.pi/180)/c_per_mus;
-        Z_param[i]           = z_loc*np.sin(alt1[i])/c_per_mus#*np.sin(dec*np.pi/180)/c_per_mus;
-        W_geometric[i]       = (x_loc*np.sin(az)+y_loc*np.cos(az))*np.sin(za)/c_per_mus##(X_param[i]+Y_param[i]+Z_param[i])
-    return W_geometric, alt1, az1, ha1
 
 
 cpdef phase_compensation(spect, delay, freq):
