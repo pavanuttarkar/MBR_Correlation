@@ -275,15 +275,32 @@ cpdef compensate_pack_loss_rem(comf_rem, tempcomf_rem, lin1, val):
     return tempcomf_rem
 
 cpdef tuple decrypy_file_new_SWAN_onhold_without_wierd_comp_for_testing_ONLY(file_name, file_name1, ch, Memfactor=np.array([0.0, 0.0])):
-
-
     '''
-                ch should be the channel number of first file..
+    ch should be the channel number of first file..
 
-		Takes the read file and sorts the X and Y polarizartion in the file into
+    Takes the read file and sorts the X and Y polarizartion in the file into
 
-		comf_X, comf1_X, comf_Y, comf1_Y.
+    comf_X, comf1_X, comf_Y, comf1_Y.
 
+    Parameters
+    ----------
+        file_name: `str`
+            File name 1
+        file_name1: `str`
+            File name 2
+        ch: `int`
+            Channel number of the first file
+        Memfactor: `ndarray`, optional
+            Memfactor, defaults to `np.array([0.0, 0.0])`
+
+    Returns
+    -------
+        tempcomf_X: `numpy.array`
+        tempcomf_Y: `numpy.array`
+        tempcomf1_X: `numpy.array`
+        tempcomf1_Y: `numpy.array`
+        LO1: `int`
+            Local oscillator
     '''
     #If available get the earlier data set#
     cdef str series      = file_name[-7:-4]
