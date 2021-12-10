@@ -66,7 +66,7 @@ The package described in this document is a Software Correlator written for the 
 
 
 <p align="center">
-<img src="Figures/Synchronization_Equation.png" alt="drawing" width="700"/> <br />
+<img src="Figures/Synchronization_Equation.png" alt="drawing" width="500"/> <br />
 Figure 2: Packet loss compensation in the correlator.
 </p>
 The packet loss is accounted for using the help of the packet counter, a 4 byte header in the packet. This accounting should be done to avoid any loss in coherence, as packet loss positions in both the files are uncorrelated and requires dropping of the chunk of the dataset in the corresponding file as well to avoid the drop in coherence.
