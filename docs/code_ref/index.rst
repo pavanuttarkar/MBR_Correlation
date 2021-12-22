@@ -47,3 +47,13 @@ Header Read
 Fortran Extenions
 =================
 
+
+internal_loop2 | internal_loop_RFI
+----------------------------------
+
+.. f:autosubroutine:: api/internal_standalone_WORKING_with_RFI_for_single_file_dev/external_loop
+
+single_file_combined_RFInoRFI
+-----------------------------
+
+.. f:autosubroutine:: api/internal_standalone_WORKING_with_RFI/external_loop
