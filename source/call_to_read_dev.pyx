@@ -329,6 +329,9 @@ cpdef tuple decrypy_file_new_SWAN_onhold(file_name, file_name1, ch):
         - **tempcomf1_X** array(float)
         - **tempcomf1_Y** array(float)
         - **LO1** (int)
+
+    Raises:
+        LOMismatch
     '''
 
     #If available get the earlier data set#
@@ -420,85 +423,6 @@ cpdef tuple decrypy_file_new_SWAN_onhold(file_name, file_name1, ch):
    
     print('Time required to decrypt both files..'+str(time.time()-timea))
     #GPS_len =   [op, st]
-    return tempcomf_X, tempcomf_Y, tempcomf1_X, tempcomf1_Y, LO1
-
-cpdef tuple decrypy_file_new_SWAN_onhold_hold(file_name, file_name1, avg):
-    """
-    Takes the read file and sorts the X and Y polarizartion in the file into
-    comf_X, comf1_X, comf_Y, comf1_Y.
-
-    Args:
-        file_name (str): 1st File Name
-        file_name1 (str): 2nd File Name
-        avg (int): # Packets to Average
-    
-    Returns:
-        - **tempcomf_X** array(int)
-        - **tempcomf_Y** array(int)
-        - **tempcomf1_X** array(int)
-        - **tempcomf1_Y** array(int)
-        - **LO1** (int) LO
-    """
-
-    dt      =    np.dtype([('header', 'S8'), ('Source', 'S10'), ('Attenuator_1', '>u1'),('Attenuator_2', '>u1'), ('Attenuator_3', '>u1'), ('Attenuator_4', '>u1'), ('LO', '>u2'), ('FPGA', '>u2'), ('GPS', '>u2'), ('Packet', '>u4'), ('data', '>i1', 1024)])
-    cdef int LO1, LO2
-    cdef str series      = file_name[-7:-4]
-    cdef double timea    = time.time()
-    cdef str fil_tag     = file_name.split('_')[-4]
-    cdef int    i        = 0
-
-    comf     = np.memmap(file_name,  dtype = dt, mode = 'c')
-    comf1    = np.memmap(file_name1, dtype = dt, mode = 'c')
-
-    print('Time required to read..'+str(time.time()-timea))
-
-    LO1                  =   comf['LO'][10]
-    LO2                  =   comf1['LO'][10]
-
-    if(LO1!=LO2):
-        print('Both LOs are different!')
-        #raise RuntimeError ('Both LOs are different!')
-        raise LOMismatch
-
-    cdef long long int templen    =   0
-    cdef long long int templen1   =   0
-
-    ft      =   np.dtype('>i1')
-
-    len1_fil1    =   comf['Packet'][10]
-    len1_fil2    =   comf1['Packet'][10]
-    len2_fil1    =   comf['Packet'][-1]
-    len2_fil2    =   comf1['Packet'][-1]
-
-    start_point1 =   len(comf['data']) -10
-    start_point2 =   len(comf1['data'])-10
-    templen =   len2_fil1  -len1_fil1 + 10
-    templen1=   len2_fil2  -len1_fil2 + 10
-
-    print('\n')
-    print('len1_fil1, len1_fil2, len2_fil1, len2_fil2')
-    print(len1_fil1, len1_fil2, len2_fil1, len2_fil2)
-
-    cdef np.ndarray  lin1       =   comf['Packet'][10:] - len1_fil1#comf['Packet'][100]
-    cdef np.ndarray  lin2       =   comf1['Packet'][10:] -len1_fil2# comf1['Packet'][100]
-    cdef np.ndarray tempcomf    =   np.zeros((templen, 1024), dtype = np.int8)
-    cdef np.ndarray tempcomf1   =   np.zeros((templen1, 1024), dtype = np.int8)
-
-    tempcomf[lin1]    =   np.memmap.copy(comf['data'][10:])#data_temp#np.frombuffer(data_temp, dtype=ft, count=1024)
-
-    print('Time required to decrypt one file..'+str(time.time()-timea))
-
-    tempcomf1[lin2]   =   np.memmap.copy(comf1['data'][10:])#data_temp#np.frombuffer(data_temp, dtype=ft, count=1024)
-    tempcomf    = tempcomf.ravel()
-    tempcomf1   = tempcomf1.ravel()
-
-    tempcomf_X  			=   np.array(tempcomf[1::2], order = 'F')
-    tempcomf_Y  			=   np.array(tempcomf[0::2],  order = 'F')
-    tempcomf1_X 			=   np.array(tempcomf1[1::2], order = 'F')
-    tempcomf1_Y 			=   np.array(tempcomf1[0::2], order = 'F')
-
-    print('Time required to decrypt both files..'+str(time.time()-timea))
-    #Tryring to increase speed of this module#
     return tempcomf_X, tempcomf_Y, tempcomf1_X, tempcomf1_Y, LO1
 
 cpdef fix_time(sec, mi, hr, day):
@@ -645,7 +569,7 @@ cpdef call_to_read(str file_name, str file_name1, avg, sysargv, delay):#, number
 def gen_RFI_matrix(str file_name, str file_name1):
     '''
         .. warning::
-            Should be run only one, not for every file..time constraint :/
+            Should be run only one and not for every file, Time Constraint :/
         
         Function to generate RFI Matrix
 
@@ -840,7 +764,11 @@ cdef PART_CORR(file_name, file_name1, sysgps,avg, RA, Dec, T1, T2, fftsiz):
 
     #GPS_Synchronization starting#
     Memfactor = _header_Fring_cy.gps_sync(file_name, file_name1, sysgps)
-    slope     = [['64453.125']]#get_slope(file_name, file_name1)
+    
+    ##################################################
+    ##################Check this!!####################
+    slope     = [['64453.125']]#get_slope(file_name, file_name1) 
+    ##################################################
 
     #Generating Delay#
 

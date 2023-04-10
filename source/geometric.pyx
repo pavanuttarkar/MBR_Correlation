@@ -285,10 +285,9 @@ cpdef phase_compensation(spect, delay, freq):
         delay: delay
         freq: frequency (MHz)
     
-    :rtype: comp (array), pha (array)
-
     Returns:
-        compensated spectrum, phase compensation spectrum
+        - **comp** (array) - compensated spectrum
+        - **pha** (array) - phase compensation spectrum
     '''
 
     cdef np.ndarray   pha =   spect.copy()
@@ -305,6 +304,31 @@ cpdef phase_compensation(spect, delay, freq):
     return comp, pha
 
 cpdef phase_compensation_toggle(sec1, min1, hour1, day1, month, year, RA,  Dec, avg, del_t, time, T1, T2):
+    """
+    ..warning::
+        desc required!!
+    
+    Args:
+        sec1
+        min1
+        hour1
+        day1
+        month
+        year
+        RA
+        Dec
+        avg
+        del_t
+        time
+        T1
+        T2
+
+    Returns:
+        - **delay** 
+        - **fact** 
+        - **delay1**
+    """ 
+
     delay   =   Cal_time_onhold_v1(float(sec1), float(min1), float(hour1), float(day1), float(month), float(year), float(RA),  float(Dec), float(avg), del_t, time, T1, T2)
     cdef double fact            =   sum(delay)*10**-6*33000000
     cdef np.ndarray delay1      =   delay-min(delay)
@@ -330,7 +354,7 @@ cpdef obsdelay(creal9):
         phase1[i]        = np.angle(complex(icorr[np.argmax(amp)].real,icorr[np.argmax(amp)].imag))*180/np.pi
 
     return phase1, phase_total
-
+"""
 cpdef phasecomp(creal9, delay, cenfreq, fftlen):
     '''
     Used when the delay is less than one sample, i.e intra sample level compensation..
@@ -355,8 +379,10 @@ cpdef phasecomp(creal9, delay, cenfreq, fftlen):
             creal9_1[:,i]   =   creal9[:,i]*fact
             creal9_2[:,i]   =   fact
     return creal9_1, creal9_2
+"""
 
 
+"""
 def ECEFto_ENU_file(file_path):
     ecef    =   np.loadtxt(file_path)
     enu     =   []
@@ -364,7 +390,7 @@ def ECEFto_ENU_file(file_path):
         print(i)
         enu.append(EcefToEnu(ecef[i][0], ecef[i][1], ecef[i][2]))
     return enu
-
+"""
 def EcefToEnu(x, y, z):
     """
     Convert ECEF to ENU Coordinate System.

@@ -89,7 +89,9 @@
 <li class="toctree-l1"><a class="reference internal" href="code.html">Header Fringe Cython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code.html#module-_header_read_cy">Header Read Cython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code.html#module-_header_geometric_cy">Header Geometric Cython</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html#temp-del-after-vgps">temp del after vGPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#module-temp_del_after_vGPS">temp del after vGPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#internal-lp-2">internal lp 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#internal-lp-rfi">internal lp RFI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="licence.html">LICENCE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="help.html">Help</a></li>
 </ul>
@@ -168,6 +170,7 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -194,7 +197,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code.html#_header_read_cy.bcolors">bcolors (class in _header_read_cy)</a>
+
+      <ul>
+        <li><a href="code.html#temp_del_after_vGPS.bcolors">(class in temp_del_after_vGPS)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -207,21 +214,17 @@
 </li>
       <li><a href="code.html#_header_read_cy.call_to_read">call_to_read() (in module _header_read_cy)</a>
 </li>
-      <li><a href="code.html#_header_Fring_cy.call_to_read_donnot_use">call_to_read_donnot_use() (in module _header_Fring_cy)</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.change_freq">change_freq() (in module _header_Fring_cy)</a>
+      <li><a href="code.html#_header_Fring_cy.change_freq_builtin">change_freq_builtin() (in module _header_Fring_cy)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_Fring_cy.change_freq_builtin">change_freq_builtin() (in module _header_Fring_cy)</a>
-</li>
       <li><a href="code.html#_header_Fring_cy.change_freq_new">change_freq_new() (in module _header_Fring_cy)</a>
 </li>
       <li><a href="code.html#_header_Fring_cy.change_freq_new_sinc">change_freq_new_sinc() (in module _header_Fring_cy)</a>
 </li>
-      <li><a href="code.html#_header_Fring_cy.change_freq_new_sinc_cortt">change_freq_new_sinc_cortt() (in module _header_Fring_cy)</a>
-</li>
       <li><a href="code.html#_header_read_cy.CORR">CORR() (in module _header_read_cy)</a>
+</li>
+      <li><a href="code.html#temp_del_after_vGPS.Correlation_FORT">Correlation_FORT() (in module temp_del_after_vGPS)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -229,21 +232,13 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_Fring_cy.decrypy_file_new">decrypy_file_new() (in module _header_Fring_cy)</a>
-</li>
       <li><a href="code.html#_header_Fring_cy.decrypy_file_new_packet_comp">decrypy_file_new_packet_comp() (in module _header_Fring_cy)</a>
 </li>
       <li><a href="code.html#_header_Fring_cy.decrypy_file_new_SWAN">decrypy_file_new_SWAN() (in module _header_Fring_cy)</a>
 </li>
-      <li><a href="code.html#_header_read_cy.decrypy_file_new_SWAN_onhold">decrypy_file_new_SWAN_onhold() (in module _header_read_cy)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_read_cy.decrypy_file_new_SWAN_onhold_hold">decrypy_file_new_SWAN_onhold_hold() (in module _header_read_cy)</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.decrypy_file_new_SWAN_temp_use">decrypy_file_new_SWAN_temp_use() (in module _header_Fring_cy)</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.decrypy_file_new_SWAN_temp_use1">decrypy_file_new_SWAN_temp_use1() (in module _header_Fring_cy)</a>
+      <li><a href="code.html#_header_read_cy.decrypy_file_new_SWAN_onhold">decrypy_file_new_SWAN_onhold() (in module _header_read_cy)</a>
 </li>
       <li><a href="code.html#_header_read_cy.decrypy_get_gpssync">decrypy_get_gpssync() (in module _header_read_cy)</a>
 </li>
@@ -253,11 +248,13 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_geometric_cy.ECEFto_ENU_file">ECEFto_ENU_file() (in module _header_geometric_cy)</a>
+      <li><a href="code.html#_header_geometric_cy.EcefToEnu">EcefToEnu() (in module _header_geometric_cy)</a>
+</li>
+      <li><a href="code.html#f/_/external_loop"><strong>external_loop() (fortran subroutine)</strong></a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_geometric_cy.EcefToEnu">EcefToEnu() (in module _header_geometric_cy)</a>
+      <li><a href="code.html#f/_/external_loop_rfi"><strong>external_loop_rfi() (fortran subroutine)</strong></a>
 </li>
       <li><a href="code.html#_header_Fring_cy.extract_time">extract_time() (in module _header_Fring_cy)</a>
 </li>
@@ -281,15 +278,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code.html#_header_read_cy.gen_RFI_matrix">gen_RFI_matrix() (in module _header_read_cy)</a>
 </li>
-      <li><a href="code.html#_header_Fring_cy.geo_delay_satyapan">geo_delay_satyapan() (in module _header_Fring_cy)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code.html#_header_Fring_cy.get_slope">get_slope() (in module _header_Fring_cy)</a>
 </li>
       <li><a href="code.html#_header_Fring_cy.gps_sync">gps_sync() (in module _header_Fring_cy)</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.gps_sync_onhold">gps_sync_onhold() (in module _header_Fring_cy)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -297,16 +290,10 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_Fring_cy.initial_corr">initial_corr() (in module _header_Fring_cy)</a>
-</li>
       <li><a href="code.html#_header_Fring_cy.internal_loop_exe">internal_loop_exe() (in module _header_Fring_cy)</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.internal_loop_exe_old">internal_loop_exe_old() (in module _header_Fring_cy)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_Fring_cy.internal_loop_exe_old_28JULY">internal_loop_exe_old_28JULY() (in module _header_Fring_cy)</a>
-</li>
       <li><a href="code.html#_header_Fring_cy.interp">interp() (in module _header_Fring_cy)</a>
 </li>
       <li><a href="code.html#_header_Fring_cy.interp3">interp3() (in module _header_Fring_cy)</a>
@@ -319,19 +306,19 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code.html#_header_Fring_cy.limit_memory">limit_memory() (in module _header_Fring_cy)</a>
 </li>
-      <li><a href="code.html#_header_read_cy.LOMismatch">LOMismatch</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.loop_external_cython">loop_external_cython() (in module _header_Fring_cy)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_Fring_cy.loop_external_cython_ason_SEP_01">loop_external_cython_ason_SEP_01() (in module _header_Fring_cy)</a>
+      <li><a href="code.html#_header_read_cy.LOMismatch">LOMismatch</a>
 </li>
       <li><a href="code.html#_header_Fring_cy.loop_external_exe">loop_external_exe() (in module _header_Fring_cy)</a>
 </li>
-      <li><a href="code.html#_header_Fring_cy.loop_external_exe_old">loop_external_exe_old() (in module _header_Fring_cy)</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.loop_external_exe_old_Aug_4th">loop_external_exe_old_Aug_4th() (in module _header_Fring_cy)</a>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="code.html#temp_del_after_vGPS.main_controller">main_controller() (in module temp_del_after_vGPS)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -357,24 +344,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code.html#_header_geometric_cy.phase_compensation_toggle">phase_compensation_toggle() (in module _header_geometric_cy)</a>
 </li>
-      <li><a href="code.html#_header_geometric_cy.phasecomp">phasecomp() (in module _header_geometric_cy)</a>
-</li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_Fring_cy.read_files">read_files() (in module _header_Fring_cy)</a>
-</li>
       <li><a href="code.html#_header_read_cy.read_RFI">read_RFI() (in module _header_read_cy)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_Fring_cy.resample">resample() (in module _header_Fring_cy)</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.resample1">resample1() (in module _header_Fring_cy)</a>
-</li>
       <li><a href="code.html#_header_read_cy.RFI_Reject">RFI_Reject() (in module _header_read_cy)</a>
 </li>
   </ul></td>
@@ -385,21 +364,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code.html#_header_geometric_cy.selflst">selflst() (in module _header_geometric_cy)</a>
 </li>
-      <li><a href="code.html#_header_Fring_cy.set_max_runtime">set_max_runtime() (in module _header_Fring_cy)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="code.html#_header_Fring_cy.set_max_runtime">set_max_runtime() (in module _header_Fring_cy)</a>
+</li>
       <li><a href="code.html#_header_read_cy.shift_geo">shift_geo() (in module _header_read_cy)</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.shift_samps">shift_samps() (in module _header_Fring_cy)</a>
-</li>
-      <li><a href="code.html#_header_Fring_cy.sinc_interp">sinc_interp() (in module _header_Fring_cy)</a>
 </li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="code.html#module-temp_del_after_vGPS">temp_del_after_vGPS (module)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code.html#_header_Fring_cy.time_exceeded">time_exceeded() (in module _header_Fring_cy)</a>
 </li>
@@ -408,10 +387,6 @@
 
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="code.html#_header_Fring_cy.upsample">upsample() (in module _header_Fring_cy)</a>
-</li>
-  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code.html#_header_Fring_cy.upsample3">upsample3() (in module _header_Fring_cy)</a>
 </li>

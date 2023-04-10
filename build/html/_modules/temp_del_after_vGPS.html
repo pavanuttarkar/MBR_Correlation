@@ -1,0 +1,470 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>temp_del_after_vGPS &mdash; MBRCorr 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> MBRCorr
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../code.html">Header Fringe Cython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code.html#module-_header_read_cy">Header Read Cython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code.html#module-_header_geometric_cy">Header Geometric Cython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code.html#module-temp_del_after_vGPS">temp del after vGPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code.html#internal-lp-2">internal lp 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code.html#internal-lp-rfi">internal lp RFI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../licence.html">LICENCE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../help.html">Help</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MBRCorr</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>temp_del_after_vGPS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for temp_del_after_vGPS</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+
+<span class="c1">##Uses Cython header file##</span>
+<span class="c1">##Name: _header_Fring_cy##</span>
+<span class="kn">import</span> <span class="nn">_header_Fring_cy</span>
+<span class="kn">import</span> <span class="nn">_header_read_cy</span>
+<span class="kn">import</span> <span class="nn">_header_geometric_cy</span>
+
+<span class="c1">#import matplotlib</span>
+<span class="c1">#matplotlib.use(&#39;Agg&#39;)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-------------&quot;</span><span class="p">)</span>
+<span class="c1">#from numpy import *</span>
+<span class="c1">#from pylab import *</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">internal_loop_RFI</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">gc</span>
+<span class="c1">#import pstats, cProfile</span>
+
+<span class="c1">#import pyximport</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Series 000 Correlation, maximizing correlation value..</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="bcolors"><a class="viewcode-back" href="../code.html#temp_del_after_vGPS.bcolors">[docs]</a><span class="k">class</span> <span class="nc">bcolors</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for colored cli Output</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">HEADER</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[95m&#39;</span>
+    <span class="n">OKBLUE</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[94m&#39;</span>
+    <span class="n">OKGREEN</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[92m&#39;</span>
+    <span class="n">WARNING</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[93m&#39;</span>
+    <span class="n">FAIL</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[91m&#39;</span>
+    <span class="n">ENDC</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span>
+    <span class="n">BOLD</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span>
+    <span class="n">UNDERLINE</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[4m&#39;</span></div>
+
+
+<div class="viewcode-block" id="Correlation_FORT"><a class="viewcode-back" href="../code.html#temp_del_after_vGPS.Correlation_FORT">[docs]</a><span class="k">def</span> <span class="nf">Correlation_FORT</span><span class="p">(</span><span class="n">comf_X_1</span><span class="p">,</span> <span class="n">comf_Y_1</span><span class="p">,</span> <span class="n">comf1_X_1</span><span class="p">,</span> <span class="n">comf1_Y_1</span><span class="p">,</span> <span class="n">avg</span><span class="p">,</span> <span class="n">le</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_name1</span><span class="p">,</span> <span class="n">fftsize</span><span class="p">,</span> <span class="n">external_num</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">fil</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">RFI</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to compute Cross-Correlations</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        comf_X_1</span>
+<span class="sd">        comf_Y_1</span>
+<span class="sd">        comf1_X_1</span>
+<span class="sd">        comf1_Y_1</span>
+<span class="sd">        avg</span>
+<span class="sd">        le</span>
+<span class="sd">        file_name</span>
+<span class="sd">        file_name1</span>
+<span class="sd">        fftsize</span>
+<span class="sd">        external_num</span>
+<span class="sd">        c9</span>
+<span class="sd">        fil</span>
+<span class="sd">        delay</span>
+<span class="sd">        RFI array(int): RFI Matrix</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        band</span>
+<span class="sd">        time1</span>
+<span class="sd">        c9</span>
+<span class="sd">        creal8</span>
+<span class="sd">        creal9</span>
+<span class="sd">        creal5</span>
+<span class="sd">        creal6</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time1</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">le</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="n">band</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">fftsize</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="n">timin</span>      <span class="o">=</span>       <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">creal1</span><span class="p">,</span> <span class="n">creal2</span><span class="p">,</span> <span class="n">creal3</span><span class="p">,</span> <span class="n">creal4</span><span class="p">,</span> <span class="n">creal5</span><span class="p">,</span> <span class="n">creal6</span><span class="p">,</span> <span class="n">creal8</span><span class="p">,</span> <span class="n">creal9</span><span class="p">,</span> <span class="n">pollkg1</span><span class="p">,</span> <span class="n">pollkg2</span> <span class="o">=</span> <span class="n">internal_loop_RFI</span><span class="o">.</span><span class="n">external_loop_rfi</span><span class="p">(</span><span class="n">comf_X_1</span><span class="p">,</span> <span class="n">comf_Y_1</span><span class="p">,</span> <span class="n">comf1_X_1</span><span class="p">,</span> <span class="n">comf1_Y_1</span><span class="p">,</span> <span class="n">avg</span><span class="p">,</span> <span class="n">le</span><span class="p">,</span> <span class="n">RFI</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">RFI</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">RFI</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">RFI</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="c1">#, delay, 60000)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time for internal loop : &#39;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">timin</span><span class="p">))</span>
+
+    <span class="c1">#####Generating New Folders, if not available#######################</span>
+    <span class="n">savenow</span>     <span class="o">=</span>   <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;mkdir CORRELATION&#39;</span><span class="p">)</span>
+    <span class="n">st</span>          <span class="o">=</span>   <span class="s1">&#39;DELAY_Sample_len&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">external_num</span><span class="p">)</span>
+    <span class="n">fg</span>  <span class="o">=</span>   <span class="nb">str</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="n">fg1</span> <span class="o">=</span>   <span class="n">fg</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fg</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">fh</span>  <span class="o">=</span>   <span class="nb">str</span><span class="p">(</span><span class="n">file_name1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="n">fh1</span> <span class="o">=</span>   <span class="n">fh</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1">#Now compensating for phase..</span>
+    <span class="n">creal8</span>  <span class="o">=</span>    <span class="n">_header_geometric_cy</span><span class="o">.</span><span class="n">phase_compensation</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="n">creal8</span><span class="p">),</span> <span class="n">delay</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">LO</span><span class="o">-</span><span class="mi">140</span><span class="p">)</span>
+    <span class="n">creal9</span>  <span class="o">=</span>    <span class="n">_header_geometric_cy</span><span class="o">.</span><span class="n">phase_compensation</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="n">creal9</span><span class="p">),</span> <span class="n">delay</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">LO</span><span class="o">-</span><span class="mi">140</span><span class="p">)</span>
+
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;CORRELATION/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Correlation_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chX1</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chX2</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fg1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fh1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">creal8</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;CORRELATION/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Correlation_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chY1</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chY2</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fg1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fh1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">creal9</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;CORRELATION/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Correlation_X1X1_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fg1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fh1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">creal1</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;CORRELATION/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Correlation_Y2Y2_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fg1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fh1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">creal2</span><span class="p">)</span>
+
+
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;CORRELATION/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Correlation_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chX1</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chY1</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fg1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fh1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">pollkg1</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;CORRELATION/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Correlation_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chX2</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chY2</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fg1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fh1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">pollkg2</span><span class="p">)</span>
+
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;CORRELATION/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Correlation_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chX1</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chY2</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fg1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fh1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">creal5</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;CORRELATION/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Correlation_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chX2</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">chY1</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fg1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fh1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">creal6</span><span class="p">)</span>
+
+
+
+    <span class="c1">#####Checking Correlation and saving all stuff######################</span>
+
+    <span class="n">c9</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">external_num</span><span class="p">)]</span>      <span class="o">=</span>       <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">band</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="c1">#print(&#39;Mean  Y1Y2...&#39;+str(np.nanmean(abs(band[0]))))</span>
+    <span class="c1">#print(&#39;Mean  X1X2...&#39;+str(np.nanmean(abs(band[1]))))</span>
+    <span class="c1">#np.save(&#39;CORRELATION/&#39;+str(fil)+&#39;/Correlation_X1X2_Y1Y2_Band&#39;+str(fg1)+&#39;_&#39;+str(fh1)+&#39;.txt&#39;,band)</span>
+    <span class="c1">#np.save(&#39;CORRELATION/&#39;+str(fil)+&#39;/Correlation_X1X2_Y1Y2_Time&#39;+str(fg1)+&#39;_&#39;+str(fh1)+&#39;.txt&#39;,time1)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time for python function = &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">timin</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">band</span><span class="p">,</span> <span class="n">time1</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">creal8</span><span class="p">,</span> <span class="n">creal9</span><span class="p">,</span> <span class="n">creal5</span><span class="p">,</span> <span class="n">creal6</span></div>
+
+<div class="viewcode-block" id="main_controller"><a class="viewcode-back" href="../code.html#temp_del_after_vGPS.main_controller">[docs]</a><span class="k">def</span> <span class="nf">main_controller</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function responsible to control all fortran and cython instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Usage: Program_name &lt;1 for Synchronization  otherwise 0 &gt; &lt;File_name_1&gt; &lt;File_name_2&gt; &lt;NaN&gt; &lt;No of loops to run, e.g 10 delays etc.but check the internal multiplication!&gt; &lt;RA&gt; &lt;Dec&gt; &lt;Avg packets&gt; &lt;Tile 1&gt; &lt;Tile 2&gt; &lt;FFT size&gt;&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="n">file_name</span>		<span class="o">=</span>       <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>	
+    <span class="n">file_name1</span>		<span class="o">=</span>	<span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="c1">#delay                   =       load(sys.argv[4])</span>
+    <span class="n">avg</span>                     <span class="o">=</span>       <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+    <span class="n">RA</span>                      <span class="o">=</span>      <span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+    <span class="n">Dec</span>                     <span class="o">=</span>      <span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+    <span class="n">T1</span>                      <span class="o">=</span>       <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">T2</span>                      <span class="o">=</span>       <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="c1">#Extracting date and time tags from file name and generating time jump matrix#</span>
+    <span class="n">series</span><span class="p">,</span> <span class="n">sec</span><span class="p">,</span> <span class="n">minu</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">dat</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">year</span>	<span class="o">=</span>	<span class="n">_header_Fring_cy</span><span class="o">.</span><span class="n">extract_time</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="n">series1</span><span class="p">,</span> <span class="n">sec1</span><span class="p">,</span> <span class="n">minu1</span><span class="p">,</span> <span class="n">hour1</span><span class="p">,</span> <span class="n">dat1</span><span class="p">,</span> <span class="n">month1</span><span class="p">,</span> <span class="n">year1</span>	<span class="o">=</span>	<span class="n">_header_Fring_cy</span><span class="o">.</span><span class="n">extract_time</span><span class="p">(</span><span class="n">file_name1</span><span class="p">)</span>
+    <span class="n">sec</span> <span class="o">=</span>   <span class="nb">max</span><span class="p">(</span><span class="n">sec</span><span class="p">,</span> <span class="n">sec1</span><span class="p">)</span>
+
+
+
+
+    <span class="c1">#GPS_Synchronization starting#</span>
+    <span class="n">Memfactor</span> <span class="o">=</span> <span class="n">_header_Fring_cy</span><span class="o">.</span><span class="n">gps_sync</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">file_name1</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">slope</span>     <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;64453.125&#39;</span><span class="p">]]</span><span class="c1">#get_slope(file_name, file_name1)</span>
+    <span class="c1">#######################Check This!!#########################</span>
+
+    <span class="c1">#Getting RFI matrix#</span>
+    <span class="n">RFI</span>         <span class="o">=</span>   <span class="n">_header_read_cy</span><span class="o">.</span><span class="n">read_RFI</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">file_name1</span><span class="p">)</span>
+
+    <span class="c1">#Generating Delay#</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sec</span><span class="p">,</span> <span class="n">minu</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">dat</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sec1</span><span class="p">,</span> <span class="n">minu1</span><span class="p">,</span> <span class="n">hour1</span><span class="p">,</span> <span class="n">dat1</span><span class="p">,</span> <span class="n">month1</span><span class="p">,</span> <span class="n">year1</span><span class="p">)</span>
+    <span class="n">sece</span>    <span class="o">=</span>   <span class="nb">int</span><span class="p">(</span><span class="n">sec</span><span class="p">)</span>    <span class="o">+</span>   <span class="nb">max</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Memfactor</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span><span class="o">+</span><span class="mi">1</span><span class="c1">#    +   30</span>
+    <span class="n">mint</span>    <span class="o">=</span>   <span class="nb">int</span><span class="p">(</span><span class="n">minu</span><span class="p">)</span>
+    <span class="n">hourt</span>   <span class="o">=</span>   <span class="nb">int</span><span class="p">(</span><span class="n">hour</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Going into fix_time&#39;</span><span class="p">)</span>
+    <span class="n">sec1</span><span class="p">,</span> <span class="n">min1</span><span class="p">,</span> <span class="n">hour1</span><span class="p">,</span> <span class="n">day1</span>     <span class="o">=</span>   <span class="n">_header_read_cy</span><span class="o">.</span><span class="n">fix_time</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sece</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mint</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">hourt</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dat</span><span class="p">))</span>
+
+    <span class="n">lst1</span>    <span class="o">=</span>   <span class="n">_header_geometric_cy</span><span class="o">.</span><span class="n">selflst</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sece</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">minu</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">hour</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dat</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">month</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">))</span>
+
+    <span class="n">delay</span>                       <span class="o">=</span>       <span class="n">_header_geometric_cy</span><span class="o">.</span><span class="n">phase_compensation_toggle</span><span class="p">(</span><span class="n">sec1</span><span class="p">,</span> <span class="n">min1</span><span class="p">,</span> <span class="n">hour1</span><span class="p">,</span> <span class="n">day1</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">RA</span><span class="p">,</span>  <span class="n">Dec</span><span class="p">,</span> <span class="n">avg</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">T1</span><span class="p">,</span> <span class="n">T2</span><span class="p">)</span><span class="c1">#.Cal_time_onhold_v1(float(sec1), float(min1), float(hour1), float(day1), float(month), float(year), float(RA),  float(Dec), float(avg), 1.0, 31, T1, T2)</span>
+    <span class="n">delay</span>        <span class="o">=</span>   <span class="p">[</span><span class="n">zeros</span><span class="p">((</span><span class="mi">40</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">zeros</span><span class="p">((</span><span class="mi">40</span><span class="p">))]</span>
+    <span class="c1">##################</span>
+    <span class="c1">##CHECK THIS!!!!##</span>
+    <span class="c1">##################</span>
+    <span class="n">sec1</span><span class="p">,</span> <span class="n">min1</span><span class="p">,</span> <span class="n">hour1</span><span class="p">,</span> <span class="n">day1</span>     <span class="o">=</span>   <span class="n">_header_read_cy</span><span class="o">.</span><span class="n">fix_time</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sec</span><span class="p">)</span><span class="o">+</span><span class="nb">min</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Memfactor</span><span class="p">[</span><span class="mi">3</span><span class="p">]))),</span> <span class="n">mint</span><span class="p">,</span> <span class="n">hourt</span><span class="p">,</span> <span class="n">dat</span><span class="p">)</span>
+
+    <span class="n">lst2</span>    <span class="o">=</span>   <span class="n">_header_geometric_cy</span><span class="o">.</span><span class="n">selflst</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sec1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">min1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">hour1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">day1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">month</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">))</span>
+
+
+
+    <span class="n">timea</span>    <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">comf_X</span><span class="p">,</span> <span class="n">comf_Y</span><span class="p">,</span> <span class="n">comf1_X</span><span class="p">,</span> <span class="n">comf1_Y</span><span class="p">,</span> <span class="n">LO</span>    <span class="o">=</span>  <span class="n">_header_read_cy</span><span class="o">.</span><span class="n">call_to_read</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">file_name1</span><span class="p">,</span> <span class="n">file_name</span><span class="p">[</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span><span class="o">-</span><span class="mi">35</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">delay</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time taken to read files and decrypt...&#39;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">timea</span><span class="p">))</span>
+
+
+
+    <span class="c1">#Warning about swapping#</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">bcolors</span><span class="o">.</span><span class="n">WARNING</span><span class="o">+</span><span class="s1">&#39;Remember!! keep avg below 60000, or swapping will happen!!&#39;</span><span class="o">+</span><span class="n">bcolors</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+
+        <span class="n">comf_X</span>    <span class="o">=</span>   <span class="n">comf_X</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">Memfactor</span><span class="p">[</span><span class="mi">0</span><span class="p">])):]</span><span class="c1">#-int(sys.argv[5])/2:]#+int(round(float(sys.argv[5])))*1/2:] #This is to ensure the correlation peak is seen at the mid-point.</span>
+        <span class="n">comf1_X</span>   <span class="o">=</span>   <span class="n">comf1_X</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">Memfactor</span><span class="p">[</span><span class="mi">1</span><span class="p">])):]</span>
+
+        <span class="n">comf_Y</span>    <span class="o">=</span>   <span class="n">comf_Y</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">Memfactor</span><span class="p">[</span><span class="mi">0</span><span class="p">])):]</span><span class="c1">#-int(sys.argv[5])/2:]#+int(round(float(sys.argv[5])))*1/2:]</span>
+        <span class="n">comf1_Y</span>   <span class="o">=</span>   <span class="n">comf1_Y</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">Memfactor</span><span class="p">[</span><span class="mi">1</span><span class="p">])):]</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n\n</span><span class="s1">Number of samples jumped at first..&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">])))</span><span class="o">*</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="mi">15</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">bcolors</span><span class="o">.</span><span class="n">BOLD</span><span class="o">+</span><span class="s1">&#39;Sample Jump..&#39;</span><span class="o">+</span><span class="n">bcolors</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">bcolors</span><span class="o">.</span><span class="n">BOLD</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">Memfactor</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">])))</span><span class="o">*</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="n">bcolors</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">bcolors</span><span class="o">.</span><span class="n">BOLD</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">Memfactor</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">])))</span><span class="o">*</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="n">bcolors</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1">#sys.exit()</span>
+
+    <span class="c1">#Generatinf end point#</span>
+    <span class="n">le</span>      <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">comf_X</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">avg</span><span class="p">))</span>
+    <span class="n">le1</span>     <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">comf1_X</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">avg</span><span class="p">))</span>
+    <span class="n">le</span>      <span class="o">=</span>   <span class="nb">min</span><span class="p">(</span><span class="n">le</span><span class="p">,</span> <span class="n">le1</span><span class="p">)</span>
+
+    <span class="c1">#Building file to save#</span>
+    <span class="n">tim</span>         <span class="o">=</span>   <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">hour</span><span class="p">)))</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">minute</span><span class="p">)))</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">second</span><span class="p">)))</span>
+    <span class="n">dat</span>         <span class="o">=</span>   <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:04d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">)))</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">month</span><span class="p">)))</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">day</span><span class="p">)))</span>
+    <span class="n">corrfile</span>    <span class="o">=</span>   <span class="n">dat</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">tim</span><span class="o">+</span><span class="s1">&#39;.corr&#39;</span>
+
+    <span class="c1">#Range of samples to shift#</span>
+    <span class="c1">#If input number if 10, then the samples are shifted from -10 to 10.</span>
+
+    <span class="n">c9</span>          <span class="o">=</span>       <span class="n">zeros</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">])))</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">samp_range</span>  <span class="o">=</span>   <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">]))),</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">]))),</span> <span class="n">dtype</span> <span class="o">=</span><span class="nb">int</span><span class="p">)</span><span class="c1">#linspace(-int(round(float(sys.argv[5]))), int(round(float(sys.argv[5]))), int(round(float(sys.argv[5])))*2+1)</span>
+    <span class="n">count_c9</span>    <span class="o">=</span>   <span class="mi">0</span>
+    <span class="c1">#Always only comf will be shifted and not comf1#</span>
+
+    <span class="n">fil1</span>    <span class="o">=</span>   <span class="n">file_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+    <span class="n">fil2</span>    <span class="o">=</span>   <span class="n">file_name1</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">fil1</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="o">!=</span> <span class="n">fil2</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">]):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Both file names seems to be different&#39;</span><span class="p">)</span>
+    <span class="n">chX1</span>      <span class="o">=</span>   <span class="s1">&#39;X&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">((</span><span class="n">fil1</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">chX2</span>      <span class="o">=</span>   <span class="s1">&#39;X&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">((</span><span class="n">fil2</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">chY1</span>      <span class="o">=</span>   <span class="s1">&#39;Y&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">((</span><span class="n">fil1</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">chY2</span>      <span class="o">=</span>   <span class="s1">&#39;Y&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">((</span><span class="n">fil2</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+
+
+    <span class="c1">#Writing Metadata#</span>
+    <span class="n">fil</span>                         <span class="o">=</span>   <span class="n">fil1</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">fil1</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">fil1</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="c1">#dat+&#39;_&#39;+tim</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;mkdir CORRELATION/&#39;</span><span class="o">+</span><span class="n">fil</span><span class="p">)</span>
+    <span class="n">point</span>   <span class="o">=</span>   <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;CORRELATION/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Metadata_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">file_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">file_name1</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span>
+    <span class="n">point</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#SOURCE Obs_Frequency</span><span class="se">\t</span><span class="s1">RA</span><span class="se">\t</span><span class="s1">Dec</span><span class="se">\t</span><span class="s1">N-FFT</span><span class="se">\t</span><span class="s1">Integration_Time</span><span class="se">\t</span><span class="s1">Start_Time_LST</span><span class="se">\t</span><span class="s1">Stop_Time_LST</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">point</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">LO</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">RA</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">Dec</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">avg</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">lst1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">lst2</span><span class="p">))</span>
+    <span class="n">point</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time till loop..&#39;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">timea</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">jjj</span> <span class="ow">in</span> <span class="n">samp_range</span><span class="p">:</span>
+
+        <span class="n">comf_X1</span>  <span class="o">=</span>   <span class="n">comf_X</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">jjj</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">comf_Y1</span>  <span class="o">=</span>   <span class="n">comf_Y</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">jjj</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">st</span>                          <span class="o">=</span>       <span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;/DELAY_Sample_len&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">jjj</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;mkdir CORRELATION/&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;/DELAY_Sample_len&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">jjj</span><span class="p">)))</span>
+        <span class="c1">#print(&#39;Going into Cython&#39;)</span>
+        <span class="n">YYb</span><span class="p">,</span> <span class="n">YYt</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">creal8</span><span class="p">,</span> <span class="n">creal9</span><span class="p">,</span> <span class="n">creal5</span><span class="p">,</span> <span class="n">creal6</span>        <span class="o">=</span>       <span class="n">Correlation_FORT</span><span class="p">(</span><span class="n">comf_X1</span><span class="p">,</span> <span class="n">comf_Y1</span><span class="p">,</span> <span class="n">comf1_X</span><span class="p">,</span> <span class="n">comf1_Y</span><span class="p">,</span> <span class="n">avg</span><span class="p">,</span> <span class="n">le</span><span class="p">,</span>  <span class="n">file_name</span><span class="p">,</span> <span class="n">file_name1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">jjj</span><span class="p">),</span> <span class="n">c9</span><span class="p">,</span> <span class="n">fil</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">RFI</span><span class="p">)</span>
+        <span class="n">count_c9</span>    <span class="o">=</span>   <span class="n">count_c9</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="n">savetxt</span><span class="p">(</span><span class="n">corrfile</span><span class="o">+</span><span class="s1">&#39;_vec&#39;</span><span class="p">,</span><span class="n">c9</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;Correlation co-efficient values for complete file&#39;</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, Pavan Uttarkar
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
