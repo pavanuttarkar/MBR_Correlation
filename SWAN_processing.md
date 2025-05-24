@@ -42,4 +42,6 @@ mkdir OBJECT_FILE
 cp -aur *.so ../OBJECT_FILE/.
 ```
 ##### Useful reference on RFI
-`https://home.iitk.ac.in/~desh/PS/2004RS003156.pdf`
+[https://home.iitk.ac.in/~desh/PS/2004RS003156.pdf](https://home.iitk.ac.in/~desh/PS/2004RS003156.pdf)
+[https://home.iitk.ac.in/~desh/PS/2004RS003156.pdf](https://www.worldscientific.com/doi/10.1142/S2251171719400099)
+[https://home.iitk.ac.in/~desh/PS/2004RS003156.pdf](https://arxiv.org/abs/1904.00502)
