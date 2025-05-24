@@ -41,3 +41,5 @@ pack-arrays -C'
 mkdir OBJECT_FILE
 cp -aur *.so ../OBJECT_FILE/.
 ```
+##### Useful reference on RFI
+`https://home.iitk.ac.in/~desh/PS/2004RS003156.pdf`
