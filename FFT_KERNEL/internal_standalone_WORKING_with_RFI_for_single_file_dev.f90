@@ -1,4 +1,4 @@
-subroutine external_loop (comf_X, comf_Y, avg, le, RFI1, RFI2, fftsize,  len_1,  &
+subroutine external_loop (comf_X, comf_Y, avg, le, fftsize,  len_1,  &
  & creal1, creal2, creal3, creal4)
   
   integer(kind=8), intent(in):: len_1
@@ -9,8 +9,8 @@ subroutine external_loop (comf_X, comf_Y, avg, le, RFI1, RFI2, fftsize,  len_1, 
   integer(kind=1), intent(in), dimension(len_1)::comf_X
   integer(kind=1), intent(in), dimension(len_1)::comf_Y
 
-  integer(kind=1), intent(in), dimension(fftsize)::RFI1
-  integer(kind=1), intent(in), dimension(fftsize)::RFI2
+  !integer(kind=1), intent(in), dimension(fftsize)::RFI1
+  !integer(kind=1), intent(in), dimension(fftsize)::RFI2
 
   !Auto Correlation!
   real(kind=8)             , intent(out), dimension(fftsize, le)::creal1
@@ -86,9 +86,9 @@ subroutine external_loop (comf_X, comf_Y, avg, le, RFI1, RFI2, fftsize,  len_1, 
     end do
     
     creal1(:,p_c)     = SUM(x33, DIM=2)
-    creal1(:,p_c)     = creal1(:,p_c)*RFI1!ONE(1:256)
+    creal1(:,p_c)     = creal1(:,p_c)!*RFI1!ONE(1:256)
     creal2(:,p_c)     = SUM(x44, DIM=2)
-    creal1(:,p_c)     = creal1(:,p_c)*RFI2!TWO(1:256)
+    creal1(:,p_c)     = creal1(:,p_c)!*RFI2!TWO(1:256)
     creal3(:,p_c)     = SUM(x33, DIM=2)
     creal4(:,p_c)     = SUM(x44, DIM=2)
 
